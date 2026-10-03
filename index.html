@@ -1,8 +1,15 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Shell Yeah</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=DM+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap">
 <style>
+  [hidden] { display: none !important; }
+  img { max-width: 100%; }
   /* Layout: pond-bank field guide. Honeycomb scute texture in the hero, a slow crawler across it,
      then a grid of "field notes" you can shell-check, a reading column of tales, and a joke dispenser. */
   :root {
@@ -82,6 +89,11 @@
     opacity: 0.7;
   }
   .hero-inner { position: relative; padding-block: 64px 120px; display: grid; gap: 22px; }
+  .credit {
+    justify-self: start; font-family: var(--mono); font-size: var(--step--1); letter-spacing: 0.03em;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; color: var(--muted);
+  }
+  .credit b { color: var(--shell); font-weight: 500; }
   .hero h1 { font-size: var(--step-4); color: var(--ink); }
   .hero h1 span { color: var(--shell); }
   .hero .lede { font-size: var(--step-1); max-width: 34ch; line-height: 1.4; }
@@ -234,6 +246,8 @@
     .btn { transition: none; }
   }
 </style>
+</head>
+<body>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
@@ -265,6 +279,7 @@
 <header class="hero" id="top">
   <div class="scutes" aria-hidden="true"></div>
   <div class="wrap hero-inner">
+    <p class="credit">Created by the elder turtle <b>AriShella</b> · Inspired by the wise turtle <b>Smilene</b></p>
     <p class="label">The Turtle Appreciation Society · est. about 220 million years ago</p>
     <h1>Shell <span>Yeah.</span></h1>
     <p class="lede">Facts, fables and flat-out fibs about the planet's most patient reptiles. Most of this page is true. <em>Some of it is a lie.</em> All of it is a pun waiting to happen.</p>
@@ -620,3 +635,5 @@
   });
 })();
 </script>
+</body>
+</html>
