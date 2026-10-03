@@ -95,7 +95,7 @@
   }
   .credit b { color: var(--shell); font-weight: 500; }
   .hero h1 { font-size: var(--step-4); color: var(--ink); }
-  .hero h1 span { color: var(--shell); }
+  .hero h1 .accent { color: var(--shell); }
   .hero .lede { font-size: var(--step-1); max-width: 34ch; line-height: 1.4; }
   .hero .lede em { color: var(--lie); font-style: italic; }
   .hero-row { display: flex; flex-wrap: wrap; gap: 14px 28px; align-items: center; }
@@ -112,8 +112,11 @@
 
   /* the crawler: one orchestrated moment, at an honest turtle pace */
   .crawler { position: absolute; left: 0; bottom: 14px; width: 120px; height: 70px; animation: crawl 80s linear infinite; }
-  .crawler .leg { transform-box: fill-box; transform-origin: top center; animation: paddle 1.6s ease-in-out infinite; }
-  .crawler .leg.b { animation-delay: -0.8s; }
+  /* legs live inside the shared <symbol>, so selectors can't reach them per instance;
+     a custom property inherits through <use> and switches the paddle on */
+  .leg { transform-box: fill-box; transform-origin: top center; animation: paddle 1.6s ease-in-out infinite; animation-play-state: var(--legs, paused); }
+  .leg.b { animation-delay: -0.8s; }
+  .crawler, .hatchling, .joke-turtle.go { --legs: running; }
   .crawler .speech {
     position: absolute; bottom: 66px; left: 70px; white-space: nowrap;
     font-family: var(--mono); font-size: 0.75rem; background: var(--surface); color: var(--ink);
@@ -129,7 +132,12 @@
 
   /* ---------- pun strip ---------- */
   .strip { background: var(--ink); color: var(--bg); }
-  .strip .wrap { display: flex; flex-wrap: wrap; gap: 6px 26px; justify-content: center; padding-block: 14px; font-family: var(--mono); font-size: var(--step--1); letter-spacing: 0.04em; }
+  .strip { overflow: hidden; }
+  .marquee-track { display: flex; width: max-content; padding-block: 14px; font-family: var(--mono); font-size: var(--step--1); letter-spacing: 0.04em; animation: marquee 50s linear infinite; }
+  .marquee-track .half { display: flex; gap: 34px; padding-right: 34px; }
+  .marquee-track span { white-space: nowrap; }
+  .strip:hover .marquee-track { animation-play-state: paused; }
+  @keyframes marquee { to { transform: translateX(-50%); } }
   .strip span::before { content: "⬡ "; color: var(--shell); }
 
   /* ---------- sections ---------- */
@@ -233,6 +241,101 @@
   footer .fine { color: var(--muted); font-size: var(--step--1); font-family: var(--mono); }
   footer .big { font-family: var(--display); font-size: var(--step-2); }
 
+  /* ---------- tabs ---------- */
+  .tabs { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 3px; }
+  .tab {
+    position: relative; font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.02em; border: 0; background: transparent;
+    color: var(--muted); padding: 7px 14px; border-radius: 999px; cursor: pointer; transition: background 0.2s, color 0.2s;
+  }
+  .tab:hover { color: var(--ink); }
+  .tab[aria-selected="true"] { background: var(--ink); color: var(--bg); }
+  .tab.play[aria-selected="false"]::after {
+    content: ""; position: absolute; top: 4px; right: 5px; width: 7px; height: 7px; border-radius: 50%; background: var(--shell);
+    animation: ping 1.8s ease-out infinite;
+  }
+  @keyframes ping { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--shell) 70%, transparent); } 100% { box-shadow: 0 0 0 9px transparent; } }
+  body[data-tab="game"] .homelinks { display: none; }
+  .brand svg { transition: transform 0.3s cubic-bezier(.3,1.6,.6,1); }
+  .brand:hover svg { transform: translateX(4px) rotate(-6deg); }
+  .btn.play-cta { background: var(--shell); color: var(--on-accent); }
+
+  /* ---------- hero motion ---------- */
+  .hero h1 .ch { display: inline-block; animation: bob 4.2s ease-in-out infinite; animation-delay: calc(var(--i) * 110ms); }
+  @keyframes bob { 0%, 40%, 100% { transform: none; } 20% { transform: translateY(-0.09em) rotate(-4deg); } }
+  .bubbles { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+  .bubbles span {
+    position: absolute; bottom: -30px; left: var(--x); width: var(--s); height: var(--s); border-radius: 50%;
+    border: 1.5px solid var(--sea); opacity: 0.4; animation: rise var(--d) linear infinite; animation-delay: var(--del);
+  }
+  @keyframes rise {
+    0% { transform: translate(0, 0); }
+    25% { transform: translate(9px, -180px); }
+    50% { transform: translate(-7px, -360px); }
+    75% { transform: translate(8px, -540px); opacity: 0.4; }
+    100% { transform: translate(0, -720px); opacity: 0; }
+  }
+
+  /* ---------- section motion ---------- */
+  .note { transition: translate 0.25s ease, rotate 0.25s ease, box-shadow 0.25s ease; }
+  .note:hover { translate: 0 -4px; rotate: -0.5deg; box-shadow: 0 10px 24px -14px color-mix(in srgb, var(--ink) 45%, transparent); }
+  .note:nth-child(even):hover { rotate: 0.5deg; }
+  @supports (animation-timeline: view()) {
+    .note, .tale, .honor, .sec-head {
+      animation: rise-in linear both; animation-timeline: view(); animation-range: entry 0% entry 45%;
+    }
+    @keyframes rise-in { from { transform: translateY(26px) rotate(-0.8deg); opacity: 0.35; } to { transform: none; opacity: 1; } }
+  }
+  .fx { position: fixed; inset: 0; pointer-events: none; z-index: 50; overflow: hidden; }
+  .fx .bit { position: absolute; width: 10px; height: 11px; clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%); }
+  .joke-turtle { width: 54px; height: 32px; }
+  .dispenser .row > :last-child { display: flex; align-items: center; gap: 8px; }
+
+  /* ---------- footer hatchlings ---------- */
+  footer { padding-top: 8px; }
+  .hatchlings { position: relative; height: 40px; overflow: hidden; margin-bottom: 24px; }
+  .hatchling { position: absolute; bottom: 4px; left: -50px; width: 42px; height: 25px; animation: scuttle var(--d) linear infinite; animation-delay: var(--del); }
+  @keyframes scuttle { from { left: -50px; } to { left: 100%; } }
+  .to-sea { position: absolute; right: 20px; bottom: 8px; font-family: var(--mono); font-size: var(--step--1); color: var(--sea); }
+
+  /* ---------- Playground Dash ---------- */
+  .game-page { padding-block: 44px 72px; }
+  .game-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 500px); gap: 36px; align-items: start; }
+  .game-intro { display: grid; gap: 16px; min-width: 0; }
+  .game-intro h2 { font-size: var(--step-3); }
+  .game-story { max-width: 52ch; }
+  .how { margin: 0; padding-left: 1.1em; display: grid; gap: 6px; color: var(--muted); }
+  .how b { color: var(--ink); font-weight: 600; }
+  .hud { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .hud > div { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 10px 14px; display: grid; gap: 2px; min-width: 0; }
+  .hud b { font-family: var(--display); font-weight: 400; font-size: 1.7rem; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .lives { display: flex; gap: 4px; min-height: 1.9rem; align-items: center; }
+  .lives svg { width: 34px; height: 20px; }
+  .intensity b { color: var(--shell); font-weight: 500; }
+  .game-stage { display: grid; gap: 14px; justify-items: center; min-width: 0; }
+  .canvas-wrap { position: relative; width: 100%; max-width: 500px; border-radius: 22px; overflow: hidden; border: 3px solid var(--ink); background: #7DB548; }
+  #dash { display: block; width: 100%; height: auto; aspect-ratio: 440 / 520; touch-action: none; cursor: pointer; }
+  .overlay {
+    position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; text-align: center; gap: 14px; padding: 28px;
+    background: color-mix(in srgb, var(--bg) 84%, transparent); backdrop-filter: blur(2px);
+  }
+  .overlay h3 { font-size: clamp(1.7rem, 5vw, 2.4rem); }
+  .overlay p { max-width: 32ch; color: var(--muted); }
+  .toast {
+    position: absolute; top: 12px; left: 50%; transform: translateX(-50%); opacity: 0; pointer-events: none; white-space: nowrap;
+    font-family: var(--display); font-size: 1.15rem; background: var(--ink); color: var(--bg); padding: 6px 16px 4px; border-radius: 999px;
+  }
+  .dpad { display: grid; grid-template-columns: repeat(3, 58px); grid-template-rows: repeat(2, 52px); gap: 6px; }
+  .dpad button {
+    border: 0; border-radius: 14px; background: var(--ink); color: var(--bg); font-size: 1.15rem; cursor: pointer; touch-action: manipulation;
+    transition: transform 0.08s;
+  }
+  .dpad button:active { transform: scale(0.92); }
+  .dpad [data-dir="up"] { grid-column: 2; grid-row: 1; }
+  .dpad [data-dir="left"] { grid-column: 1; grid-row: 2; }
+  .dpad [data-dir="down"] { grid-column: 2; grid-row: 2; }
+  .dpad [data-dir="right"] { grid-column: 3; grid-row: 2; }
+  @media (max-width: 860px) { .game-layout { grid-template-columns: 1fr; } .game-stage { order: -1; } }
+
   @media (max-width: 760px) {
     .pond, .namer { grid-template-columns: 1fr; }
     .honor { grid-template-columns: 1fr; }
@@ -241,7 +344,13 @@
     .dispenser { padding: 24px; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .crawler, .crawler .leg, .stamp { animation: none; }
+    .crawler, .leg, .stamp, .hatchling, .bubbles span, .hero h1 .ch, .marquee-track, .tab.play::after { animation: none !important; }
+    .marquee-track { width: auto; flex-wrap: wrap; justify-content: center; }
+    .marquee-track .half { flex-wrap: wrap; justify-content: center; gap: 6px 26px; padding-inline: 20px; }
+    .marquee-track .half + .half { display: none; }
+    .note, .tale, .honor, .sec-head { animation: none !important; }
+    .hatchling { left: 30%; }
+    .note, .brand svg { transition: none; }
     .crawler { left: auto; right: 20px; }
     .btn { transition: none; }
   }
@@ -264,10 +373,14 @@
   </defs>
 </svg>
 
-<nav class="top" aria-label="Sections">
+<nav class="top" aria-label="Site">
   <div class="wrap">
     <a class="brand" href="#top"><svg aria-hidden="true"><use href="#turtle"/></svg>Shell Yeah</a>
-    <ul>
+    <div class="tabs" role="tablist" aria-label="Pages">
+      <button class="tab" role="tab" type="button" id="tabbtn-home" data-tab="home" aria-controls="tab-home" aria-selected="true">The Shell-ebration</button>
+      <button class="tab play" role="tab" type="button" id="tabbtn-game" data-tab="game" aria-controls="tab-game" aria-selected="false">Playground Dash</button>
+    </div>
+    <ul class="homelinks">
       <li><a class="navlink" href="#notes">Fact or Shell-ction</a></li>
       <li><a class="navlink" href="#tales">Tales from the Tank</a></li>
       <li><a class="navlink" href="#pond">Pun Pond</a></li>
@@ -276,15 +389,18 @@
   </div>
 </nav>
 
+<div class="tabpanel" id="tab-home" role="tabpanel" aria-labelledby="tabbtn-home">
 <header class="hero" id="top">
   <div class="scutes" aria-hidden="true"></div>
+  <div class="bubbles" aria-hidden="true"></div>
   <div class="wrap hero-inner">
     <p class="credit">Created by the elder turtle <b>AriShella</b> · Inspired by the wise turtle <b>Smilene</b></p>
     <p class="label">The Turtle Appreciation Society · est. about 220 million years ago</p>
-    <h1>Shell <span>Yeah.</span></h1>
+    <h1>Shell <span class="accent">Yeah.</span></h1>
     <p class="lede">Facts, fables and flat-out fibs about the planet's most patient reptiles. Most of this page is true. <em>Some of it is a lie.</em> All of it is a pun waiting to happen.</p>
     <div class="hero-row">
       <a class="btn" href="#notes">Start shell-checking</a>
+      <a class="btn play-cta" href="#game" data-goto="game">Play Playground Dash</a>
       <a class="btn ghost" href="#pond">Skip to the puns (no judgment)</a>
     </div>
     <div class="hero-stats" aria-label="Turtle stats">
@@ -301,12 +417,25 @@
 </header>
 
 <div class="strip" aria-label="Turtle puns">
-  <div class="wrap">
-    <span>Totally tortoise-ly tubular</span>
-    <span>Shell-ebrate good times</span>
-    <span>Turtle-y awesome since the Triassic</span>
-    <span>No hare-brained ideas allowed</span>
-    <span>Shell we begin?</span>
+  <div class="marquee-track">
+    <div class="half">
+      <span>Totally tortoise-ly tubular</span>
+      <span>Shell-ebrate good times</span>
+      <span>Turtle-y awesome since the Triassic</span>
+      <span>No hare-brained ideas allowed</span>
+      <span>Shell we begin?</span>
+      <span>Slow and steady wins the website</span>
+      <span>Shell-f care is important</span>
+    </div>
+    <div class="half" aria-hidden="true">
+      <span>Totally tortoise-ly tubular</span>
+      <span>Shell-ebrate good times</span>
+      <span>Turtle-y awesome since the Triassic</span>
+      <span>No hare-brained ideas allowed</span>
+      <span>Shell we begin?</span>
+      <span>Slow and steady wins the website</span>
+      <span>Shell-f care is important</span>
+    </div>
   </div>
 </div>
 
@@ -416,6 +545,7 @@
               <button class="btn" id="tellBtn" type="button">Tell me</button>
               <button class="btn ghost" id="nextBtn" type="button">Shell me another</button>
             </div>
+            <svg class="joke-turtle" aria-hidden="true"><use href="#turtle"/></svg>
             <span class="groans">Groans induced: <span id="groanCount">0</span></span>
           </div>
         </div>
@@ -450,8 +580,57 @@
     </div>
   </section>
 </main>
+</div>
+
+<section class="tabpanel game-page" id="tab-game" role="tabpanel" aria-labelledby="tabbtn-game" hidden>
+  <div class="wrap game-layout">
+    <div class="game-intro">
+      <p class="label">Minigame</p>
+      <h2>Playground Dash</h2>
+      <p class="game-story">It's recess at Lily Pad Elementary, and Tucker the turtle has one dream: reach the pond on the far side of the playground. Between Tucker and his dream are soccer balls, scooter kids, bikes, frisbees, the swings, and one very excited dog. Get him there. Carefully. Heroically. At turtle speed.</p>
+      <ul class="how">
+        <li><b>Move</b> with the arrow keys or W A S D. On a phone, swipe, tap the board, or use the pad.</li>
+        <li><b>Grab lettuce</b> for bonus points. Benches block the way.</li>
+        <li><b>Sand is slow.</b> Tucker refuses to hurry on sand.</li>
+        <li><b>Every crossing</b> makes recess a little wilder.</li>
+      </ul>
+      <div class="hud" aria-live="polite">
+        <div><span class="label">Score</span><b id="gScore">0</b></div>
+        <div><span class="label">Best</span><b id="gBest">0</b></div>
+        <div><span class="label">Crossing</span><b id="gLevel">1</b></div>
+        <div><span class="label">Shells left</span><span class="lives" id="gLives"></span></div>
+      </div>
+      <p class="intensity label">Recess intensity: <b id="gIntensity">Mild</b></p>
+    </div>
+    <div class="game-stage">
+      <div class="canvas-wrap">
+        <canvas id="dash" aria-label="Playground Dash game board. Tucker the turtle starts at the bottom and must reach the pond at the top."></canvas>
+        <div class="overlay" id="overlay">
+          <h3 id="ovTitle">Help Tucker reach the pond</h3>
+          <p id="ovText">Dodge balls, bikes, scooters, swings and one very good dog. Grab lettuce for bonus points.</p>
+          <button class="btn" id="startBtn" type="button">Start the dash</button>
+        </div>
+        <div class="toast" id="toast" aria-live="polite"></div>
+      </div>
+      <div class="dpad" aria-label="Movement controls">
+        <button type="button" data-dir="up" aria-label="Up">▲</button>
+        <button type="button" data-dir="left" aria-label="Left">◀</button>
+        <button type="button" data-dir="down" aria-label="Down">▼</button>
+        <button type="button" data-dir="right" aria-label="Right">▶</button>
+      </div>
+    </div>
+  </div>
+</section>
 
 <footer>
+  <div class="hatchlings" aria-hidden="true">
+    <svg class="hatchling" style="--d:19s;--del:0s"><use href="#turtle"/></svg>
+    <svg class="hatchling" style="--d:23s;--del:-6s"><use href="#turtle"/></svg>
+    <svg class="hatchling" style="--d:17s;--del:-11s"><use href="#turtle"/></svg>
+    <svg class="hatchling" style="--d:26s;--del:-15s"><use href="#turtle"/></svg>
+    <svg class="hatchling" style="--d:21s;--del:-3s"><use href="#turtle"/></svg>
+    <span class="to-sea">to the sea →</span>
+  </div>
   <div class="wrap">
     <p class="big">Thanks for shell-ebrating with us.</p>
     <p>Built slowly, on purpose. Six of the fifteen field notes above are lies. The turtles know which ones.</p>
@@ -533,7 +712,7 @@
     grid.appendChild(card);
   });
 
-  function reveal(card, n, i) {
+  function reveal(card, n, i, quiet) {
     const btn = card.querySelector(".check");
     if (!btn) return;
     const v = document.createElement("div");
@@ -546,10 +725,11 @@
     if (n.t) truths++; else lies++;
     document.getElementById("truthCount").textContent = truths;
     document.getElementById("lieCount").textContent = lies;
+    document.dispatchEvent(new CustomEvent("shellcheck", { detail: { card, truth: n.t, stamp: v.querySelector(".stamp"), quiet } }));
   }
 
   document.getElementById("revealAll").addEventListener("click", (e) => {
-    [...grid.children].forEach((card, i) => reveal(card, notes[i], i));
+    [...grid.children].forEach((card, i) => reveal(card, notes[i], i, true));
     e.currentTarget.hidden = true;
   });
 
@@ -633,6 +813,548 @@
   crawler.addEventListener("animationiteration", (e) => {
     if (e.animationName === "crawl") speech.textContent = sayings[++s % sayings.length];
   });
+})();
+</script>
+<script>
+(() => {
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const $ = (id) => document.getElementById(id);
+
+  // ---------- tabs ----------
+  const panels = { home: $("tab-home"), game: $("tab-game") };
+  const tabBtns = document.querySelectorAll('[role="tab"]');
+  let current = "home";
+  function setHash(h) { try { history.replaceState(null, "", h); } catch (e) {} }
+  function showTab(name, scroll = true) {
+    if (!panels[name]) name = "home";
+    current = name;
+    for (const [k, p] of Object.entries(panels)) p.hidden = k !== name;
+    tabBtns.forEach((b) => b.setAttribute("aria-selected", String(b.dataset.tab === name)));
+    document.body.dataset.tab = name;
+    if (scroll) window.scrollTo(0, 0);
+    document.dispatchEvent(new CustomEvent("tabchange", { detail: name }));
+  }
+  tabBtns.forEach((b) => b.addEventListener("click", () => {
+    showTab(b.dataset.tab);
+    setHash(b.dataset.tab === "game" ? "#game" : "#top");
+  }));
+  document.querySelectorAll("[data-goto]").forEach((el) => el.addEventListener("click", (e) => {
+    e.preventDefault();
+    showTab(el.dataset.goto);
+    setHash("#" + el.dataset.goto);
+  }));
+  // in-page links to home sections switch back to the home tab before the browser jumps
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest('a[href^="#"]');
+    if (!a || a.dataset.goto) return;
+    const target = document.getElementById(a.getAttribute("href").slice(1));
+    if (target && panels.home.contains(target) && current !== "home") showTab("home", false);
+  });
+  function fromHash() { if (location.hash === "#game") showTab("game", false); }
+  fromHash();
+  window.addEventListener("hashchange", fromHash);
+
+  // ---------- headline wave ----------
+  const h1 = document.querySelector(".hero h1");
+  h1.setAttribute("aria-label", h1.textContent.trim());
+  let ci = 0;
+  (function wrap(node) {
+    for (const child of [...node.childNodes]) {
+      if (child.nodeType === 3) {
+        const frag = document.createDocumentFragment();
+        for (const ch of child.textContent) {
+          if (ch === " ") { frag.append(" "); continue; }
+          const s = document.createElement("span");
+          s.className = "ch"; s.style.setProperty("--i", ci++); s.textContent = ch; s.setAttribute("aria-hidden", "true");
+          frag.append(s);
+        }
+        child.replaceWith(frag);
+      } else wrap(child);
+    }
+  })(h1);
+
+  // ---------- hero bubbles ----------
+  const bubbles = document.querySelector(".bubbles");
+  for (let k = 0; k < 16; k++) {
+    const b = document.createElement("span");
+    const d = 8 + Math.random() * 9;
+    b.style.cssText = `--x:${(Math.random() * 100).toFixed(1)}%;--s:${(5 + Math.random() * 14).toFixed(0)}px;--d:${d.toFixed(1)}s;--del:${(-Math.random() * d).toFixed(1)}s`;
+    bubbles.append(b);
+  }
+
+  // ---------- confetti (hexagonal, naturally) ----------
+  const fx = document.createElement("div");
+  fx.className = "fx"; fx.setAttribute("aria-hidden", "true");
+  document.body.append(fx);
+  function burst(x, y, colors, n = 16) {
+    if (reduce) return;
+    for (let k = 0; k < n; k++) {
+      const p = document.createElement("span");
+      p.className = "bit"; p.style.background = colors[k % colors.length];
+      p.style.left = x + "px"; p.style.top = y + "px";
+      fx.append(p);
+      const a = Math.random() * Math.PI * 2, r = 40 + Math.random() * 80;
+      p.animate([
+        { transform: "translate(-50%, -50%) scale(1) rotate(0deg)", opacity: 1 },
+        { transform: `translate(calc(-50% + ${Math.cos(a) * r}px), calc(-50% + ${Math.sin(a) * r - 30}px)) scale(0.4) rotate(${Math.random() * 540}deg)`, opacity: 0 },
+      ], { duration: 700 + Math.random() * 500, easing: "cubic-bezier(.2,.7,.3,1)" }).onfinish = () => p.remove();
+    }
+  }
+  document.addEventListener("shellcheck", (e) => {
+    const { card, truth, stamp, quiet } = e.detail;
+    if (quiet || reduce) return;
+    const r = stamp.getBoundingClientRect();
+    burst(r.left + r.width / 2, r.top + r.height / 2, truth ? ["var(--moss)", "var(--shell)", "var(--sea)"] : ["var(--lie)", "var(--shell)"]);
+    if (!truth) card.animate([
+      { translate: "0 0" }, { translate: "-7px 0" }, { translate: "6px 0" }, { translate: "-4px 0" }, { translate: "0 0" },
+    ], { duration: 420, easing: "ease-out" });
+  });
+
+  // ---------- joke dispenser ----------
+  const jt = document.querySelector(".joke-turtle");
+  $("tellBtn").addEventListener("click", () => {
+    if (reduce) return;
+    jt.classList.add("go");
+    jt.animate([
+      { transform: "translateY(0) rotate(0)" }, { transform: "translateY(-12px) rotate(-12deg)" },
+      { transform: "translateY(0) rotate(8deg)" }, { transform: "translateY(-5px) rotate(-4deg)" }, { transform: "none" },
+    ], { duration: 700, easing: "ease-out" }).onfinish = () => jt.classList.remove("go");
+    $("groanCount").animate([{ transform: "scale(1)" }, { transform: "scale(1.7)" }, { transform: "scale(1)" }], { duration: 350 });
+    $("jokeA").animate([{ opacity: 0, transform: "translateY(8px)" }, { opacity: 1, transform: "none" }], { duration: 300, easing: "ease-out" });
+  });
+  $("nextBtn").addEventListener("click", () => {
+    if (reduce) return;
+    $("jokeQ").animate([{ opacity: 0, transform: "translateX(30px)" }, { opacity: 1, transform: "none" }], { duration: 320, easing: "cubic-bezier(.2,.8,.3,1)" });
+  });
+
+  // ---------- name plate flip ----------
+  $("nameForm").addEventListener("submit", () => {
+    if (reduce) return;
+    const plate = document.querySelector(".nameplate");
+    plate.animate([
+      { transform: "perspective(600px) rotateX(0)" }, { transform: "perspective(600px) rotateX(90deg)" }, { transform: "perspective(600px) rotateX(0)" },
+    ], { duration: 520, easing: "ease-in-out" });
+    const r = plate.getBoundingClientRect();
+    setTimeout(() => burst(r.left + r.width / 2, r.top + 30, ["var(--shell)", "var(--moss)"], 12), 260);
+  });
+
+  // =====================================================================
+  // Playground Dash
+  // =====================================================================
+  const cvs = $("dash"), ctx = cvs.getContext("2d");
+  const COLS = 11, ROWS = 13, C = 40, W = COLS * C, H = ROWS * C;
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  cvs.width = W * dpr; cvs.height = H * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  const KINDS = {
+    ball:    { e: "⚽", w: 0.8, size: 26, spin: 1 },
+    scooter: { e: "🛴", w: 1.0, size: 30, rider: true },
+    bike:    { e: "🚲", w: 1.4, size: 40, rider: true },
+    dog:     { e: "🐕", w: 1.1, size: 34 },
+    frisbee: { e: "🥏", w: 0.8, size: 24, spin: 2 },
+    wagon:   { e: "🛒", w: 1.7, size: 30, puller: true },
+  };
+  // top (pond) to bottom (start). speed is cells per second.
+  const ROWDEF = [
+    { type: "pond" },
+    { type: "grass" },
+    { type: "lane", kind: "ball", dir: 1, speed: 2.6, count: 3 },
+    { type: "lane", kind: "scooter", dir: -1, speed: 1.7, count: 3 },
+    { type: "lane", kind: "bike", dir: 1, speed: 1.2, count: 2 },
+    { type: "sand" },
+    { type: "swings" },
+    { type: "lane", kind: "dog", dir: -1, speed: 3.4, count: 1 },
+    { type: "lane", kind: "frisbee", dir: 1, speed: 2.1, count: 3 },
+    { type: "grass", benches: true },
+    { type: "lane", kind: "wagon", dir: -1, speed: 1.3, count: 2 },
+    { type: "lane", kind: "ball", dir: 1, speed: 1.9, count: 2 },
+    { type: "start" },
+  ];
+  const START_ROW = ROWS - 1, START_COL = 5, BENCH_ROW = 9, SWING_ROW = 6;
+  const SWINGS = [{ c: 1.9, ph: 0 }, { c: 5.5, ph: 2.1 }, { c: 9.1, ph: 4.0 }];
+  const INTENSITY = ["Mild", "Spicy", "Wild", "Total chaos", "Legendary chaos"];
+  const HIT = ["Shell-shocked!", "Ouch. Hard shell, soft ego.", "That'll leave a scute.", "Tucker needs a minute.", "Recess is brutal.", "Bonk!"];
+  const LETTUCE = ["Lettuce celebrate! +25", "Romaine calm. +25", "Leaf it to Tucker! +25", "Lettuce turnip the beet! +25"];
+  const WIN = ["Shell yeah! Made it!", "Totally tortoise-ly tubular!", "Pond-erful!", "Turtle-y awesome!"];
+  const pick = (a) => a[Math.floor(Math.random() * a.length)];
+
+  // emoji are drawn once to small canvases, then blitted
+  const spriteCache = new Map();
+  function sprite(e, size) {
+    const key = e + size;
+    if (spriteCache.has(key)) return spriteCache.get(key);
+    const box = Math.ceil(size * 1.35);
+    const oc = document.createElement("canvas");
+    oc.width = oc.height = box * dpr;
+    const o = oc.getContext("2d");
+    o.scale(dpr, dpr);
+    o.font = `${size}px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif`;
+    o.textAlign = "center"; o.textBaseline = "middle";
+    o.fillText(e, box / 2, box / 2 + size * 0.06);
+    const s = { c: oc, box };
+    spriteCache.set(key, s);
+    return s;
+  }
+  function blit(e, size, x, y, rot = 0, flip = false) {
+    const s = sprite(e, size);
+    ctx.save(); ctx.translate(x, y);
+    if (rot) ctx.rotate(rot);
+    if (flip) ctx.scale(-1, 1);
+    ctx.drawImage(s.c, -s.box / 2, -s.box / 2, s.box, s.box);
+    ctx.restore();
+  }
+
+  let level = 1, score = 0, lives = 3, best = 0, furthest = START_ROW, state = "ready", t = 0, mult = 1;
+  let lanes = [], benches = new Set(), lettuces = [], shake = 0, stateT = 0, sandTold = false;
+  const tur = { col: START_COL, row: START_ROW, x: 0, y: 0, fx: 0, fy: 0, tx: 0, ty: 0, hop: 1, hopDur: 0.14, face: -Math.PI / 2, walk: 0 };
+  try { best = parseInt(localStorage.getItem("shellyeah-best") || "0", 10) || 0; } catch (e) {}
+
+  function makeLane(def) {
+    const k = KINDS[def.kind];
+    const n = def.count + Math.min(2, Math.floor((level - 1) / 2));
+    const L = COLS + 4;
+    return { def, k, L, objs: Array.from({ length: n }, (_, i) => ({ x: -2 + (i * L) / n + Math.random() * 0.9 })) };
+  }
+  function resetTurtle() {
+    Object.assign(tur, { col: START_COL, row: START_ROW, hop: 1, face: -Math.PI / 2 });
+    tur.x = tur.tx = (START_COL + 0.5) * C;
+    tur.y = tur.ty = (START_ROW + 0.5) * C;
+    furthest = START_ROW;
+  }
+  function setupLevel() {
+    mult = 1 + 0.17 * (level - 1);
+    lanes = ROWDEF.map((d) => (d.type === "lane" ? makeLane(d) : null));
+    benches = new Set();
+    while (benches.size < 3) benches.add(Math.floor(Math.random() * COLS));
+    lettuces = [];
+    const spots = [];
+    for (const r of [1, 5, BENCH_ROW]) for (let c = 0; c < COLS; c++) if (!(r === BENCH_ROW && benches.has(c))) spots.push({ row: r, col: c });
+    for (let k = 0; k < 3; k++) lettuces.push(spots.splice(Math.floor(Math.random() * spots.length), 1)[0]);
+    resetTurtle();
+    updateHud();
+  }
+
+  // ---------- HUD, overlay, toast ----------
+  const overlay = $("overlay"), toastEl = $("toast");
+  function updateHud() {
+    $("gScore").textContent = score;
+    $("gBest").textContent = best;
+    $("gLevel").textContent = level;
+    $("gIntensity").textContent = INTENSITY[Math.min(INTENSITY.length - 1, Math.floor((level - 1) / 2))];
+    $("gLives").innerHTML = '<svg aria-hidden="true"><use href="#turtle"/></svg>'.repeat(Math.max(0, lives));
+    $("gLives").setAttribute("aria-label", `${lives} shells left`);
+  }
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.getAnimations().forEach((a) => a.cancel());
+    toastEl.animate([
+      { opacity: 0, transform: "translateX(-50%) translateY(-8px) scale(0.9)" },
+      { opacity: 1, transform: "translateX(-50%) translateY(0) scale(1)", offset: 0.12 },
+      { opacity: 1, transform: "translateX(-50%) translateY(0) scale(1)", offset: 0.8 },
+      { opacity: 0, transform: "translateX(-50%) translateY(-6px) scale(1)" },
+    ], { duration: 1500, easing: "ease-out" });
+  }
+  function showOverlay(title, text, btn) {
+    $("ovTitle").textContent = title; $("ovText").textContent = text; $("startBtn").textContent = btn;
+    overlay.hidden = false;
+  }
+  function newGame() {
+    level = 1; score = 0; lives = 3; sandTold = false;
+    setupLevel();
+    state = "playing"; overlay.hidden = true;
+    toast("Go, Tucker, go!");
+  }
+  function pause() {
+    if (state !== "playing") return;
+    state = "paused";
+    showOverlay("Tucker is napping", "The game is paused. Recess will wait. Probably.", "Resume");
+  }
+  $("startBtn").addEventListener("click", () => {
+    if (state === "paused") { state = "playing"; overlay.hidden = true; }
+    else newGame();
+  });
+
+  // ---------- movement ----------
+  function move(dc, dr) {
+    if (state !== "playing" || tur.hop < 1) return;
+    const nc = Math.max(0, Math.min(COLS - 1, tur.col + dc));
+    const nr = Math.max(0, Math.min(ROWS - 1, tur.row + dr));
+    tur.face = Math.atan2(dr, dc);
+    if (nc === tur.col && nr === tur.row) return;
+    if (nr === BENCH_ROW && benches.has(nc)) { toast("Bench! Tucker bonks politely."); shake = 0.12; return; }
+    tur.fx = tur.x; tur.fy = tur.y;
+    tur.tx = (nc + 0.5) * C; tur.ty = (nr + 0.5) * C;
+    tur.col = nc; tur.row = nr; tur.hop = 0;
+    const sand = ROWDEF[nr].type === "sand";
+    tur.hopDur = sand ? 0.42 : 0.14;
+    if (sand && !sandTold) { sandTold = true; toast("Sand. Very slow. Very sandy."); }
+  }
+  function arrive() {
+    if (tur.row < furthest) { score += 10 * (furthest - tur.row); furthest = tur.row; }
+    const li = lettuces.findIndex((l) => l.row === tur.row && l.col === tur.col);
+    if (li >= 0) { lettuces.splice(li, 1); score += 25; toast(pick(LETTUCE)); }
+    if (tur.row === 0) {
+      score += 100 + 20 * level;
+      toast(pick(WIN));
+      state = "won"; stateT = 1.3;
+      const r = cvs.getBoundingClientRect();
+      burst(r.left + (tur.x / W) * r.width, r.top + (tur.y / H) * r.height, ["var(--sea)", "var(--moss)", "var(--shell)"], 22);
+    }
+    updateHud();
+  }
+  function hit() {
+    lives--; state = "hit"; stateT = 1.0; shake = 0.35;
+    toast(pick(HIT));
+    updateHud();
+  }
+  function gameOver() {
+    state = "over";
+    const newBest = score > best;
+    if (newBest) { best = score; try { localStorage.setItem("shellyeah-best", String(best)); } catch (e) {} }
+    updateHud();
+    const crossed = level - 1;
+    showOverlay("Game shell-over",
+      `Tucker crossed the playground ${crossed} time${crossed === 1 ? "" : "s"} and scored ${score}. ${newBest ? "That's a new personal best!" : `Best so far: ${best}.`}`,
+      "Try again");
+  }
+
+  // ---------- update ----------
+  const overlaps = (a0, a1, b0, b1) => a0 < b1 && b0 < a1;
+  const swingX = (s) => s.c + 1.25 * Math.sin(t * 2.1 * mult + s.ph);
+  function update(dt) {
+    t += dt;
+    shake = Math.max(0, shake - dt);
+    for (const lane of lanes) {
+      if (!lane) continue;
+      const v = lane.def.dir * lane.def.speed * mult * dt;
+      for (const o of lane.objs) {
+        o.x += v;
+        if (lane.def.dir > 0 && o.x > COLS + 1) o.x -= lane.L;
+        if (lane.def.dir < 0 && o.x < -lane.k.w - 2) o.x += lane.L;
+      }
+    }
+    if (state === "playing") {
+      if (tur.hop < 1) {
+        tur.hop = Math.min(1, tur.hop + dt / tur.hopDur);
+        const e = 1 - (1 - tur.hop) * (1 - tur.hop);
+        tur.x = tur.fx + (tur.tx - tur.fx) * e;
+        tur.y = tur.fy + (tur.ty - tur.fy) * e;
+        tur.walk += dt * 18;
+        if (tur.hop === 1) arrive();
+      }
+      if (state === "playing") {
+        const ri = Math.round(tur.y / C - 0.5);
+        const tx = tur.x / C;
+        const lane = lanes[ri];
+        if (lane) {
+          for (const o of lane.objs) if (overlaps(tx - 0.3, tx + 0.3, o.x + 0.08, o.x + lane.k.w - 0.08)) { hit(); break; }
+        } else if (ri === SWING_ROW) {
+          for (const s of SWINGS) { const sx = swingX(s); if (overlaps(tx - 0.3, tx + 0.3, sx - 0.3, sx + 0.3)) { hit(); break; } }
+        }
+      }
+    } else if (state === "hit") {
+      stateT -= dt;
+      if (stateT <= 0) {
+        if (lives > 0) { resetTurtle(); state = "playing"; }
+        else gameOver();
+      }
+    } else if (state === "won") {
+      stateT -= dt;
+      tur.y -= dt * 10; // a celebratory paddle into the pond
+      if (stateT <= 0) {
+        level++;
+        if (level % 3 === 1 && lives < 5) { lives++; toast("Bonus shell! +1 life"); }
+        else toast(`Crossing ${level}: ${INTENSITY[Math.min(INTENSITY.length - 1, Math.floor((level - 1) / 2))]} recess`);
+        setupLevel();
+        state = "playing";
+      }
+    }
+  }
+
+  // ---------- draw ----------
+  // deterministic speckles so the ground doesn't flicker
+  const speck = Array.from({ length: 220 }, (_, i) => ({ x: (i * 97.13) % W, y: (i * 53.71) % H, r: (i % 3) * 0.5 + 0.8 }));
+  function drawGround() {
+    ROWDEF.forEach((d, r) => {
+      const y = r * C;
+      if (d.type === "pond") {
+        ctx.fillStyle = "#3D8DB4"; ctx.fillRect(0, y, W, C);
+        ctx.strokeStyle = "rgba(255,255,255,0.35)"; ctx.lineWidth = 1.5;
+        for (let k = 0; k < 5; k++) {
+          const rr = ((t * 9 + k * 9) % 22) + 2;
+          ctx.globalAlpha = 1 - rr / 24;
+          ctx.beginPath(); ctx.ellipse(40 + k * 92, y + C / 2, rr * 1.4, rr * 0.5, 0, 0, Math.PI * 2); ctx.stroke();
+        }
+        ctx.globalAlpha = 1;
+        for (const c of [1.2, 3.9, 6.6, 8.6]) {
+          ctx.fillStyle = "#5E9E3A";
+          ctx.beginPath(); ctx.moveTo(c * C, y + C / 2);
+          ctx.arc(c * C, y + C / 2, 11, 0.4, Math.PI * 2 - 0.1); ctx.closePath(); ctx.fill();
+        }
+      } else if (d.type === "lane") {
+        ctx.fillStyle = r % 2 ? "#5A6069" : "#535962"; ctx.fillRect(0, y, W, C);
+        ctx.strokeStyle = "rgba(255,255,255,0.22)"; ctx.lineWidth = 2; ctx.setLineDash([12, 12]);
+        ctx.beginPath(); ctx.moveTo(0, y + 1); ctx.lineTo(W, y + 1); ctx.stroke(); ctx.setLineDash([]);
+      } else if (d.type === "sand") {
+        ctx.fillStyle = "#E6CB88"; ctx.fillRect(0, y, W, C);
+        ctx.fillStyle = "rgba(140,100,40,0.35)";
+        for (const s of speck) { const sy = y + (s.y % C); ctx.beginPath(); ctx.arc(s.x, sy, s.r, 0, 7); ctx.fill(); }
+      } else if (d.type === "swings") {
+        ctx.fillStyle = "#B88857"; ctx.fillRect(0, y, W, C);
+        ctx.fillStyle = "rgba(90,55,25,0.3)";
+        for (const s of speck) { if (s.r > 1.5) ctx.fillRect(s.x, y + (s.y % C), 4, 2); }
+      } else {
+        ctx.fillStyle = r % 2 ? "#86BE4F" : "#7CB547"; ctx.fillRect(0, y, W, C);
+        ctx.strokeStyle = "rgba(40,80,20,0.35)"; ctx.lineWidth = 1.5;
+        for (let k = 0; k < 9; k++) {
+          const gx = (k * 53 + r * 31) % W, gy = y + 10 + ((k * 17 + r * 7) % 22);
+          ctx.beginPath(); ctx.moveTo(gx, gy); ctx.lineTo(gx - 2, gy - 5); ctx.moveTo(gx + 3, gy); ctx.lineTo(gx + 4, gy - 6); ctx.stroke();
+        }
+        if (d.type === "start") {
+          ctx.fillStyle = "rgba(255,255,255,0.55)"; ctx.font = '700 13px "DM Mono", monospace'; ctx.textAlign = "left"; ctx.textBaseline = "middle";
+          ctx.fillText("START", 8, y + C / 2);
+        }
+      }
+    });
+    ctx.fillStyle = "rgba(255,255,255,0.9)"; ctx.font = '500 11px "DM Mono", monospace'; ctx.textAlign = "right"; ctx.textBaseline = "middle";
+    ctx.fillText("THE POND", W - 8, C / 2);
+  }
+  function drawBenches() {
+    const y = BENCH_ROW * C;
+    for (const c of benches) {
+      const x = c * C;
+      ctx.fillStyle = "rgba(0,0,0,0.18)"; ctx.fillRect(x + 4, y + 26, C - 6, 6);
+      ctx.fillStyle = "#7A4E28"; ctx.fillRect(x + 3, y + 8, C - 6, 20);
+      ctx.fillStyle = "#9A6636";
+      for (let k = 0; k < 3; k++) ctx.fillRect(x + 3, y + 9 + k * 6.5, C - 6, 4);
+    }
+  }
+  function drawLanes() {
+    lanes.forEach((lane, r) => {
+      if (!lane) return;
+      const cy = (r + 0.5) * C, k = lane.k;
+      for (const o of lane.objs) {
+        const cx = (o.x + k.w / 2) * C;
+        ctx.fillStyle = "rgba(0,0,0,0.2)";
+        ctx.beginPath(); ctx.ellipse(cx, cy + 12, k.w * C * 0.38, 4, 0, 0, 7); ctx.fill();
+        if (k.puller) {
+          blit("🧒", 24, (o.x + (lane.def.dir < 0 ? 0.35 : k.w - 0.35)) * C, cy - 2);
+          blit(k.e, k.size, (o.x + (lane.def.dir < 0 ? 1.2 : 0.5)) * C, cy);
+        } else {
+          const rot = k.spin ? t * k.spin * 6 * lane.def.dir : 0;
+          const bob = k.e === "🐕" ? Math.abs(Math.sin(t * 14)) * -3 : 0;
+          blit(k.e, k.size, cx, cy + bob, rot);
+          if (k.rider) blit("🧒", 22, cx, cy - 12);
+        }
+      }
+    });
+  }
+  function drawSwings() {
+    const y = SWING_ROW * C;
+    for (const s of SWINGS) {
+      ctx.strokeStyle = "#3B3F45"; ctx.lineWidth = 5; ctx.lineCap = "round";
+      ctx.beginPath(); ctx.moveTo((s.c - 1.6) * C, y + 6); ctx.lineTo((s.c + 1.6) * C, y + 6); ctx.stroke();
+      ctx.fillStyle = "#3B3F45";
+      for (const e of [-1.6, 1.6]) { ctx.beginPath(); ctx.arc((s.c + e) * C, y + 6, 5, 0, 7); ctx.fill(); }
+      const sx = swingX(s) * C;
+      ctx.strokeStyle = "#9AA0A6"; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(s.c * C - 6, y + 6); ctx.lineTo(sx - 8, y + 26); ctx.moveTo(s.c * C + 6, y + 6); ctx.lineTo(sx + 8, y + 26); ctx.stroke();
+      ctx.fillStyle = "#D9503D"; ctx.fillRect(sx - 12, y + 25, 24, 7);
+      blit("🧒", 20, sx, y + 20);
+    }
+  }
+  function drawLettuce() {
+    for (const l of lettuces) blit("🥬", 22, (l.col + 0.5) * C, (l.row + 0.5) * C + Math.sin(t * 3 + l.col) * 2.5);
+  }
+  function drawTurtle() {
+    const retracted = state === "hit";
+    ctx.save();
+    ctx.translate(tur.x, tur.y);
+    if (state === "hit") ctx.translate(Math.sin(t * 60) * 2, 0);
+    ctx.fillStyle = "rgba(0,0,0,0.22)";
+    ctx.beginPath(); ctx.ellipse(2, 4, 15, 15, 0, 0, 7); ctx.fill();
+    ctx.rotate(tur.face + Math.PI / 2);
+    const hopLift = tur.hop < 1 ? Math.sin(tur.hop * Math.PI) * 0.12 : 0;
+    ctx.scale(1 + hopLift, 1 + hopLift);
+    if (!retracted) {
+      const w = Math.sin(tur.walk) * 3;
+      ctx.fillStyle = "#6E9A3A";
+      for (const [lx, ly, s] of [[-12, -8, 1], [12, -8, -1], [-12, 9, -1], [12, 9, 1]]) {
+        ctx.beginPath(); ctx.ellipse(lx, ly + w * s, 5, 4, 0, 0, 7); ctx.fill();
+      }
+      ctx.beginPath(); ctx.moveTo(-3, 13); ctx.lineTo(3, 13); ctx.lineTo(0, 19); ctx.fill();
+      ctx.beginPath(); ctx.arc(0, -17, 6.5, 0, 7); ctx.fill();
+      ctx.fillStyle = "#1D2A1B";
+      ctx.beginPath(); ctx.arc(-3, -19, 1.4, 0, 7); ctx.arc(3, -19, 1.4, 0, 7); ctx.fill();
+    }
+    ctx.fillStyle = retracted ? "#8E5A16" : "#B5731C";
+    ctx.beginPath(); ctx.ellipse(0, 0, 13, 15, 0, 0, 7); ctx.fill();
+    ctx.strokeStyle = "#6E430E"; ctx.lineWidth = 2; ctx.stroke();
+    ctx.strokeStyle = "rgba(255,225,160,0.55)"; ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    for (let k = 0; k < 6; k++) { const a = (k / 6) * Math.PI * 2; const px = Math.cos(a) * 5.5, py = Math.sin(a) * 6.5; k ? ctx.lineTo(px, py) : ctx.moveTo(px, py); }
+    ctx.closePath();
+    for (let k = 0; k < 6; k++) { const a = (k / 6) * Math.PI * 2; ctx.moveTo(Math.cos(a) * 5.5, Math.sin(a) * 6.5); ctx.lineTo(Math.cos(a) * 11, Math.sin(a) * 13); }
+    ctx.stroke();
+    ctx.restore();
+  }
+  function draw() {
+    ctx.save();
+    if (shake > 0 && !reduce) ctx.translate((Math.random() - 0.5) * 8 * shake, (Math.random() - 0.5) * 8 * shake);
+    drawGround(); drawBenches(); drawLettuce(); drawSwings(); drawLanes(); drawTurtle();
+    ctx.restore();
+  }
+
+  // ---------- loop (only runs while the game tab is open) ----------
+  let raf = null, last = 0;
+  function frame(now) {
+    const dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+    update(dt);
+    draw();
+    raf = current === "game" ? requestAnimationFrame(frame) : null;
+  }
+  function startLoop() { if (!raf) { last = performance.now(); raf = requestAnimationFrame(frame); } }
+  document.addEventListener("tabchange", (e) => {
+    if (e.detail === "game") startLoop(); else pause();
+  });
+  document.addEventListener("visibilitychange", () => { if (document.hidden) pause(); });
+
+  // ---------- input ----------
+  const DIRS = { ArrowUp: [0, -1], ArrowDown: [0, 1], ArrowLeft: [-1, 0], ArrowRight: [1, 0], w: [0, -1], s: [0, 1], a: [-1, 0], d: [1, 0] };
+  window.addEventListener("keydown", (e) => {
+    if (current !== "game" || e.target.closest("input, textarea")) return;
+    const d = DIRS[e.key] || DIRS[e.key.toLowerCase?.()];
+    if (d && state === "playing") { e.preventDefault(); move(d[0], d[1]); return; }
+    if ((e.key === "p" || e.key === "Escape") && state === "playing") { pause(); return; }
+    if (d && !overlay.hidden) e.preventDefault();
+  });
+  const DPAD = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
+  document.querySelectorAll(".dpad button").forEach((b) => b.addEventListener("pointerdown", (e) => {
+    e.preventDefault();
+    if (state === "ready" || state === "over") return;
+    move(...DPAD[b.dataset.dir]);
+  }));
+  let p0 = null;
+  cvs.addEventListener("pointerdown", (e) => { p0 = { x: e.clientX, y: e.clientY }; });
+  cvs.addEventListener("pointerup", (e) => {
+    if (!p0) return;
+    const dx = e.clientX - p0.x, dy = e.clientY - p0.y;
+    p0 = null;
+    if (Math.max(Math.abs(dx), Math.abs(dy)) > 18) {
+      Math.abs(dx) > Math.abs(dy) ? move(Math.sign(dx), 0) : move(0, Math.sign(dy));
+      return;
+    }
+    // a tap steps toward the tapped spot
+    const r = cvs.getBoundingClientRect();
+    const gx = ((e.clientX - r.left) / r.width) * W - tur.x, gy = ((e.clientY - r.top) / r.height) * H - tur.y;
+    Math.abs(gx) > Math.abs(gy) ? move(Math.sign(gx), 0) : move(0, Math.sign(gy));
+  });
+
+  setupLevel();
+  draw();
+  if (current === "game") startLoop();
 })();
 </script>
 </body>
