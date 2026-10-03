@@ -1,0 +1,622 @@
+<title>Shell Yeah</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=DM+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap">
+<style>
+  /* Layout: pond-bank field guide. Honeycomb scute texture in the hero, a slow crawler across it,
+     then a grid of "field notes" you can shell-check, a reading column of tales, and a joke dispenser. */
+  :root {
+    --bg: #EAEFDC;        /* lichen */
+    --surface: #F6F8EC;   /* pale shell underside */
+    --ink: #1D2A1B;       /* moss shadow */
+    --muted: #586650;
+    --line: #C9D3B2;
+    --shell: #B5731C;     /* carapace amber */
+    --moss: #4C6B2B;
+    --sea: #22605B;
+    --lie: #C0432D;
+    --on-accent: #FFF9EE;
+    --display: "Bagel Fat One", "Arial Rounded MT Bold", "Trebuchet MS", system-ui, sans-serif;
+    --body: "Newsreader", Georgia, "Times New Roman", serif;
+    --mono: "DM Mono", ui-monospace, "SF Mono", Menlo, monospace;
+    --step--1: 0.82rem;
+    --step-0: 1.08rem;
+    --step-1: 1.35rem;
+    --step-2: 1.8rem;
+    --step-3: 2.6rem;
+    --step-4: clamp(3.4rem, 11vw, 7.5rem);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #101812; --surface: #172219; --ink: #E3EAD1; --muted: #9AA88B; --line: #2A3B2C;
+      --shell: #E2A04A; --moss: #9CC266; --sea: #6DBDB4; --lie: #F27B62; --on-accent: #101812;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #101812; --surface: #172219; --ink: #E3EAD1; --muted: #9AA88B; --line: #2A3B2C;
+    --shell: #E2A04A; --moss: #9CC266; --sea: #6DBDB4; --lie: #F27B62; --on-accent: #101812;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: var(--step-0);
+    line-height: 1.55;
+    margin: 0;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; padding-inline: 20px; }
+  h1, h2, h3 { font-family: var(--display); font-weight: 400; line-height: 1.02; text-wrap: balance; margin: 0; }
+  p { margin: 0; }
+  a { color: var(--sea); }
+  :focus-visible { outline: 3px solid var(--shell); outline-offset: 3px; border-radius: 4px; }
+  .label {
+    font-family: var(--mono); font-size: var(--step--1); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
+  }
+
+  /* ---------- nav ---------- */
+  nav.top {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  nav.top .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 20px; padding-block: 10px; }
+  .brand { font-family: var(--display); font-size: var(--step-1); color: var(--ink); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .brand svg { width: 34px; height: 20px; }
+  nav.top ul { list-style: none; display: flex; flex-wrap: wrap; gap: 4px 18px; margin: 0; padding: 0; }
+  nav.top a.navlink { font-family: var(--mono); font-size: var(--step--1); text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); text-decoration: none; }
+  nav.top a.navlink:hover { color: var(--ink); }
+
+  /* ---------- hero ---------- */
+  header.hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--line); }
+  .scutes {
+    position: absolute; inset: 0; pointer-events: none;
+    background: var(--line);
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='52' height='90' viewBox='0 0 52 90'%3E%3Cpath d='M26 0 52 15 52 45 26 60 0 45 0 15Z M26 60 26 90' fill='none' stroke='white' stroke-width='1.6'/%3E%3C/svg%3E");
+            mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='52' height='90' viewBox='0 0 52 90'%3E%3Cpath d='M26 0 52 15 52 45 26 60 0 45 0 15Z M26 60 26 90' fill='none' stroke='white' stroke-width='1.6'/%3E%3C/svg%3E");
+    -webkit-mask-size: 52px 90px; mask-size: 52px 90px;
+    opacity: 0.7;
+  }
+  .hero-inner { position: relative; padding-block: 64px 120px; display: grid; gap: 22px; }
+  .hero h1 { font-size: var(--step-4); color: var(--ink); }
+  .hero h1 span { color: var(--shell); }
+  .hero .lede { font-size: var(--step-1); max-width: 34ch; line-height: 1.4; }
+  .hero .lede em { color: var(--lie); font-style: italic; }
+  .hero-row { display: flex; flex-wrap: wrap; gap: 14px 28px; align-items: center; }
+  .btn {
+    font-family: var(--mono); font-size: 0.92rem; font-weight: 500; letter-spacing: 0.03em;
+    background: var(--ink); color: var(--bg);
+    border: 0; border-radius: 999px; padding: 12px 20px; cursor: pointer; text-decoration: none; display: inline-block;
+    transition: transform 0.15s ease;
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn.ghost { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--ink); }
+  .hero-stats { display: flex; flex-wrap: wrap; gap: 6px 22px; font-family: var(--mono); font-size: var(--step--1); color: var(--muted); }
+  .hero-stats b { color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; }
+
+  /* the crawler: one orchestrated moment, at an honest turtle pace */
+  .crawler { position: absolute; left: 0; bottom: 14px; width: 120px; height: 70px; animation: crawl 80s linear infinite; }
+  .crawler .leg { transform-box: fill-box; transform-origin: top center; animation: paddle 1.6s ease-in-out infinite; }
+  .crawler .leg.b { animation-delay: -0.8s; }
+  .crawler .speech {
+    position: absolute; bottom: 66px; left: 70px; white-space: nowrap;
+    font-family: var(--mono); font-size: 0.75rem; background: var(--surface); color: var(--ink);
+    border: 1px solid var(--line); border-radius: 10px; padding: 3px 9px;
+  }
+  @keyframes crawl { from { transform: translateX(-140px); } to { transform: translateX(calc(100vw + 20px)); } }
+  @keyframes paddle { 0%, 100% { transform: rotate(-14deg); } 50% { transform: rotate(14deg); } }
+  .t-shell { fill: var(--shell); }
+  .t-scute { fill: none; stroke: var(--on-accent); stroke-width: 2; stroke-linejoin: round; opacity: 0.55; }
+  .t-skin { fill: var(--moss); }
+  .t-eye { fill: var(--ink); }
+  .t-rim { fill: var(--ink); opacity: 0.85; }
+
+  /* ---------- pun strip ---------- */
+  .strip { background: var(--ink); color: var(--bg); }
+  .strip .wrap { display: flex; flex-wrap: wrap; gap: 6px 26px; justify-content: center; padding-block: 14px; font-family: var(--mono); font-size: var(--step--1); letter-spacing: 0.04em; }
+  .strip span::before { content: "⬡ "; color: var(--shell); }
+
+  /* ---------- sections ---------- */
+  section { padding-block: 72px; }
+  .sec-head { display: grid; gap: 10px; margin-bottom: 34px; max-width: 62ch; }
+  .sec-head h2 { font-size: var(--step-3); }
+  .sec-head p { color: var(--muted); }
+
+  /* field notes */
+  .scoreboard {
+    display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: center;
+    font-family: var(--mono); font-size: var(--step--1); margin-bottom: 22px; color: var(--muted);
+  }
+  .scoreboard b { font-variant-numeric: tabular-nums; font-weight: 500; }
+  .scoreboard .t b { color: var(--moss); }
+  .scoreboard .l b { color: var(--lie); }
+  .notes { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 18px; }
+  .note {
+    position: relative; min-width: 0;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 18px 18px 18px 4px;
+    padding: 20px 20px 18px; display: grid; gap: 10px; grid-template-rows: auto auto 1fr auto; overflow: hidden;
+  }
+  .note h3 { font-family: var(--body); font-weight: 600; font-size: var(--step-1); line-height: 1.22; }
+  .note p.detail { color: var(--muted); }
+  .note .check {
+    justify-self: start; font-family: var(--mono); font-size: 0.8rem; background: transparent; color: var(--ink);
+    border: 1.5px dashed var(--muted); border-radius: 999px; padding: 7px 14px; cursor: pointer;
+  }
+  .note .check:hover { border-style: solid; }
+  .note .verdict { display: grid; gap: 8px; border-top: 1px dashed var(--line); padding-top: 12px; }
+  .stamp {
+    justify-self: start; font-family: var(--display); font-size: 1.4rem; letter-spacing: 0.04em;
+    padding: 2px 12px 0; border: 3px solid currentColor; border-radius: 8px; transform: rotate(-4deg);
+    animation: thunk 0.28s cubic-bezier(.3,1.6,.6,1);
+  }
+  .stamp.true { color: var(--moss); }
+  .stamp.lie { color: var(--lie); }
+  .note.is-lie { border-color: color-mix(in srgb, var(--lie) 45%, var(--line)); }
+  .note.is-true { border-color: color-mix(in srgb, var(--moss) 45%, var(--line)); }
+  @keyframes thunk { from { transform: rotate(-4deg) scale(1.8); opacity: 0; } to { transform: rotate(-4deg) scale(1); opacity: 1; } }
+
+  /* honoree */
+  .honor {
+    margin-top: 40px; display: grid; grid-template-columns: auto 1fr; gap: 22px; align-items: center;
+    padding: 26px; border-radius: 22px; background: var(--sea); color: var(--on-accent);
+  }
+  .honor .badge {
+    width: 92px; height: 92px; border-radius: 50%; display: grid; place-items: center; text-align: center;
+    font-family: var(--display); font-size: 1.7rem; line-height: 0.95; background: var(--shell); color: var(--on-accent);
+  }
+  .honor .badge small { display: block; font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.08em; }
+  .honor h3 { font-size: var(--step-2); margin-bottom: 6px; }
+  .honor p { max-width: 64ch; }
+  .honor .label { color: inherit; opacity: 0.8; margin-bottom: 6px; display: block; }
+
+  /* tales */
+  #tales { background: var(--surface); border-block: 1px solid var(--line); }
+  .tales { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 460px), 1fr)); gap: 48px 56px; }
+  .tale { display: grid; gap: 14px; align-content: start; min-width: 0; }
+  .tale h3 { font-size: var(--step-2); }
+  .tale .label b { color: var(--shell); font-weight: 500; }
+  .tale p { max-width: 62ch; }
+  .tale p + p { margin-top: -2px; }
+  .tale p:first-of-type::first-letter {
+    font-family: var(--display); float: left; font-size: 3.4em; line-height: 0.82; padding: 6px 8px 0 0; color: var(--shell);
+  }
+  .tale .moral { font-style: italic; color: var(--muted); border-left: 3px solid var(--shell); padding-left: 12px; }
+
+  /* pun pond */
+  .pond { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 28px; align-items: start; }
+  .dispenser {
+    background: var(--ink); color: var(--bg); border-radius: 26px; padding: 34px; display: grid; gap: 22px; min-height: 300px; align-content: space-between;
+  }
+  .dispenser .label { color: color-mix(in srgb, var(--bg) 70%, transparent); }
+  .dispenser .q { font-family: var(--display); font-size: clamp(1.6rem, 4vw, 2.3rem); line-height: 1.12; }
+  .dispenser .a { font-size: var(--step-1); color: var(--shell); font-style: italic; min-height: 1.6em; }
+  .dispenser .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
+  .dispenser .btn { background: var(--shell); color: var(--on-accent); }
+  .dispenser .btn.ghost { background: transparent; color: var(--bg); box-shadow: inset 0 0 0 1.5px var(--bg); }
+  .groans { font-family: var(--mono); font-size: var(--step--1); font-variant-numeric: tabular-nums; }
+  .quicklist { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+  .quicklist li { padding-block: 12px; border-bottom: 1px dashed var(--line); display: grid; gap: 2px; }
+  .quicklist li:first-child { padding-top: 0; }
+  .quicklist li span { color: var(--muted); font-style: italic; }
+
+  /* name generator */
+  .namer { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; align-items: center; }
+  .namer form { display: flex; flex-wrap: wrap; gap: 10px; }
+  .namer input {
+    flex: 1 1 200px; min-width: 0; font: inherit; font-size: var(--step-1); padding: 10px 16px; border-radius: 999px;
+    border: 1.5px solid var(--line); background: var(--surface); color: var(--ink);
+  }
+  .nameplate {
+    border: 2px solid var(--shell); border-radius: 22px; padding: 26px; text-align: left; display: grid; gap: 8px; min-width: 0;
+  }
+  .nameplate .who { font-family: var(--display); font-size: clamp(1.7rem, 4.5vw, 2.6rem); line-height: 1.05; color: var(--shell); overflow-wrap: anywhere; }
+  .nameplate .bio { color: var(--muted); }
+
+  footer { border-top: 1px solid var(--line); padding-block: 40px 56px; }
+  footer .wrap { display: grid; gap: 10px; }
+  footer .fine { color: var(--muted); font-size: var(--step--1); font-family: var(--mono); }
+  footer .big { font-family: var(--display); font-size: var(--step-2); }
+
+  @media (max-width: 760px) {
+    .pond, .namer { grid-template-columns: 1fr; }
+    .honor { grid-template-columns: 1fr; }
+    section { padding-block: 52px; }
+    .hero-inner { padding-block: 44px 110px; }
+    .dispenser { padding: 24px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .crawler, .crawler .leg, .stamp { animation: none; }
+    .crawler { left: auto; right: 20px; }
+    .btn { transition: none; }
+  }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="turtle" viewBox="0 0 120 70">
+      <ellipse class="t-skin leg a" cx="34" cy="52" rx="7" ry="11"/>
+      <ellipse class="t-skin leg b" cx="84" cy="52" rx="7" ry="11"/>
+      <path class="t-skin" d="M18 44 L6 50 L18 48Z"/>
+      <circle class="t-skin" cx="106" cy="38" r="10"/>
+      <circle class="t-eye" cx="110" cy="35" r="2"/>
+      <path class="t-shell" d="M16 46 Q18 6 60 6 Q102 6 104 46Z"/>
+      <path class="t-scute" d="M60 9 L60 22 M44 22 L76 22 L84 40 L60 44 L36 40Z M44 22 L32 14 M76 22 L88 14 M36 40 L20 44 M84 40 L100 44 M60 44 L60 46"/>
+      <rect class="t-rim" x="14" y="44" width="92" height="5" rx="2.5"/>
+    </symbol>
+  </defs>
+</svg>
+
+<nav class="top" aria-label="Sections">
+  <div class="wrap">
+    <a class="brand" href="#top"><svg aria-hidden="true"><use href="#turtle"/></svg>Shell Yeah</a>
+    <ul>
+      <li><a class="navlink" href="#notes">Fact or Shell-ction</a></li>
+      <li><a class="navlink" href="#tales">Tales from the Tank</a></li>
+      <li><a class="navlink" href="#pond">Pun Pond</a></li>
+      <li><a class="navlink" href="#name">Shell-f Identity</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="scutes" aria-hidden="true"></div>
+  <div class="wrap hero-inner">
+    <p class="label">The Turtle Appreciation Society · est. about 220 million years ago</p>
+    <h1>Shell <span>Yeah.</span></h1>
+    <p class="lede">Facts, fables and flat-out fibs about the planet's most patient reptiles. Most of this page is true. <em>Some of it is a lie.</em> All of it is a pun waiting to happen.</p>
+    <div class="hero-row">
+      <a class="btn" href="#notes">Start shell-checking</a>
+      <a class="btn ghost" href="#pond">Skip to the puns (no judgment)</a>
+    </div>
+    <div class="hero-stats" aria-label="Turtle stats">
+      <span><b>~360</b> living species</span>
+      <span><b>0.16 mph</b> Galápagos tortoise cruising speed</span>
+      <span><b>0</b> teeth</span>
+      <span><b>∞</b> patience</span>
+    </div>
+  </div>
+  <div class="crawler" aria-hidden="true">
+    <span class="speech">almost there…</span>
+    <svg width="120" height="70"><use href="#turtle"/></svg>
+  </div>
+</header>
+
+<div class="strip" aria-label="Turtle puns">
+  <div class="wrap">
+    <span>Totally tortoise-ly tubular</span>
+    <span>Shell-ebrate good times</span>
+    <span>Turtle-y awesome since the Triassic</span>
+    <span>No hare-brained ideas allowed</span>
+    <span>Shell we begin?</span>
+  </div>
+</div>
+
+<main>
+  <section id="notes">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="label">Field notes</p>
+        <h2>Fact or Shell-ction?</h2>
+        <p>Fifteen claims about turtles. Some are real science. Some are lies we made up at 2 a.m. Read each one, make your guess, then shell-check it.</p>
+      </div>
+      <div class="scoreboard" aria-live="polite">
+        <span class="t">Truths confirmed: <b id="truthCount">0</b>/<b id="truthTotal">0</b></span>
+        <span class="l">Lies caught: <b id="lieCount">0</b>/<b id="lieTotal">0</b></span>
+        <button class="btn ghost" id="revealAll" type="button" style="padding:7px 14px;font-size:0.8rem">Shell-check everything</button>
+      </div>
+      <div class="notes" id="noteGrid"></div>
+
+      <aside class="honor" aria-label="Turtle of honor">
+        <div class="badge"><span><small>HATCHED ~</small>1832</span></div>
+        <div>
+          <span class="label">Tortoise of Honor · 100% true, we promise</span>
+          <h3>Jonathan, Elder of St Helena</h3>
+          <p>Jonathan is a Seychelles giant tortoise who lives on the island of St Helena in the South Atlantic. He's believed to have hatched around 1832, which makes him widely celebrated as the oldest known land animal. He has outlived several governors, and he still gets hand-fed by his vet. He likes bananas and cucumber. He has, by all accounts, never once been in a hurry.</p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section id="tales">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="label">Short stories</p>
+        <h2>Tales from the Tank</h2>
+        <p>Four short stories, all true in spirit, mostly untrue in fact. Best read slowly.</p>
+      </div>
+      <div class="tales">
+        <article class="tale">
+          <p class="label">Tale one · <b>Crime</b></p>
+          <h3>Gerald Gets Pulled Over</h3>
+          <p>Officer Delgado had been on the force for twenty years, and he had never seen anything like it. The radar gun read 0.4 miles per hour. In a school zone.</p>
+          <p>"License and registration," he said, crouching.</p>
+          <p>Gerald, a box turtle of fifty-one, pulled in his head and legs. His hinged shell snapped shut like a briefcase.</p>
+          <p>"Sir, I can see you in there."</p>
+          <p>Silence. Then, faintly, from inside the shell: "I'd like to speak to my lawyer."</p>
+          <p>His lawyer arrived three days later. She was also a turtle. She had been walking the whole time.</p>
+          <p>The case was dismissed. The judge cited reasonable doubt and "the most adorable thing that has ever happened in my courtroom." Gerald still drives that route every morning. He leaves at 4 a.m. and arrives at noon. He has never once been late, because nothing in his life has a deadline.</p>
+          <p class="moral">Moral: you can't rush justice. Ask Gerald. Slowly.</p>
+        </article>
+
+        <article class="tale">
+          <p class="label">Tale two · <b>Sports</b></p>
+          <h3>The Rematch</h3>
+          <p>Forty years after the famous race, the Hare called a press conference.</p>
+          <p>"I demand a rematch," he said. "I was robbed. I was napping, and napping is a medical condition."</p>
+          <p>Every reporter turned to the Tortoise, who was standing at the back of the room. Well, arriving at the back of the room. He had started walking over two weeks earlier, when the press conference was first rumored.</p>
+          <p>"I accept," said the Tortoise. "On one condition. The finish line is the year 2150."</p>
+          <p>The Hare laughed. Then he did some math. Then he stopped laughing. Hares get about twelve years. Giant tortoises can blow right past 150.</p>
+          <p>"That's not a race," the Hare said quietly. "That's a will."</p>
+          <p>"Slow and steady," said the Tortoise, and began the long walk home. He got there in time for Thanksgiving. Of the following year.</p>
+          <p class="moral">Moral: never challenge someone who measures time in centuries.</p>
+        </article>
+
+        <article class="tale">
+          <p class="label">Tale three · <b>Real estate</b></p>
+          <h3>Shelly's Housewarming</h3>
+          <p>Shelly sent out the invitations in spring. <i>Housewarming! Bring snacks! Dress code: shell-egant.</i></p>
+          <p>Everyone in the pond came. The frogs brought flies. The ducks brought bread, which nobody is supposed to eat, which everybody ate. The heron brought nothing and was asked to leave.</p>
+          <p>"So," said Bartholomew the bullfrog, looking around the empty mud bank. "Where's the house?"</p>
+          <p>Shelly pulled her head in, then popped it back out. "You're looking at it."</p>
+          <p>"It's… cozy," said Bartholomew.</p>
+          <p>"It's paid off," said Shelly. "No mortgage, no rent, no landlord. I've lived in it my whole life and I take it on vacation."</p>
+          <p>The frogs looked at each other. Somewhere in the reeds, a hermit crab who had moved four times that year quietly began to weep. The party went until 9 p.m., which for turtles is basically a rave.</p>
+          <p class="moral">Moral: home is where the shell is. Literally.</p>
+        </article>
+
+        <article class="tale">
+          <p class="label">Tale four · <b>Mostly true, actually</b></p>
+          <h3>The Pond Under Glass</h3>
+          <p>Every November, Marjorie the painted turtle says goodbye to the sky.</p>
+          <p>She sinks to the bottom of the pond, settles into the soft mud, and lets the ice close over her like a lid. Her heart slows to a few beats a minute. She won't take a breath of air for months, and somehow that's fine. Painted turtles are famous for it.</p>
+          <p>Above her, kids skate. Dogs skid. Somebody's grandfather falls down and pretends he meant to. Marjorie hears none of it. She is dreaming, as far as anyone can tell, about the first warm rock of April.</p>
+          <p>And then it comes. The ice thins and cracks. Light leaks down through the green water. Marjorie lifts her head, kicks once, kicks again, and rises toward a sky she hasn't seen since autumn.</p>
+          <p>She climbs onto her rock and stretches every leg as far as it will go. Nobody claps. Nobody needs to. It's the best day of her year, and she has had forty of them.</p>
+          <p class="moral">Moral: some things are worth waiting for. Turtles knew first.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="pond">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="label">Corny jokes, freshly harvested</p>
+        <h2>The Pun Pond</h2>
+        <p>Warning: the following jokes are so bad they're shell-shocking. Groan responsibly.</p>
+      </div>
+      <div class="pond">
+        <div class="dispenser" aria-live="polite">
+          <p class="label" id="jokeNum">Joke 1</p>
+          <div>
+            <p class="q" id="jokeQ"></p>
+            <p class="a" id="jokeA"></p>
+          </div>
+          <div class="row">
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+              <button class="btn" id="tellBtn" type="button">Tell me</button>
+              <button class="btn ghost" id="nextBtn" type="button">Shell me another</button>
+            </div>
+            <span class="groans">Groans induced: <span id="groanCount">0</span></span>
+          </div>
+        </div>
+        <ul class="quicklist" aria-label="Quick jokes">
+          <li>Why don't turtles ever get lost? <span>They always know their way back to their shell-f.</span></li>
+          <li>What's a turtle's favorite sweater? <span>A turtleneck. Obviously.</span></li>
+          <li>Why did the turtle cross the road? <span>To get to the Shell station.</span></li>
+          <li>What do you call a famous turtle? <span>A shell-ebrity.</span></li>
+          <li>Turtle life advice: <span>if at first you don't succeed, take a nap and try again in 1,000 years.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="name" style="padding-top:0">
+    <div class="wrap namer">
+      <div class="sec-head" style="margin-bottom:0">
+        <p class="label">Shell-f identity</p>
+        <h2>What's your turtle name?</h2>
+        <p>Every turtle has a formal name for the pond registry. Type yours and find out who you'd be if you'd been born with a shell.</p>
+        <form id="nameForm" style="margin-top:12px">
+          <label for="nameInput" class="label" style="flex-basis:100%">Your first name</label>
+          <input id="nameInput" name="name" autocomplete="given-name" value="Morgan" maxlength="40">
+          <button class="btn" type="submit">Shell-ify me</button>
+        </form>
+      </div>
+      <div class="nameplate" aria-live="polite">
+        <p class="label">Official pond registry</p>
+        <p class="who" id="turtleName"></p>
+        <p class="bio" id="turtleBio"></p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p class="big">Thanks for shell-ebrating with us.</p>
+    <p>Built slowly, on purpose. Six of the fifteen field notes above are lies. The turtles know which ones.</p>
+    <p class="fine">Please don't take turtles home from the wild, paint their shells, or move them far from where you found them. If one is crossing a road, help it across in the direction it was already headed. It knows where it's going.</p>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const notes = [
+    { t: true,  h: "Turtles have been around for more than 200 million years.",
+      d: "They showed up around the same time as the first dinosaurs, then simply outlasted them. Slow and steady.",
+      v: "Fossil turtles like Odontochelys date back roughly 220 million years." },
+    { t: false, h: "Turtles take their shells off on weekends.",
+      d: "Most rent a lighter summer shell from the Shell station and return it Monday morning.",
+      v: "The shell is part of the skeleton, fused to the spine and ribs. A turtle can't leave it any more than you can leave your bones." },
+    { t: true,  h: "A group of turtles is called a bale.",
+      d: "Like a bale of hay, but with more opinions.",
+      v: "It sounds made up. It isn't. 'Bale' is the classic collective noun for turtles." },
+    { t: false, h: "Sea turtles navigate the ocean by following smooth jazz.",
+      d: "A chain of underwater saxophonists is stationed every 40 miles across the Atlantic.",
+      v: "They use Earth's magnetic field, which is even cooler, and many females return to nest on the very beach where they hatched." },
+    { t: true,  h: "Some turtles can breathe through their butts.",
+      d: "Australia's Fitzroy River turtle pulls oxygen from water through its cloaca, so it can stay submerged for very long stretches.",
+      v: "Scientists call it cloacal respiration. Everyone else calls it butt-breathing." },
+    { t: false, h: "Tortoises can legally vote in three Belgian provinces.",
+      d: "Turnout is low, mostly because the polls close before they arrive.",
+      v: "No tortoise has ever voted anywhere. The part about the polls closing would be accurate, though." },
+    { t: true,  h: "Nest temperature decides whether a hatchling is male or female.",
+      d: "In many species, warmer sand produces more females and cooler sand produces more males.",
+      v: "Biologists sum it up as 'hot chicks and cool dudes.' Really." },
+    { t: false, h: "The Great Wall of China was built as a speed bump for one tortoise.",
+      d: "His name was Gary. He was going way too fast.",
+      v: "Gary has never been convicted of anything, and the Wall had other jobs." },
+    { t: true,  h: "Sea turtles 'cry' to get rid of salt.",
+      d: "Glands near their eyes push out the extra salt from all that seawater, so nesting turtles often look teary.",
+      v: "They aren't sad. Well, not about that." },
+    { t: false, h: "Snapping turtles are named after their 1950s beat poetry career.",
+      d: "Audiences snapped instead of clapping. The turtles took it personally and never left.",
+      v: "They're named for their fast, powerful jaws. Keep your fingers out of this story and out of their reach." },
+    { t: true,  h: "A leatherback can outweigh a grand piano.",
+      d: "The largest on record weighed about 916 kg, and leatherbacks can dive more than 1,000 meters deep chasing jellyfish.",
+      v: "They're the biggest turtles alive, and they've been roaming the oceans for millions of years." },
+    { t: false, h: "Every turtle knows exactly one magic trick.",
+      d: "None has ever finished performing it. The longest attempt is still going, somewhere in Ohio.",
+      v: "As far as anyone can prove. We're keeping an eye on Ohio." },
+    { t: true,  h: "Turtles have no teeth.",
+      d: "They bite with a sharp beak made of keratin, the same stuff as your fingernails.",
+      v: "Toothless, but you still don't want to be bitten." },
+    { t: true,  h: "Alligator snapping turtles go fishing with their tongues.",
+      d: "A pink, wiggly lure on the tongue looks just like a worm. Fish swim in to investigate. That's the end of the fish.",
+      v: "They sit with their mouths open and wiggle the lure until dinner arrives." },
+    { t: false, h: "Turtles invented the slow clap.",
+      d: "It was first performed in 1442 at a lettuce festival and is technically still going.",
+      v: "Humans invented it. Turtles just perfected the 'slow' part." },
+  ];
+
+  const grid = document.getElementById("noteGrid");
+  const truthTotal = notes.filter(n => n.t).length;
+  document.getElementById("truthTotal").textContent = truthTotal;
+  document.getElementById("lieTotal").textContent = notes.length - truthTotal;
+  let truths = 0, lies = 0;
+
+  const lieQuips = ["Nice catch.", "You saw right through it.", "Shell-shocking, we know.", "Busted."];
+  const trueQuips = ["Real science.", "Hard to believe, but true.", "No shell-ction here.", "Verified."];
+
+  notes.forEach((n, i) => {
+    const card = document.createElement("article");
+    card.className = "note";
+    card.innerHTML = `
+      <p class="label">Field note ${String(i + 1).padStart(2, "0")}</p>
+      <h3></h3>
+      <p class="detail"></p>
+      <button class="check" type="button">Shell-check it</button>`;
+    card.querySelector("h3").textContent = n.h;
+    card.querySelector(".detail").textContent = n.d;
+    const btn = card.querySelector(".check");
+    btn.addEventListener("click", () => reveal(card, n, i));
+    grid.appendChild(card);
+  });
+
+  function reveal(card, n, i) {
+    const btn = card.querySelector(".check");
+    if (!btn) return;
+    const v = document.createElement("div");
+    v.className = "verdict";
+    const quip = (n.t ? trueQuips : lieQuips)[i % 4];
+    v.innerHTML = `<span class="stamp ${n.t ? "true" : "lie"}">${n.t ? "TRUE" : "LIE"}</span><p></p>`;
+    v.querySelector("p").textContent = `${quip} ${n.v}`;
+    btn.replaceWith(v);
+    card.classList.add(n.t ? "is-true" : "is-lie");
+    if (n.t) truths++; else lies++;
+    document.getElementById("truthCount").textContent = truths;
+    document.getElementById("lieCount").textContent = lies;
+  }
+
+  document.getElementById("revealAll").addEventListener("click", (e) => {
+    [...grid.children].forEach((card, i) => reveal(card, notes[i], i));
+    e.currentTarget.hidden = true;
+  });
+
+  // ---------- Pun Pond ----------
+  const jokes = [
+    ["What do you call a turtle who takes up photography?", "A snapping turtle."],
+    ["How do turtles talk to each other?", "On their shell phones."],
+    ["What kind of photos do turtles post?", "Shellfies."],
+    ["Why did the turtle cross the road?", "To prove he wasn't chicken."],
+    ["What do you get when you cross a turtle with a porcupine?", "A slowpoke."],
+    ["How do you make a turtle fast?", "Stop feeding it. (Please don't. Feed your turtle.)"],
+    ["What did the snail say while riding on a turtle's back?", "\"Wheeeeee!\""],
+    ["Why don't turtles like fast food?", "They can never catch it."],
+    ["What did the sea turtle say to her old friend?", "\"Long time, no sea.\""],
+    ["Where do turtles go to borrow books?", "The shell-f-service library."],
+    ["What do turtles say when something goes great?", "\"Shell yeah!\""],
+    ["Why was the turtle so good at hide and seek?", "He was always in his shell, and nobody wanted to wait him out."],
+    ["What do turtles wear to a fancy party?", "Their shell-egant best."],
+    ["Why did the tortoise get a promotion?", "He was always the last one to leave the office. And the last one to arrive."],
+    ["What do you call a turtle who's a bit of a mess?", "Shell-shocked."],
+    ["Why are turtles great at keeping secrets?", "Because they never come out of their shell."],
+    ["What did the turtle say at the gym?", "\"I'm just here for the shell-f improvement.\""],
+    ["How does a turtle pay for groceries?", "With shell-ings and pence."],
+    ["What's a turtle's favorite type of music?", "Shell-dies but goodies."],
+    ["Why did the turtle open a bakery?", "He wanted to make some really slow-rise bread."],
+    ["What did the turtle say when it lost a race?", "\"I'm not slow. I'm just savoring the moment.\""],
+    ["Why are turtles never stressed?", "They've got a hard shell and a soft life."],
+  ];
+  let order = jokes.map((_, i) => i).sort(() => Math.random() - 0.5);
+  let pos = 0, groans = 0, told = false;
+  const q = document.getElementById("jokeQ"), a = document.getElementById("jokeA");
+  const tellBtn = document.getElementById("tellBtn"), nextBtn = document.getElementById("nextBtn");
+  function showJoke() {
+    const [jq] = jokes[order[pos]];
+    q.textContent = jq; a.textContent = ""; told = false;
+    tellBtn.hidden = false;
+    document.getElementById("jokeNum").textContent = `Joke ${pos + 1} of ${jokes.length}`;
+  }
+  tellBtn.addEventListener("click", () => {
+    if (told) return;
+    a.textContent = jokes[order[pos]][1]; told = true; tellBtn.hidden = true;
+    groans++; document.getElementById("groanCount").textContent = groans;
+  });
+  nextBtn.addEventListener("click", () => {
+    pos = (pos + 1) % jokes.length;
+    showJoke();
+  });
+  showJoke();
+
+  // ---------- Turtle name ----------
+  const titles = ["Sir", "Dame", "Captain", "Professor", "Admiral", "Duchess", "Grand Elder", "Lil'"];
+  const surnames = ["Shellington", "McSlowpoke", "Carapacey", "Scutebottom", "Pondsworth", "Plastronelli", "von Lettuce", "Hatchworth"];
+  const suffixes = ["III", "the Unhurried", "of the Mud Bank", "Esq.", "the Patient", "XIV", "of Lily Pad Lane", "the Magnificent (eventually)"];
+  const bios = [
+    "Known throughout the pond for a 40-year nap and a truly excellent rock.",
+    "Once got to the front of a line. Nobody knows how. Nobody has asked.",
+    "Holds the local record for most consecutive hours spent basking: 312.",
+    "Has strong opinions about lettuce and will share them over the next decade.",
+    "Retired early at age 94 to pursue a career in sitting very still.",
+    "Former champion of the 2-inch dash. Training for the 3-inch.",
+    "Wears a turtleneck over a turtle neck. Double neck. Very fashionable.",
+    "Speaks fluent Hiss, conversational Splash, and a little bit of Blink.",
+  ];
+  function hash(s) { let h = 7; for (const c of s.toLowerCase()) h = (h * 31 + c.charCodeAt(0)) >>> 0; return h; }
+  function shellify(raw) {
+    const name = raw.trim() || "Mystery";
+    const h = hash(name);
+    const pretty = name.charAt(0).toUpperCase() + name.slice(1);
+    document.getElementById("turtleName").textContent =
+      `${titles[h % 8]} ${pretty} ${surnames[(h >>> 3) % 8]} ${suffixes[(h >>> 6) % 8]}`;
+    document.getElementById("turtleBio").textContent = bios[(h >>> 9) % 8];
+  }
+  const input = document.getElementById("nameInput");
+  document.getElementById("nameForm").addEventListener("submit", (e) => { e.preventDefault(); shellify(input.value); });
+  shellify(input.value);
+
+  // crawler says something new each lap
+  const sayings = ["almost there…", "shell be right there", "no rush", "slow and steady", "turtle-y fine", "don't wait up"];
+  const crawler = document.querySelector(".crawler"), speech = crawler.querySelector(".speech");
+  let s = 0;
+  crawler.addEventListener("animationiteration", (e) => {
+    if (e.animationName === "crawl") speech.textContent = sayings[++s % sayings.length];
+  });
+})();
+</script>
