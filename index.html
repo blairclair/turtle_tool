@@ -578,7 +578,7 @@
       <button class="tab play" role="tab" type="button" id="tabbtn-school" data-tab="school" aria-controls="tab-school" aria-selected="false">Turtle School</button>
     </div>
     <ul class="homelinks">
-      <li><a class="navlink" href="#notes">Fact or Shell-ction</a></li>
+      <li><a class="navlink" href="#notes">The Shell Game</a></li>
       <li><a class="navlink" href="#tales">Tales from the Tank</a></li>
       <li><a class="navlink" href="#pond">Pun Pond</a></li>
       <li><a class="navlink" href="#name">Shell-f Identity</a></li>
@@ -596,7 +596,7 @@
     <h1>Shell <span class="accent">Yeah.</span></h1>
     <p class="lede">Facts, fables and flat-out fibs about the planet's most patient reptiles. Most of this page is true. <em>Some of it is a lie.</em> All of it is a pun waiting to happen.</p>
     <div class="hero-row">
-      <a class="btn" href="#notes">Start shell-checking</a>
+      <a class="btn" href="#notes">Play the Shell Game</a>
       <a class="btn play-cta" href="#game" data-goto="game">Play Playground Dash</a>
       <a class="btn ghost" href="#pond">Skip to the puns (no judgment)</a>
     </div>
@@ -641,13 +641,13 @@
     <div class="wrap">
       <div class="sec-head">
         <p class="label">Field notes</p>
-        <h2>Fact or Shell-ction?</h2>
-        <p>Fifteen claims about turtles. Some are real science. Some are lies we made up at 2 a.m. Read each one, make your guess, then shell-check it.</p>
+        <h2>The Shell Game</h2>
+        <p>Fifteen claims about turtles. Seven of them are hiding a lie we made up at 2 a.m. Like any good shell game, it's harder than it looks. Make your guess, then lift the shell.</p>
       </div>
       <div class="scoreboard" aria-live="polite">
         <span class="t">Truths confirmed: <b id="truthCount">0</b>/<b id="truthTotal">0</b></span>
         <span class="l">Lies caught: <b id="lieCount">0</b>/<b id="lieTotal">0</b></span>
-        <button class="btn ghost" id="revealAll" type="button" style="padding:7px 14px;font-size:0.8rem">Shell-check everything</button>
+        <button class="btn ghost" id="revealAll" type="button" style="padding:7px 14px;font-size:0.8rem">Lift every shell</button>
       </div>
       <div class="notes" id="noteGrid"></div>
 
@@ -1092,7 +1092,7 @@
   </div>
   <div class="wrap">
     <p class="big">Thanks for shell-ebrating with us.</p>
-    <p>Built slowly, on purpose. Six of the fifteen field notes above are lies. The turtles know which ones.</p>
+    <p>Built slowly, on purpose. Seven of the fifteen claims in the Shell Game are lies. The turtles know which ones.</p>
     <p class="fine">Please don't take turtles home from the wild, paint their shells, or move them far from where you found them. If one is crossing a road, help it across in the direction it was already headed. It knows where it's going.</p>
   </div>
 </footer>
@@ -1147,6 +1147,21 @@
       v: "Humans invented it. Turtles just perfected the 'slow' part." },
   ];
 
+  // Shuffle so truths and lies never line up: reject orders where a column in a
+  // 2- or 3-column grid is all one kind, or three of a kind sit in a row.
+  function patterned(list) {
+    for (let i = 2; i < list.length; i++) if (list[i].t === list[i - 1].t && list[i].t === list[i - 2].t) return true;
+    for (const cols of [2, 3]) for (let c = 0; c < cols; c++) {
+      const col = list.filter((_, i) => i % cols === c);
+      if (col.every(n => n.t) || col.every(n => !n.t)) return true;
+    }
+    return false;
+  }
+  for (let tries = 0; tries < 500; tries++) {
+    for (let i = notes.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [notes[i], notes[j]] = [notes[j], notes[i]]; }
+    if (!patterned(notes)) break;
+  }
+
   const grid = document.getElementById("noteGrid");
   const truthTotal = notes.filter(n => n.t).length;
   document.getElementById("truthTotal").textContent = truthTotal;
@@ -1154,7 +1169,7 @@
   let truths = 0, lies = 0;
 
   const lieQuips = ["Nice catch.", "You saw right through it.", "Shell-shocking, we know.", "Busted."];
-  const trueQuips = ["Real science.", "Hard to believe, but true.", "No shell-ction here.", "Verified."];
+  const trueQuips = ["Real science.", "Hard to believe, but true.", "No trick shell here.", "Verified."];
 
   notes.forEach((n, i) => {
     const card = document.createElement("article");
@@ -1163,7 +1178,7 @@
       <p class="label">Field note ${String(i + 1).padStart(2, "0")}</p>
       <h3></h3>
       <p class="detail"></p>
-      <button class="check" type="button">Shell-check it</button>`;
+      <button class="check" type="button">Lift the shell</button>`;
     card.querySelector("h3").textContent = n.h;
     card.querySelector(".detail").textContent = n.d;
     const btn = card.querySelector(".check");
