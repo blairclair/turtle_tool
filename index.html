@@ -254,7 +254,7 @@
     animation: ping 1.8s ease-out infinite;
   }
   @keyframes ping { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--shell) 70%, transparent); } 100% { box-shadow: 0 0 0 9px transparent; } }
-  body[data-tab="game"] .homelinks, body[data-tab="smilene"] .homelinks { display: none; }
+  body[data-tab="game"] .homelinks, body[data-tab="smilene"] .homelinks, body[data-tab="school"] .homelinks, body[data-tab="wheel"] .homelinks { display: none; }
   .brand svg { transition: transform 0.3s cubic-bezier(.3,1.6,.6,1); }
   .brand:hover svg { transform: translateX(4px) rotate(-6deg); }
   .btn.play-cta { background: var(--shell); color: var(--on-accent); }
@@ -399,8 +399,133 @@
   .small-print p { font-size: 0.92rem; color: var(--muted); }
   .small-print h4 + p { margin-top: -2px; }
   @media (max-width: 860px) { .paper-grid { grid-template-columns: 1fr; } }
-  @media (max-width: 480px) { .tab { padding: 7px 10px; font-size: 0.72rem; } }
 
+  /* ---------- Turtle School ---------- */
+  .school-page { padding-block: 44px 72px; }
+  .school-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 560px); gap: 36px; align-items: start; }
+  #tab-school [hidden] { display: none !important; }
+  .school-stage { min-width: 0; }
+  .classroom { position: relative; overflow: hidden; scroll-margin-top: 84px; background: var(--surface); border: 3px solid var(--ink); border-radius: 22px; }
+  .sc-bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 6px 12px; padding: 10px 16px; border-bottom: 1px solid var(--line); }
+  .sc-heart { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: var(--step--1); color: var(--muted); }
+  .sc-heart b { color: var(--lie); font-weight: 500; font-variant-numeric: tabular-nums; }
+  .sc-heart svg { width: 36px; height: 34px; overflow: visible; }
+  .sc-heart .hb { fill: none; stroke: var(--lie); stroke-width: 2.4; stroke-linejoin: round; }
+  .sc-heart .hf { fill: var(--lie); transform-box: fill-box; transform-origin: 50% 100%; transform: scaleY(0); transition: transform 0.6s cubic-bezier(.3,1.4,.6,1); }
+  .sc-scene { position: relative; height: 184px; overflow: hidden; background: color-mix(in srgb, var(--sea) 12%, var(--surface)); }
+  .sc-scene::after { content: ""; position: absolute; inset: auto 0 0; height: 30px; background: var(--line); }
+  .sc-board {
+    position: absolute; top: 14px; left: 50%; transform: translateX(-50%); max-width: calc(100% - 32px);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase;
+    background: color-mix(in srgb, var(--moss) 70%, var(--ink)); color: var(--on-accent);
+    border: 4px solid var(--shell); border-radius: 6px; padding: 6px 14px;
+  }
+  .sc-cast { position: absolute; left: 0; right: 0; bottom: 10px; z-index: 1; display: flex; justify-content: center; align-items: flex-end; gap: clamp(4px, 3vw, 26px); padding-inline: 8px; }
+  .pal { display: grid; justify-items: center; min-width: 0; }
+  .pal-mood { font-size: 1.35rem; line-height: 1; min-height: 1.4rem; animation: mood-bob 2.6s ease-in-out infinite; }
+  .pal:nth-child(even) .pal-mood { animation-delay: -1.3s; }
+  .pal-svg { display: block; width: 96px; height: 56px; transform: rotate(var(--rot, 0deg)) scaleX(var(--fx, 1)); transition: transform 0.35s cubic-bezier(.3,1.5,.6,1); }
+  .pal-name { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap; color: var(--ink); background: var(--surface); border-radius: 999px; padding: 0 7px; margin-top: 2px; }
+  .pal.big .pal-svg { width: 128px; height: 75px; }
+  .pal.hop { --legs: running; animation: pal-hop 0.55s ease-out 2; }
+  .pal.cheer { --legs: running; }
+  .sc-cast.crowd { gap: 4px; }
+  .sc-cast.crowd .pal-svg { width: clamp(42px, 11vw, 64px); height: auto; aspect-ratio: 12 / 7; }
+  .sc-cast.crowd .pal.big .pal-svg { width: clamp(60px, 16vw, 90px); }
+  .sc-cast.crowd .pal-mood { font-size: 1.05rem; }
+  .sc-cast.crowd .pal-name { font-size: 0.56rem; padding: 0 4px; }
+  @keyframes mood-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+  @keyframes pal-hop { 0%, 100% { transform: translateY(0); } 40% { transform: translateY(-16px); } }
+  .sc-body { padding: 18px 18px 20px; display: grid; gap: 12px; align-content: start; }
+  .sc-body h3 { font-size: clamp(1.5rem, 4.4vw, 2rem); }
+  .sc-say { background: var(--bg); border: 1px solid var(--line); border-radius: 4px 16px 16px 16px; padding: 10px 14px; font-style: italic; }
+  .sc-say b { display: block; font-style: normal; font-family: var(--mono); font-size: var(--step--1); font-weight: 500; letter-spacing: 0.04em; color: var(--muted); }
+  .sc-actions { display: grid; gap: 12px; }
+  .choices { display: grid; gap: 8px; }
+  .choice {
+    display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: start; text-align: left;
+    font: inherit; font-size: 1rem; line-height: 1.38; color: var(--ink); background: var(--bg);
+    border: 1.5px solid var(--line); border-radius: 14px; padding: 10px 14px; cursor: pointer; touch-action: manipulation;
+    transition: border-color 0.15s, transform 0.15s;
+  }
+  .choice:hover { border-color: var(--shell); transform: translateX(3px); }
+  .choice kbd { font-family: var(--mono); font-size: 0.75rem; background: var(--ink); color: var(--bg); border-radius: 6px; padding: 1px 7px; margin-top: 2px; }
+  .sc-result { border-left: 3px solid var(--moss); padding-left: 12px; }
+  .sc-result.sad { border-color: var(--lie); }
+  .lesson { display: grid; gap: 4px; padding: 12px 14px; border-radius: 16px; background: color-mix(in srgb, var(--shell) 13%, var(--surface)); border: 1px solid color-mix(in srgb, var(--shell) 40%, var(--line)); }
+  .lesson.nudge { background: color-mix(in srgb, var(--sea) 10%, var(--surface)); border-color: color-mix(in srgb, var(--sea) 35%, var(--line)); }
+  .gain { font-family: var(--mono); font-size: var(--step--1); color: var(--lie); font-variant-numeric: tabular-nums; }
+  .sc-row { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; }
+  .sc-row .btn { touch-action: manipulation; }
+  .leaves { display: flex; flex-wrap: wrap; gap: 10px; }
+  .leaf {
+    width: 60px; height: 60px; font-size: 1.8rem; line-height: 1; border-radius: 16px; cursor: pointer; touch-action: manipulation;
+    background: var(--bg); border: 1.5px dashed var(--muted); transition: transform 0.18s cubic-bezier(.3,1.6,.6,1), background 0.18s;
+  }
+  .leaf[aria-pressed="true"] { border: 2px solid var(--moss); background: color-mix(in srgb, var(--moss) 20%, var(--surface)); transform: translateY(-5px) rotate(-10deg); }
+  .pushes { display: flex; gap: 6px; }
+  .pushes i { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--shell); }
+  .pushes i.on { background: var(--shell); }
+  .hugmeter { position: relative; height: 44px; border-radius: 999px; background: var(--bg); border: 1.5px solid var(--line); overflow: hidden; }
+  .hugmeter .z1 { position: absolute; inset-block: 0; left: 34%; width: 32%; background: color-mix(in srgb, var(--lie) 22%, transparent); }
+  .hugmeter .z2 { position: absolute; inset-block: 0; left: 44%; width: 12%; display: grid; place-items: center; color: var(--on-accent); background: color-mix(in srgb, var(--lie) 70%, transparent); }
+  .hugmeter .mk { position: absolute; top: 4px; bottom: 4px; left: 0; width: 8px; margin-left: -4px; border-radius: 4px; background: var(--ink); box-shadow: 0 0 0 2px var(--bg); }
+  .report { list-style: none; margin: 0; padding: 0; display: grid; }
+  .report li { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 12px; padding-block: 6px; border-bottom: 1px dashed var(--line); font-size: 0.98rem; }
+  .report li span:last-child { font-family: var(--mono); font-size: var(--step--1); color: var(--muted); }
+  .sc-scene .toast { top: 62px; z-index: 2; }
+  .classroom .overlay { z-index: 3; }
+  @media (max-width: 860px) { .school-layout { grid-template-columns: 1fr; } .school-stage { order: -1; } }
+  @media (max-width: 480px) {
+    .sc-scene { height: 168px; }
+    .pal-svg { width: 76px; height: 44px; }
+    .pal.big .pal-svg { width: 100px; height: 58px; }
+    .sc-body { padding: 16px 14px 18px; }
+  }
+
+  @media (max-width: 480px) {
+    .tab { padding: 7px 10px; font-size: 0.72rem; }
+    /* four tabs don't fit one row at phone width: wrap them as whole labels instead of squeezing the text */
+    .tabs { flex-wrap: wrap; justify-content: center; border-radius: 20px; width: 100%; }
+    .tab { flex: 1 1 auto; white-space: nowrap; }
+  }
+
+  /* WHEEL:BEGIN */
+  /* ---------- The Wheel (haunted pizza-parlor steering wheel) ---------- */
+  .wheel-page { padding-block: 40px 72px; overflow-x: clip; }
+  .wheel-layout { display: grid; gap: 16px; justify-items: center; text-align: center; }
+  .wheel-head { display: grid; gap: 10px; max-width: 60ch; justify-items: center; }
+  .wheel-head h2 { font-size: var(--step-3); }
+  .wheel-story { color: var(--muted); }
+  .wheel-dare { font-family: var(--display); font-size: var(--step-1); color: var(--lie); }
+  .wheel-stage { position: relative; width: min(96vw, 640px); aspect-ratio: 1; margin-block: 4px; }
+  .wheel-stage::before {
+    content: ""; position: absolute; inset: 0; border-radius: 50%; pointer-events: none;
+    background: radial-gradient(closest-side, color-mix(in srgb, var(--lie) 34%, transparent), transparent);
+    opacity: var(--wh-glow, 0);
+  }
+  .wheel-svg { position: relative; display: block; width: 100%; height: 100%; }
+  .wheel-horn {
+    position: absolute; left: 50%; top: 50%; width: 54%; aspect-ratio: 1; translate: -50% -50%;
+    border: 0; border-radius: 50%; background: transparent; cursor: pointer; padding: 0;
+    -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+  }
+  .wheel-horn:focus-visible { outline: 4px solid var(--shell); outline-offset: 6px; border-radius: 50%; }
+  #whFace { transform-origin: 300px 300px; transition: transform 0.08s ease-out; }
+  .wheel-stage.pressed #whFace { transform: scale(0.965); }
+  .wheel-caption { font-family: var(--mono); font-size: var(--step-0); line-height: 1.4; min-height: 2.9em; max-width: 44ch; color: var(--ink); }
+  .wheel-caption.typing::after { content: "\258C"; color: var(--lie); animation: wh-caret 0.8s steps(1) infinite; }
+  @keyframes wh-caret { 50% { opacity: 0; } }
+  .wheel-controls { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; justify-content: center; font-family: var(--mono); font-size: var(--step--1); color: var(--muted); }
+  .wheel-controls b { color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; }
+  .wheel-controls #wheelCreep { color: var(--lie); }
+  .wheel-controls .btn.ghost[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+  @media (prefers-reduced-motion: reduce) {
+    .wheel-caption.typing::after { animation: none; }
+    #whFace { transition: none; }
+  }
+  /* WHEEL:END */
   @media (max-width: 760px) {
     .pond, .namer { grid-template-columns: 1fr; }
     .honor { grid-template-columns: 1fr; }
@@ -418,6 +543,8 @@
     .note, .brand svg { transition: none; }
     .crawler { left: auto; right: 20px; }
     .btn { transition: none; }
+    .pal-mood, .pal.hop { animation: none !important; }
+    .pal-svg, .sc-heart .hf, .choice, .leaf { transition: none; }
   }
 </style>
 </head>
@@ -444,7 +571,11 @@
     <div class="tabs" role="tablist" aria-label="Pages">
       <button class="tab" role="tab" type="button" id="tabbtn-home" data-tab="home" aria-controls="tab-home" aria-selected="true">The Shell-ebration</button>
       <button class="tab" role="tab" type="button" id="tabbtn-smilene" data-tab="smilene" aria-controls="tab-smilene" aria-selected="false">Smilene Special</button>
+      <!-- WHEEL:BEGIN tab -->
+      <button class="tab" role="tab" type="button" id="tabbtn-wheel" data-tab="wheel" aria-controls="tab-wheel" aria-selected="false">Honk?</button>
+      <!-- WHEEL:END tab -->
       <button class="tab play" role="tab" type="button" id="tabbtn-game" data-tab="game" aria-controls="tab-game" aria-selected="false">Playground Dash</button>
+      <button class="tab play" role="tab" type="button" id="tabbtn-school" data-tab="school" aria-controls="tab-school" aria-selected="false">Turtle School</button>
     </div>
     <ul class="homelinks">
       <li><a class="navlink" href="#notes">Fact or Shell-ction</a></li>
@@ -771,6 +902,97 @@
   </div>
 </section>
 
+<!-- WHEEL:BEGIN panel -->
+<section class="tabpanel wheel-page" id="tab-wheel" role="tabpanel" aria-labelledby="tabbtn-wheel" hidden>
+  <div class="wrap wheel-layout">
+    <div class="wheel-head">
+      <p class="label">Lost &amp; found · Shelldon's Pizza Pond, closed 1987 for "reasons"</p>
+      <h2>The Wheel</h2>
+      <p class="wheel-story">We found this steering wheel in the back room of a turtle-themed pizza parlor. Nobody installed the face. Nobody can get it off. It keeps offering to take you for a shell of a ride.</p>
+      <p class="wheel-dare">Honk the horn. If you dare.</p>
+    </div>
+    <div class="wheel-stage" id="wheelStage">
+      <svg class="wheel-svg" viewBox="0 0 600 600" aria-hidden="true">
+        <defs>
+          <clipPath id="whHubClip"><circle cx="300" cy="300" r="146"/></clipPath>
+          <clipPath id="whEyeClipL"><circle cx="248" cy="232" r="20"/></clipPath>
+          <clipPath id="whEyeClipR"><circle cx="352" cy="232" r="20"/></clipPath>
+          <radialGradient id="whHubGrad" cx="42%" cy="34%" r="75%"><stop offset="0" stop-color="#F6EED8"/><stop offset="1" stop-color="#CBB891"/></radialGradient>
+          <radialGradient id="whGlowGrad"><stop offset="0.45" stop-color="#FF3B22" stop-opacity="0.95"/><stop offset="1" stop-color="#FF3B22" stop-opacity="0"/></radialGradient>
+          <linearGradient id="whChrome" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D3D1DA"/><stop offset="0.5" stop-color="#908D9B"/><stop offset="1" stop-color="#5D5A68"/></linearGradient>
+        </defs>
+        <g id="whSpin">
+          <circle cx="300" cy="310" r="284" fill="#000" opacity="0.16"/>
+          <circle cx="300" cy="300" r="255" fill="none" stroke="#2B2231" stroke-width="58"/>
+          <g id="whBumps" fill="#2B2231"></g>
+          <circle cx="300" cy="300" r="283" fill="none" stroke="#584862" stroke-width="3"/>
+          <circle cx="300" cy="300" r="270" fill="none" stroke="#7A6584" stroke-width="2.5" stroke-dasharray="7 7"/>
+          <circle cx="300" cy="300" r="240" fill="none" stroke="#7A6584" stroke-width="2.5" stroke-dasharray="7 7"/>
+          <path d="M50 209 A266 266 0 0 1 391 50" fill="none" stroke="#fff" stroke-opacity="0.2" stroke-width="10" stroke-linecap="round"/>
+          <g transform="translate(300 300)" fill="url(#whChrome)" stroke="#2B2231" stroke-width="5" stroke-linejoin="round">
+            <path d="M120 -48 L238 -30 L238 30 L120 48Z"/>
+            <path d="M-120 -48 L-238 -30 L-238 30 L-120 48Z"/>
+            <path d="M-48 120 L-30 238 L30 238 L48 120Z"/>
+          </g>
+          <g fill="#3A3141" stroke="#1B1520" stroke-width="2">
+            <circle cx="492" cy="300" r="7"/><circle cx="108" cy="300" r="7"/><circle cx="300" cy="492" r="7"/>
+          </g>
+          <circle cx="300" cy="300" r="162" fill="url(#whChrome)" stroke="#2B2231" stroke-width="6"/>
+          <g id="whFace">
+            <circle cx="300" cy="300" r="146" fill="url(#whHubGrad)" stroke="#2B2231" stroke-width="5"/>
+            <g clip-path="url(#whHubClip)">
+              <g fill="none" stroke="#A08C69" stroke-width="2.5" stroke-linecap="round">
+                <path d="M164 196 Q300 164 436 196" stroke-dasharray="2 6"/>
+                <path d="M300 156 V194"/>
+                <path d="M196 330 Q172 380 204 428"/>
+                <path d="M404 330 Q428 380 396 428"/>
+              </g>
+              <text x="300" y="186" text-anchor="middle" font-family="DM Mono, ui-monospace, monospace" font-size="15" letter-spacing="6" fill="#A08C69">HONK</text>
+              <circle cx="206" cy="282" r="17" fill="#E2606F" opacity="0.5"/>
+              <circle cx="394" cy="282" r="17" fill="#E2606F" opacity="0.5"/>
+              <circle class="wh-glow" cx="248" cy="232" r="40" fill="url(#whGlowGrad)" opacity="0"/>
+              <circle class="wh-glow" cx="352" cy="232" r="40" fill="url(#whGlowGrad)" opacity="0"/>
+              <circle cx="248" cy="232" r="27" fill="#1B1218"/>
+              <circle cx="352" cy="232" r="27" fill="#1B1218"/>
+              <g clip-path="url(#whEyeClipL)">
+                <circle cx="248" cy="232" r="20" fill="#F7F2E2"/>
+                <g id="whPupilL"><circle cx="248" cy="232" r="9" fill="#C4242C"/><circle cx="248" cy="232" r="4" fill="#14090C"/><circle cx="251" cy="229" r="2" fill="#fff"/></g>
+                <rect id="whLidL" x="226" y="210" width="44" height="11" fill="#D6C59F" stroke="#2B2231" stroke-width="2.5"/>
+              </g>
+              <g clip-path="url(#whEyeClipR)">
+                <circle cx="352" cy="232" r="20" fill="#F7F2E2"/>
+                <g id="whPupilR"><circle cx="352" cy="232" r="9" fill="#C4242C"/><circle cx="352" cy="232" r="4" fill="#14090C"/><circle cx="355" cy="229" r="2" fill="#fff"/></g>
+                <rect id="whLidR" x="330" y="210" width="44" height="11" fill="#D6C59F" stroke="#2B2231" stroke-width="2.5"/>
+              </g>
+              <g fill="url(#whChrome)" stroke="#2B2231" stroke-width="1.5">
+                <circle cx="219" cy="212" r="4"/><circle cx="277" cy="212" r="4"/><circle cx="323" cy="212" r="4"/><circle cx="381" cy="212" r="4"/>
+              </g>
+              <path id="whJaw" fill="#D2C09A" stroke="#2B2231" stroke-width="4" stroke-linejoin="round"/>
+              <path id="whCavity" fill="#1A0E14"/>
+              <g id="whTeethU" fill="#F3ECD6" stroke="#2B2231" stroke-width="2.5"></g>
+              <g id="whTeethL" fill="#F3ECD6" stroke="#2B2231" stroke-width="2.5"></g>
+              <path d="M170 300 Q300 350 430 300" fill="none" stroke="#2B2231" stroke-width="5" stroke-linecap="round"/>
+              <g fill="url(#whChrome)" stroke="#2B2231" stroke-width="3">
+                <circle cx="170" cy="300" r="12"/><circle cx="430" cy="300" r="12"/>
+              </g>
+              <path d="M163 293 L177 307 M177 293 L163 307 M423 293 L437 307 M437 293 L423 307" stroke="#2B2231" stroke-width="2.5"/>
+              <circle id="whFlash" cx="300" cy="300" r="146" fill="#FFE27A" opacity="0"/>
+            </g>
+          </g>
+        </g>
+      </svg>
+      <button class="wheel-horn" id="wheelHorn" type="button" aria-label="Honk the horn" aria-describedby="wheelCaption"></button>
+    </div>
+    <p class="wheel-caption" id="wheelCaption" aria-live="polite">It's just a steering wheel. Probably.</p>
+    <div class="wheel-controls">
+      <span>Honks: <b id="wheelCount">0</b></span>
+      <span>Creep level: <b id="wheelCreep">Dormant</b></span>
+      <button class="btn ghost small" id="wheelMute" type="button" aria-pressed="false">Mute</button>
+      <button class="btn small" id="wheelCalm" type="button">Calm it down</button>
+    </div>
+  </div>
+</section>
+<!-- WHEEL:END panel -->
 <section class="tabpanel game-page" id="tab-game" role="tabpanel" aria-labelledby="tabbtn-game" hidden>
   <div class="wrap game-layout">
     <div class="game-intro">
@@ -806,6 +1028,54 @@
         <button type="button" data-dir="left" aria-label="Left">◀</button>
         <button type="button" data-dir="down" aria-label="Down">▼</button>
         <button type="button" data-dir="right" aria-label="Right">▶</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="tabpanel school-page" id="tab-school" role="tabpanel" aria-labelledby="tabbtn-school" hidden>
+  <div class="wrap school-layout">
+    <div class="game-intro">
+      <p class="label">Minigame · Friendship edition</p>
+      <h2>Turtle School</h2>
+      <p class="game-story">It's Tucker's first day at Lily Pad Elementary, and he has a backpack, a lunchbox full of lettuce, and absolutely no friends yet. Over six periods he'll meet a shy box turtle, an upside-down hatchling, a grumpy snapper, and the fastest show-off in the sea. The principal is the wise turtle <a href="#smilene" data-goto="smilene">Ms. Smilene</a>, who has seen it all and is smiling about most of it.</p>
+      <ul class="how">
+        <li><b>Choose</b> how Tucker responds. Tap a choice, or press 1, 2 or 3.</li>
+        <li><b>Kindness fills</b> Tucker's heart-shell. Every period has a classmate who needs a friend.</li>
+        <li><b>Oops?</b> Unkind choices get a gentle word from Ms. Smilene and a chance to make it right.</li>
+        <li><b>Some periods are hands-on:</b> flip a friend, share your lettuce, time the group hug.</li>
+      </ul>
+      <div class="hud" aria-live="polite">
+        <div><span class="label">Heart-shell</span><b id="scScore">0</b></div>
+        <div><span class="label">Best day</span><b id="scBest">0</b></div>
+        <div><span class="label">Period</span><b id="scPeriod">0/6</b></div>
+        <div><span class="label">Friends made</span><b id="scFriends">0</b></div>
+      </div>
+    </div>
+    <div class="school-stage">
+      <div class="classroom" id="scRoom">
+        <div class="sc-bar">
+          <span class="label" id="scWhere">Before the first bell</span>
+          <span class="sc-heart">
+            <svg viewBox="0 0 32 30" aria-hidden="true">
+              <defs><clipPath id="scHeartClip"><path d="M16 28 C6 20 1 14.5 1 9 C1 4.5 4.5 1 8.8 1 C11.8 1 14.3 2.9 16 5.6 C17.7 2.9 20.2 1 23.2 1 C27.5 1 31 4.5 31 9 C31 14.5 26 20 16 28Z"/></clipPath></defs>
+              <g clip-path="url(#scHeartClip)"><rect class="hf" id="scHeartFill" x="0" y="0" width="32" height="30"/></g>
+              <path class="hb" d="M16 28 C6 20 1 14.5 1 9 C1 4.5 4.5 1 8.8 1 C11.8 1 14.3 2.9 16 5.6 C17.7 2.9 20.2 1 23.2 1 C27.5 1 31 4.5 31 9 C31 14.5 26 20 16 28Z"/>
+            </svg>
+            <span>Heart-shell <b id="scHeartTxt">0/18</b></span>
+          </span>
+        </div>
+        <div class="sc-scene" aria-hidden="true">
+          <div class="sc-board" id="scBoard">Lily Pad Elementary</div>
+          <div class="sc-cast" id="scCast"></div>
+          <div class="toast" id="scToast"></div>
+        </div>
+        <div class="sc-body" id="scBody" aria-live="polite"></div>
+        <div class="overlay" id="scPause" hidden>
+          <h3>Snack break!</h3>
+          <p>The Hug-o-Meter paused while you were away. Everyone is still standing there with their flippers out.</p>
+          <button class="btn" id="scResume" type="button">Back to the hug</button>
+        </div>
       </div>
     </div>
   </div>
@@ -1010,7 +1280,7 @@
   const $ = (id) => document.getElementById(id);
 
   // ---------- tabs ----------
-  const panels = { home: $("tab-home"), game: $("tab-game"), smilene: $("tab-smilene") };
+  const panels = { home: $("tab-home"), game: $("tab-game"), smilene: $("tab-smilene"), school: $("tab-school"), wheel: $("tab-wheel") };
   const tabBtns = document.querySelectorAll('[role="tab"]');
   let current = "home";
   function setHash(h) { try { history.replaceState(null, "", h); } catch (e) {} }
@@ -1588,5 +1858,866 @@
   });
 })();
 </script>
+<script>
+(() => {
+  // =====================================================================
+  // Turtle School: Tucker's first day, a friendship minigame
+  // =====================================================================
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const $ = (id) => document.getElementById(id);
+  const room = $("scRoom"), cast = $("scCast"), board = $("scBoard"), body = $("scBody"), toastEl = $("scToast"), pauseEl = $("scPause");
+  const MAX = 18, BEST_KEY = "shellyeah-school-best";
+  const pick = (a) => a[Math.floor(Math.random() * a.length)];
+  const shuffle = (a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+  // classmates recolor the shared turtle symbol by overriding the tokens it reads
+  const PALS = {
+    tucker:  { name: "Tucker", tint: "" },
+    shelby:  { name: "Shelby", tint: "--shell: var(--ink)" },
+    pebble:  { name: "Pebble", tint: "--shell: var(--lie)" },
+    gus:     { name: "Gus", tint: "--shell: var(--muted)" },
+    marina:  { name: "Marina", tint: "--shell: var(--sea)" },
+    smilene: { name: "Ms. Smilene", tint: "" },
+  };
+
+  const SCENES = [
+    { id: "homeroom", where: "Period 1 · Homeroom", board: "Welcome, hatchlings!", who: "shelby", pals: ["shelby"], moods: { tucker: "🎒", shelby: "🫣" },
+      title: "The new kid in the shell",
+      narr: "Shelby the box turtle is new this year. She has pulled her head, her legs and most of her courage all the way into her shell and clicked the hinge shut. Every desk around her is empty.",
+      say: ["Shelby, muffled", "…is it home time yet? Is it home time now?"],
+      choices: [
+        { k: "kind", t: "Sit at the desk next to her and whisper, \"I'm a little shell-shy too. Want to be desk buddies?\"",
+          r: "A tiny head pokes out. Then a tiny smile. \"Desk buddies,\" Shelby whispers. \"Shell yeah.\"", mood: { shelby: "😊", tucker: "😊" } },
+        { k: "meh", t: "Give her a friendly wave from across the room.",
+          r: "Shelby peeks out, spots the wave, and waves back. Sort of. One claw. It's a start.",
+          tip: "Waves are nice. Showing up right beside someone is even nicer.", mood: { shelby: "🙂" } },
+        { k: "mean", t: "Knock on her shell: \"Knock knock! Anybody home?\"",
+          r: "The class giggles. Shelby's shell clamps even tighter, and you hear a very small sniffle.",
+          lesson: "Some turtles hide because the world feels big and loud. A joke at someone's shell is still a knock on their heart. Try being the quiet, safe spot instead.", mood: { shelby: "😢" } },
+      ] },
+    { id: "recess", where: "Period 2 · Recess", board: "Recess! Walk, don't scuttle", who: "pebble", pals: ["pebble"], flipped: "pebble", moods: { tucker: "😮", pebble: "😣" },
+      title: "Pebble's upside-down day",
+      narr: "Out by the sandbox, little Pebble the painted turtle tripped over a pinecone and landed flat on his back. All four legs are wiggling at the sky. A few kids are pointing.",
+      say: ["Pebble", "Um. Hello? Is the sky supposed to be down there?"],
+      choices: [
+        { k: "kind", t: "Rush over and help him flip back onto his feet.", action: "flip" },
+        { k: "meh", t: "Run and tell Ms. Smilene so she can help.", unflip: "pebble",
+          r: "Ms. Smilene ambles over and gently tips Pebble right-side up. \"Thank you for telling me, Tucker,\" she says. \"Next time, you can lend a flipper too.\"",
+          tip: "Getting help is good. Being the help is even better.", mood: { pebble: "🙂" } },
+        { k: "mean", t: "Laugh along with the crowd. It IS kind of funny.",
+          r: "Pebble stops wiggling. \"It's not funny from down here,\" he says quietly.",
+          lesson: "Everybody ends up on their back sometimes. When a friend is stuck, the best thing you can do is help. The second best thing is a pun, but only afterward.", mood: { pebble: "😢" } },
+      ] },
+    { id: "log", where: "Period 3 · Basking break", board: "Sun's out, shells out", who: "gus", pals: ["gus"], moods: { tucker: "😎", gus: "😠" },
+      title: "Gus and the sunny log",
+      narr: "There is exactly one perfect sunny log at Lily Pad Elementary, and Gus the snapping turtle is sprawled across all of it. He has been snapping at anyone who comes near. Nobody has tried to sit with him in weeks.",
+      say: ["Gus", "MY log. Go bask somewhere else. Snap snap."],
+      choices: [
+        { k: "kind", t: "Sit nearby and ask, \"You seem grumpy. Is everything okay?\"",
+          r: "Gus is quiet for a long moment. \"Nobody ever wants to bask with me. They say I'm too snappy. So I snap first.\" Tucker scoots a little closer. \"I'll bask with you.\" It turns out there is room on the log for two. There always was.", mood: { gus: "🥹", tucker: "😊" } },
+        { k: "meh", t: "Shrug and go find a different log.",
+          r: "The other log is shady and a bit soggy. Gus watches you go, looking lonelier than grumpy.",
+          tip: "Sometimes the grumpiest turtle on the log is the loneliest one. A kind question can crack a hard shell.", mood: { gus: "😕" } },
+        { k: "mean", t: "Snap right back: \"Fine, Grumpy-Shell! Nobody wants your dumb log anyway!\"",
+          r: "Gus pulls his head into his shell. From somewhere inside: \"…yeah. Nobody ever does.\"",
+          lesson: "Snapping back just makes two grumpy turtles. Kindness is how you get through a hard shell, gently and from the outside in.", mood: { gus: "😢" } },
+      ] },
+    { id: "lunch", where: "Period 4 · Lunch", board: "Today: lettuce. Again.", who: "marina", pals: ["marina"], type: "share", moods: { tucker: "😋", marina: "😤" },
+      title: "Marina forgot her lunch",
+      narr: "Marina the sea turtle is the fastest swimmer at turtle school, and she will tell you so, often. This morning she zoomed out the door so fast she forgot her lunch. Her tummy is growling louder than her bragging.",
+      say: ["Marina", "I'm not hungry. Sea turtles are too fast to need lunch. (Grrrrowl.) That was the ocean."],
+      intro: "Tucker has four leaves of lettuce. Tap the ones he'll share, then hand them over." },
+    { id: "art", where: "Period 5 · Art class", board: "Paint your dream pond", who: "shelby", pals: ["shelby", "marina"], moods: { tucker: "🎨", shelby: "🖌️", marina: "😏" },
+      title: "Slow and steady paints the pond",
+      narr: "Everyone is painting their dream pond. Shelby paints very slowly, one careful lily pad at a time. Marina finished hers in four seconds, and now she's peering over Shelby's shoulder.",
+      say: ["Marina", "Hurry UP, Shelby! At this rate you'll finish by the next ice age!"],
+      choices: [
+        { k: "kind", t: "Say, \"Shelby's taking her time because she's making it beautiful. Marina, want to help with the sky?\"",
+          r: "Marina blinks, then grins. \"I am VERY fast at skies.\" Shelby scoots over to make room. Their pond ends up with the speediest clouds and the most careful lily pads in all of turtle school.", mood: { shelby: "😊", marina: "😄" } },
+        { k: "meh", t: "Quietly tell Shelby her painting is lovely.",
+          r: "Shelby smiles, but Marina keeps tapping her flipper, and Shelby starts painting faster and wobblier.",
+          tip: "Cheering on one friend is lovely. Helping two friends understand each other? That's turtle-y next level.", mood: { shelby: "🙂", marina: "😐" } },
+        { k: "mean", t: "Join in: \"Yeah, Slowpoke! Hurry up!\"",
+          r: "Shelby's paintbrush stops. Her head slides halfway back into her shell, right where it was this morning.",
+          lesson: "Tucker, we are ALL turtles here. Being slow isn't something to fix. Being unkind is a choice, and so is being kind. Choose again.", mood: { shelby: "😢", marina: "😬" } },
+      ] },
+    { id: "hug", where: "Period 6 · Show-and-tell", board: "Show-and-tell!", who: null, pals: ["shelby", "gus", "marina"], type: "hug", moods: { tucker: "🥰", shelby: "🙂", gus: "😑", marina: "🙂" },
+      title: "The biggest group hug in pond history",
+      narr: "Last period: show-and-tell. Some kids brought rocks. One kid brought a slightly different rock. Tucker brought something better: everybody he got to know today. It's time for a group hug.",
+      say: ["Tucker", "For show-and-tell, I'd like to show… my friends. And tell them they're great. Bring it in, everybody!"],
+      intro: "Press Group hug! (or Space) when the marker is in the heart. Too early or too late and somebody gets squished. Gus will pretend to hate it either way." },
+  ];
+
+  const TOAST = {
+    kind: ["Shell yeah, kindness! +3", "Turtle-y kind! +3", "Heart-shell +3!", "Friend-ship ahoy! +3"],
+    mended: ["Made it right! +2", "Second chances count! +2", "Shell-f improvement! +2"],
+    meh: ["A little kindness. +1", "Nice-ish! +1", "Baby steps! +1"],
+  };
+  const STICKER = { kind: "⭐ Gold star", mended: "🌱 Made it right", meh: "🙂 Good start" };
+
+  let st = null, best = 0, onTab = document.body.dataset.tab === "school";
+  try { best = parseInt(localStorage.getItem(BEST_KEY) || "0", 10) || 0; } catch (e) {}
+
+  // ---------- small DOM helpers ----------
+  function el(tag, cls, text) {
+    const n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+  function btn(label, fn, cls = "btn", key) {
+    const b = el("button", cls, label);
+    b.type = "button";
+    if (key) b.dataset.key = key;
+    b.addEventListener("click", fn);
+    return b;
+  }
+  function row(...kids) { const r = el("div", "sc-row"); r.append(...kids); return r; }
+  function say(who, line) { const p = el("p", "sc-say"); p.append(el("b", "", who), line); return p; }
+  function note(label, text, cls = "lesson") { const d = el("div", cls); d.append(el("p", "label", label), el("p", "", text)); return d; }
+  function clear(n) { n.replaceChildren(); return n; }
+
+  // ---------- scene art ----------
+  function palEl(id, mood, opts = {}) {
+    const d = el("div", "pal" + (opts.big ? " big" : "") + (opts.cheer ? " cheer" : ""));
+    d.dataset.pal = id;
+    const m = el("span", "pal-mood", mood || "");
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("class", "pal-svg");
+    svg.setAttribute("viewBox", "0 0 120 70");
+    svg.setAttribute("style", `${PALS[id].tint};--fx:${opts.left ? -1 : 1};--rot:${opts.flipped ? 180 : 0}deg`);
+    const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
+    use.setAttribute("href", "#turtle");
+    svg.append(use);
+    d.append(m, svg, el("span", "pal-name", PALS[id].name));
+    d.addEventListener("animationend", (e) => { if (e.animationName === "pal-hop") d.classList.remove("hop"); });
+    return d;
+  }
+  function setCast(list, crowd) {
+    cast.classList.toggle("crowd", !!crowd);
+    cast.replaceChildren(...list.map(([id, mood, opts]) => palEl(id, mood, opts)));
+  }
+  const pal = (id) => cast.querySelector(`[data-pal="${id}"]`);
+  function hop(id) {
+    const p = pal(id);
+    if (!p || reduce) return;
+    p.classList.remove("hop"); void p.offsetWidth; p.classList.add("hop");
+  }
+  function setMoods(moods, happy) {
+    for (const [id, m] of Object.entries(moods || {})) {
+      const p = pal(id);
+      if (!p) continue;
+      p.querySelector(".pal-mood").textContent = m;
+      if (happy) hop(id);
+    }
+  }
+  function setRot(id, deg) { const p = pal(id); if (p) p.querySelector(".pal-svg").style.setProperty("--rot", deg + "deg"); }
+
+  // ---------- HUD ----------
+  function friendsMade() {
+    const set = new Set();
+    for (const r of st ? st.recs : []) if (r.who && r.rec !== "meh") set.add(r.who);
+    return set.size;
+  }
+  function updateHud() {
+    const score = st ? st.score : 0;
+    $("scScore").textContent = `${score}/${MAX}`;
+    $("scHeartTxt").textContent = `${score}/${MAX}`;
+    $("scBest").textContent = `${best}/${MAX}`;
+    $("scPeriod").textContent = st ? `${Math.min(st.i + 1, SCENES.length)}/${SCENES.length}` : `0/${SCENES.length}`;
+    $("scFriends").textContent = `${friendsMade()}/4`;
+    $("scHeartFill").style.transform = `scaleY(${Math.max(0, Math.min(1, score / MAX))})`;
+  }
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.getAnimations().forEach((a) => a.cancel());
+    toastEl.animate([
+      { opacity: 0, transform: "translateX(-50%) translateY(-8px) scale(0.9)" },
+      { opacity: 1, transform: "translateX(-50%) translateY(0) scale(1)", offset: 0.12 },
+      { opacity: 1, transform: "translateX(-50%) translateY(0) scale(1)", offset: 0.8 },
+      { opacity: 0, transform: "translateX(-50%) translateY(-6px) scale(1)" },
+    ], { duration: reduce ? 1800 : 1500, easing: "ease-out" });
+  }
+  function heartBurst(n = 12) {
+    const r = $("scHeartFill").closest("svg").getBoundingClientRect();
+    document.dispatchEvent(new CustomEvent("shellburst", { detail: { x: r.left + r.width / 2, y: r.top + r.height / 2, colors: ["var(--lie)", "var(--shell)"], n } }));
+    if (!reduce) $("scHeartFill").closest("svg").animate([{ transform: "scale(1)" }, { transform: "scale(1.35)" }, { transform: "scale(1)" }], { duration: 420, easing: "ease-out" });
+  }
+  // keyboard and screen-reader users land on the new content; mouse users keep their place
+  function settle(target, scroll) {
+    if (!onTab) return;
+    if (scroll && room.getBoundingClientRect().top < 0) room.scrollIntoView({ block: "start", behavior: reduce ? "auto" : "smooth" });
+    const a = document.activeElement;
+    if (target && (!a || a === document.body || room.contains(a))) target.focus({ preventScroll: true });
+  }
+
+  // ---------- flow ----------
+  function intro() {
+    st = null;
+    stopHug();
+    $("scWhere").textContent = "Before the first bell";
+    board.textContent = "Lily Pad Elementary";
+    setCast([["tucker", "🎒"], ["smilene", "👓", { left: true, big: true }]]);
+    const b = btn("Ring the school bell", newDay, "btn", "1");
+    clear(body).append(
+      el("p", "label", "Turtle School · a friendship minigame"),
+      el("h3", "", "Tucker's first day of turtle school"),
+      el("p", "", "Six periods. Four classmates who could really use a friend. One heart-shell to fill. Every choice Tucker makes shows his friends how much he's willing to care."),
+      say("Ms. Smilene, principal", "Welcome, little one. Here we learn reading, writing, and being kind. Mostly the last one. The first two are slower."),
+      row(b, el("span", "gain", best ? `Best day so far: ${best}/${MAX}` : "Takes about four minutes. At turtle speed, maybe five."))
+    );
+    updateHud();
+  }
+  function newDay() {
+    st = { i: 0, score: 0, recs: [], retry: false, stumbles: 0 };
+    renderScene();
+  }
+  function renderScene() {
+    const s = SCENES[st.i];
+    st.retry = false;
+    st.order = s.choices ? shuffle(s.choices.map((_, k) => k)) : [];
+    $("scWhere").textContent = s.where;
+    board.textContent = s.board;
+    setCast([["tucker", s.moods.tucker], ...s.pals.map((id) => [id, s.moods[id], { left: true, flipped: s.flipped === id }])]);
+    const title = el("h3", "", s.title);
+    title.tabIndex = -1;
+    st.actions = el("div", "sc-actions");
+    clear(body).append(el("p", "label", `${s.where} · ${st.i + 1} of ${SCENES.length}`), title, el("p", "", s.narr), say(s.say[0], s.say[1]), st.actions);
+    showActions();
+    updateHud();
+    settle(title, true);
+  }
+  function showActions() {
+    const s = SCENES[st.i];
+    if (s.type === "share") return shareUI();
+    if (s.type === "hug") return hugUI();
+    const box = clear(st.actions);
+    if (st.retry) box.append(el("p", "label", "Take two: what will Tucker do now?"));
+    const list = el("div", "choices");
+    let n = 0;
+    for (const k of st.order) {
+      const c = s.choices[k];
+      if (st.retry && c.k === "mean") continue;
+      const b = btn("", () => choose(c), "choice", String(++n));
+      b.append(el("kbd", "", String(n)), el("span", "", c.t));
+      list.append(b);
+    }
+    box.append(list);
+  }
+  function choose(c) {
+    if (c.k === "mean") return lesson(c.r, c.lesson, c.mood);
+    if (c.action === "flip") return flipUI();
+    if (c.unflip) setRot(c.unflip, 0);
+    resolve(c.k, c.r, c.tip, c.mood);
+  }
+  function lesson(r, text, mood) {
+    st.stumbles++;
+    setMoods(mood, false);
+    const b = btn("Make it right", () => {
+      st.retry = true;
+      showActions();
+      toast("Second chances count!");
+      settle(st.actions.querySelector("button"));
+    }, "btn", "1");
+    clear(st.actions).append(el("p", "sc-result sad", r), note("A gentle word from Ms. Smilene", text), row(b));
+    settle(b);
+  }
+  function resolve(k, r, tip, mood, pts, sticker) {
+    const s = SCENES[st.i];
+    const rec = k === "kind" ? (st.retry ? "mended" : "kind") : "meh";
+    if (pts == null) pts = rec === "kind" ? 3 : rec === "mended" ? 2 : 1;
+    st.score += pts;
+    st.recs.push({ id: s.id, who: s.who, label: s.where.split("· ")[1] + (s.who ? ` with ${PALS[s.who].name}` : ""), rec, pts, sticker: sticker || STICKER[rec] });
+    setMoods(mood, true);
+    hop("tucker");
+    const last = st.i === SCENES.length - 1;
+    const b = btn(last ? "Ring the last bell" : "Next period", next, "btn", "1");
+    const box = clear(st.actions);
+    box.append(el("p", "sc-result", r));
+    if (tip) box.append(note("Ms. Smilene's nudge", tip, "lesson nudge"));
+    box.append(row(b, el("span", "gain", `+${pts} heart-shell`)));
+    toast(pick(TOAST[rec]));
+    if (pts >= 2) heartBurst(pts * 4);
+    updateHud();
+    settle(b);
+  }
+  function next() {
+    st.i++;
+    if (st.i >= SCENES.length) finale(); else renderScene();
+  }
+
+  // ---------- recess: flip Pebble ----------
+  function flipUI() {
+    let pushes = 0;
+    const dots = el("div", "pushes");
+    for (let k = 0; k < 5; k++) dots.append(el("i"));
+    const labels = ["Push!", "Again!", "Keep going!", "Almost!", "One more!"];
+    const b = btn(labels[0], () => {
+      if (pushes >= 5) return;
+      pushes++;
+      dots.children[pushes - 1].classList.add("on");
+      setRot("pebble", 180 - pushes * 36);
+      if (pushes < 5) { b.textContent = labels[pushes]; return; }
+      resolve("kind", "With one last heave-ho, Pebble rolls right-side up! \"You flipped my whole day around,\" he beams, and he follows Tucker around for the rest of recess.", null, { pebble: "🤩", tucker: "😊" });
+    }, "btn", "1");
+    dots.setAttribute("aria-hidden", "true");
+    clear(st.actions).append(
+      el("p", "", "Pebble is heavier than he looks. It's all the snacks. Give him five good pushes!"),
+      row(b, dots)
+    );
+    settle(b);
+  }
+
+  // ---------- lunch: share lettuce ----------
+  function shareUI() {
+    const s = SCENES[st.i];
+    const count = el("p", "gain", "Sharing 0 of 4 leaves");
+    const leaves = el("div", "leaves");
+    for (let k = 0; k < 4; k++) {
+      const leaf = btn("🥬", () => {
+        leaf.setAttribute("aria-pressed", String(leaf.getAttribute("aria-pressed") !== "true"));
+        const n = leaves.querySelectorAll('[aria-pressed="true"]').length;
+        count.textContent = `Sharing ${n} of 4 leaves`;
+      }, "leaf", String(k + 1));
+      leaf.setAttribute("aria-pressed", "false");
+      leaf.setAttribute("aria-label", `Lettuce leaf ${k + 1}`);
+      leaves.append(leaf);
+    }
+    const serve = btn("Hand them over", () => share(leaves.querySelectorAll('[aria-pressed="true"]').length), "btn", "5");
+    clear(st.actions).append(el("p", "label", st.retry ? "Take two: tap the leaves you'll share" : s.intro), leaves, count, row(serve, el("span", "gain", "Keys 1–4 pick leaves, 5 hands them over")));
+    settle(leaves.firstChild);
+  }
+  function share(n) {
+    if (n === 0) return lesson("Tucker munches all four leaves. Marina's tummy growls. She stares at the floor and pretends she's fine.",
+      "Sharing isn't about how much you have. It's about how much you're willing to give. Even one leaf says, \"I see you.\"", { marina: "😔" });
+    if (n === 1 && !st.retry) return resolve("meh", "Marina gobbles it in one second flat. \"Thanks, Tucker.\" She's still a little hungry, but she's smiling.",
+      "One leaf is kind. Sharing until it feels a little brave? That's love.", { marina: "🙂" });
+    const all = n === 4 ? " Tucker gave away every single leaf. His tummy rumbles. His heart does not. Then Marina zooms off and zooms back with half her seaweed snack. Lettuce be friends!" : "";
+    resolve("kind", `Marina stops bragging long enough to say, "Nobody ever shares with me. Everyone thinks I'm too fast to need anything." You eat lunch together. She's a very slow chewer, it turns out.${all}`, null, { marina: "😄", tucker: n === 4 ? "🥲" : "😋" });
+  }
+
+  // ---------- show-and-tell: the Hug-o-Meter (timed, so it pauses when unseen) ----------
+  const hug = { on: false, paused: false, p: 0, dir: 1, raf: null, last: 0, mk: null, b: null };
+  const SPEED = reduce ? 48 : 82; // percent of the bar per second
+  function hugUI() {
+    const meter = el("div", "hugmeter");
+    const z2 = el("span", "z2", "♥");
+    meter.append(el("span", "z1"), z2, (hug.mk = el("span", "mk")));
+    meter.setAttribute("role", "img");
+    meter.setAttribute("aria-label", "Hug-o-Meter: a marker slides back and forth across a bar with a heart in the middle");
+    hug.b = btn("Group hug!", pressHug, "btn", "1");
+    hug.b.style.background = "var(--lie)"; hug.b.style.color = "var(--on-accent)";
+    clear(st.actions).append(el("p", "label", "The Hug-o-Meter"), el("p", "", SCENES[st.i].intro), meter, row(hug.b));
+    Object.assign(hug, { on: true, paused: false, p: 5 + Math.random() * 15, dir: 1 });
+    hug.mk.style.left = hug.p + "%";
+    startHug();
+    settle(hug.b);
+  }
+  function hugFrame(now) {
+    hug.raf = null;
+    if (!hug.on || hug.paused) return;
+    const dt = Math.min(0.05, (now - hug.last) / 1000);
+    hug.last = now;
+    hug.p += hug.dir * SPEED * dt;
+    if (hug.p >= 100) { hug.p = 100; hug.dir = -1; }
+    if (hug.p <= 0) { hug.p = 0; hug.dir = 1; }
+    hug.mk.style.left = hug.p + "%";
+    hug.raf = requestAnimationFrame(hugFrame);
+  }
+  function startHug() {
+    if (hug.raf || !hug.on || hug.paused || !onTab || document.hidden) return;
+    hug.last = performance.now();
+    hug.raf = requestAnimationFrame(hugFrame);
+  }
+  function stopHug() {
+    hug.on = false;
+    if (hug.raf) cancelAnimationFrame(hug.raf);
+    hug.raf = null;
+    hug.paused = false;
+    pauseEl.hidden = true;
+  }
+  function pauseHug() {
+    if (!hug.on || hug.paused) return;
+    hug.paused = true;
+    if (hug.raf) cancelAnimationFrame(hug.raf);
+    hug.raf = null;
+    pauseEl.hidden = false;
+  }
+  $("scResume").addEventListener("click", () => {
+    hug.paused = false;
+    pauseEl.hidden = true;
+    startHug();
+    if (hug.b) hug.b.focus({ preventScroll: true });
+  });
+  function pressHug() {
+    if (!hug.on || hug.paused) return;
+    stopHug();
+    const d = Math.abs(hug.p - 50);
+    if (d <= 6) resolve("kind", "PERFECT SQUEEZE. Shelby giggles, Pebble gets lifted clean off the ground, Marina says \"that was the fastest hug ever,\" and Gus mumbles \"this is the worst\" while not letting go. At all.", null,
+      { shelby: "🥰", gus: "🥹", marina: "😄", tucker: "🥰" }, 3, "⭐ Perfect squeeze");
+    else if (d <= 16) resolve("kind", "A big, cozy, slightly lopsided hug. Somebody's shell clonks somebody else's shell. Nobody minds one bit.", null,
+      { shelby: "😊", gus: "😌", marina: "😄", tucker: "😊" }, 2, "🌱 Cozy hug");
+    else resolve("meh", `${hug.p < 50 ? "Too early!" : "Too late!"} Tucker hugs mostly air and a little bit of Gus's elbow. Everyone laughs, and then they hug properly anyway.`,
+      "Every hug counts, even the wobbly ones. Love doesn't have to be perfect, just willing.", { shelby: "😆", gus: "😑", marina: "😆" }, 1, "🙂 Wobbly hug");
+  }
+
+  // ---------- finale ----------
+  function finale() {
+    stopHug();
+    const score = st.score;
+    const newBest = score > best;
+    if (newBest) { best = score; try { localStorage.setItem(BEST_KEY, String(best)); } catch (e) {} }
+    const status = {};
+    const rank = { kind: 3, mended: 2, meh: 1 };
+    for (const r of st.recs) if (r.who && (!status[r.who] || rank[r.rec] > rank[status[r.who]])) status[r.who] = r.rec;
+    const face = { kind: "🥰", mended: "😊", meh: "🙂" };
+    const tier = score >= 16 ? ["Best Shell-mates Forever", "Tucker made a friend of every turtle in class. The whole school is piled into one big turtle-y hug, and Gus is in the middle, pretending to hate it."]
+      : score >= 11 ? ["Friend-ship Shape", "Tucker had a few wobbly moments, but he kept choosing kindness, and his classmates noticed. They saved him a spot on the sunny log for tomorrow."]
+      : ["Still Hatching", "Tucker stumbled a few times today, and that's okay. Love takes practice, like swimming or puns. Tomorrow is a whole new school day."];
+    $("scWhere").textContent = "After the last bell";
+    board.textContent = "Assembly: what we learned";
+    setCast([
+      ["tucker", "🥰", { cheer: true }],
+      ...["shelby", "pebble", "gus", "marina"].map((id) => [id, face[status[id] || "meh"], { cheer: !reduce, left: true }]),
+      ["smilene", "👓", { big: true, left: true }],
+    ], true);
+    const card = el("ul", "report");
+    card.setAttribute("aria-label", "Tucker's report card");
+    for (const r of st.recs) { const li = el("li"); li.append(el("span", "", r.label), el("span", "", r.sticker)); card.append(li); }
+    const title = el("h3", "", tier[0]);
+    title.tabIndex = -1;
+    const again = btn("Play the day again", newDay, "btn", "1");
+    const home = btn("Back to the bell", intro, "btn ghost", "2");
+    clear(body).append(
+      el("p", "label", `Final heart-shell: ${score}/${MAX}${newBest ? " · New best day!" : ` · Best: ${best}/${MAX}`}`),
+      title,
+      el("p", "", tier[1]),
+      say("Ms. Smilene, at the assembly", "Today you learned that friends come in all shapes and speeds. Shy ones, snappy ones, upside-down ones, show-offs. The true meaning of friendship isn't who's fastest, or who gets the sunny log, or who has the hardest shell. It's how much you're willing to love one another."),
+      el("p", "label", "Tucker's report card"),
+      card,
+      el("p", "", st.stumbles ? `Tucker made ${st.stumbles} oops${st.stumbles === 1 ? "" : "es"} today and made ${st.stumbles === 1 ? "it" : "every one"} right. That counts as learning. That counts double.` : "Not a single unkind word all day. Ms. Smilene is so proud she's moving at almost 0.2 miles per hour."),
+      row(again, home)
+    );
+    updateHud();
+    $("scPeriod").textContent = "Done!";
+    toast(score >= 16 ? "Shell-ebration!" : "School's out, hearts in!");
+    heartBurst(24);
+    const r = room.getBoundingClientRect();
+    document.dispatchEvent(new CustomEvent("shellburst", { detail: { x: r.left + r.width / 2, y: Math.max(40, r.top + 110), colors: ["var(--lie)", "var(--shell)", "var(--moss)", "var(--sea)"], n: 28 } }));
+    settle(title, true);
+  }
+
+  // ---------- pause when unseen, keys ----------
+  document.addEventListener("tabchange", (e) => {
+    onTab = e.detail === "school";
+    if (!onTab) pauseHug();
+  });
+  document.addEventListener("visibilitychange", () => { if (document.hidden) pauseHug(); });
+  window.addEventListener("pagehide", pauseHug);
+  window.addEventListener("keydown", (e) => {
+    if (!onTab || e.metaKey || e.ctrlKey || e.altKey || e.target.closest("input, textarea, select")) return;
+    if (!pauseEl.hidden) return;
+    if ((e.key === "p" || e.key === "Escape") && hug.on) { pauseHug(); return; }
+    if (e.key === " " && hug.on && !e.target.closest("button, a")) { e.preventDefault(); pressHug(); return; }
+    if (/^[1-9]$/.test(e.key)) {
+      const b = body.querySelector(`[data-key="${e.key}"]`);
+      if (b) { e.preventDefault(); b.click(); }
+    }
+  });
+
+  intro();
+})();
+</script>
+<!-- WHEEL:BEGIN script -->
+<script>
+(() => {
+  // ---------- The Wheel: a haunted pizza-parlor steering wheel that laughs when honked ----------
+  const $ = (id) => document.getElementById(id);
+  const panel = $("tab-wheel");
+  if (!panel) return;
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const NS = "http://www.w3.org/2000/svg";
+  const stage = $("wheelStage"), svg = stage.querySelector("svg"), horn = $("wheelHorn");
+  const spin = $("whSpin"), flash = $("whFlash"), cavity = $("whCavity"), jaw = $("whJaw");
+  const pupils = [$("whPupilL"), $("whPupilR")], lids = [$("whLidL"), $("whLidR")];
+  const glows = svg.querySelectorAll(".wh-glow");
+  const countEl = $("wheelCount"), creepEl = $("wheelCreep"), cap = $("wheelCaption");
+  const muteBtn = $("wheelMute"), calmBtn = $("wheelCalm");
+  const EYES = [[248, 232], [352, 232]];
+  const mk = (tag, attrs, parent) => {
+    const el = document.createElementNS(NS, tag);
+    for (const k in attrs) el.setAttribute(k, attrs[k]);
+    parent.append(el);
+    return el;
+  };
+
+  // ---------- grip bumps around the inside of the rim (skipping the spokes) ----------
+  for (let a = 0; a < 360; a += 11.25) {
+    if ([0, 90, 180].some((s) => Math.abs((((a - s) % 360) + 540) % 360 - 180) < 22)) continue;
+    const r = (a * Math.PI) / 180;
+    mk("circle", { cx: (300 + 224 * Math.cos(r)).toFixed(1), cy: (300 + 224 * Math.sin(r)).toFixed(1), r: 11 }, $("whBumps"));
+  }
+
+  // ---------- the grin: corners hinge at (170,300)/(430,300); the jaw curve drops to open ----------
+  const CLOSED = 438, OPEN_PX = 36;
+  const yU = (t) => 300 + 100 * t * (1 - t);              // upper lip curve
+  const yL = (t, c) => 300 + 2 * t * (1 - t) * (c - 300); // lower lip curve, control y = c
+  const half = (t) => 88 * t * (1 - t);                   // tooth height = half the closed gap
+  const xAt = (t) => 170 + 260 * t;
+  const teethL = [];
+  for (let i = 0; i < 11; i++) {
+    const t = 0.1 + (i * 0.8) / 10, w = 14 + 4 * Math.sin(Math.PI * t) + Math.random() * 2;
+    mk("rect", { x: (xAt(t) - w / 2).toFixed(1), y: (yU(t) - 4).toFixed(1), width: w.toFixed(1), height: (half(t) + 3 + Math.random() * 1.5).toFixed(1), rx: 2 }, $("whTeethU"));
+  }
+  for (let i = 0; i < 10; i++) {
+    const t = 0.1 + ((i + 0.5) * 0.8) / 10, w = 13 + 4 * Math.sin(Math.PI * t) + Math.random() * 2;
+    teethL.push({ t, h: half(t) - Math.random() * 1.5, el: mk("rect", { x: (xAt(t) - w / 2).toFixed(1), width: w.toFixed(1), rx: 2 }, $("whTeethL")) });
+  }
+  let jawNow = -1;
+  function setJaw(o) {
+    o = Math.round(o * 2) / 2;
+    if (o === jawNow) return;
+    jawNow = o;
+    const c = CLOSED + 2 * o;
+    cavity.setAttribute("d", `M170 300 Q300 350 430 300 Q300 ${c} 170 300Z`);
+    jaw.setAttribute("d", `M170 300 Q300 ${c} 430 300 Q300 ${c + 70} 170 300Z`);
+    for (const k of teethL) {
+      const y = yL(k.t, c);
+      k.el.setAttribute("y", (y - k.h).toFixed(1));
+      k.el.setAttribute("height", (k.h + 4).toFixed(1));
+    }
+  }
+  setJaw(0);
+
+  // ---------- the laugh plan: one schedule drives both the audio and the jaw ----------
+  function makePlan(level) {
+    const L = Math.min(level, 14), r = Math.random;
+    const n = Math.min(4 + Math.floor(L / 2.5) + (r() < 0.5 ? 0 : 1), 10);
+    const base = 235 - L * 6 + r() * 25;
+    const pulses = [];
+    let t = 0;
+    for (let i = 0; i < n; i++) {
+      const dur = 0.12 + r() * 0.05 + L * 0.004;
+      const f = base * Math.pow(0.95 - L * 0.002, i) * (1 + (r() - 0.5) * 0.07);
+      pulses.push({ t, dur, f, a: 1 - i * 0.035, dive: false });
+      // gaps stretch near the end, like a battery running down
+      t += dur + 0.06 + r() * 0.05 + L * 0.006 + (i > n * 0.6 ? L * 0.008 : 0);
+    }
+    if (L >= 5) pulses.push({ t: t + 0.08 + L * 0.01, dur: 0.45 + L * 0.03, f: pulses[n - 1].f * 0.9, a: 0.9, dive: true });
+    const last = pulses[pulses.length - 1];
+    return {
+      honkDur: 0.38, laughAt: 0.5, pulses, honkF: 405 + r() * 25,
+      ringRate: 26 + r() * 14 + L * 2.5, ringDepth: Math.min(0.5, 0.2 + L * 0.025), crush: Math.max(5, 16 - L),
+      end: 0.5 + last.t + last.dur + 0.35,
+    };
+  }
+  // jaw/amp envelope for one "ha": 30 ms attack, then exponential decay
+  function env(dt, dur) {
+    if (dt < 0) return 0;
+    if (dt < 0.03) return dt / 0.03;
+    const v = Math.exp(-(dt - 0.03) / (dur * 0.45));
+    return v < 0.02 ? 0 : v;
+  }
+
+  // ---------- Web Audio synthesis ----------
+  const noiseCache = new WeakMap();
+  function noise(c) {
+    let b = noiseCache.get(c);
+    if (!b) {
+      b = c.createBuffer(1, c.sampleRate, c.sampleRate);
+      const d = b.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+      noiseCache.set(c, b);
+    }
+    const s = c.createBufferSource();
+    s.buffer = b; s.loop = true;
+    return s;
+  }
+  function scheduleHonk(c, out, t, plan, srcs) {
+    const dur = plan.honkDur, g = c.createGain(), lp = c.createBiquadFilter(), pk = c.createBiquadFilter();
+    lp.type = "lowpass"; lp.frequency.value = 2200; lp.Q.value = 3;
+    pk.type = "peaking"; pk.frequency.value = 900; pk.Q.value = 1.4; pk.gain.value = 6;
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(0.22, t + 0.015);
+    g.gain.setValueAtTime(0.22, t + dur);
+    g.gain.linearRampToValueAtTime(0, t + dur + 0.06);
+    for (const [type, f] of [["square", plan.honkF], ["sawtooth", plan.honkF * 1.2], ["square", plan.honkF * 1.2 * 1.007]]) {
+      const o = c.createOscillator();
+      o.type = type;
+      o.frequency.setValueAtTime(f * 0.94, t);
+      o.frequency.exponentialRampToValueAtTime(f, t + 0.04);
+      o.frequency.setValueAtTime(f, t + dur - 0.04);
+      o.frequency.exponentialRampToValueAtTime(f * 0.96, t + dur + 0.06);
+      o.connect(lp);
+      o.start(t); o.stop(t + dur + 0.1);
+      srcs.push(o);
+    }
+    lp.connect(pk); pk.connect(g); g.connect(out);
+  }
+  function scheduleLaugh(c, out, plan, t0, srcs) {
+    const saws = [0, 13].map((det) => { const o = c.createOscillator(); o.type = "sawtooth"; o.detune.value = det; return o; });
+    const sub = c.createOscillator(); sub.type = "sine";
+    const vib = c.createOscillator(), vibAmt = c.createGain();
+    vib.frequency.value = 6.5; vibAmt.gain.value = 18;
+    vib.connect(vibAmt); saws.forEach((o) => vibAmt.connect(o.detune));
+    const voice = c.createGain(), breath = c.createGain(), clack = c.createGain(), subG = c.createGain();
+    voice.gain.value = 0; breath.gain.value = 0; clack.gain.value = 0; subG.gain.value = 0.3;
+    saws.forEach((o) => o.connect(voice));
+    const nz = noise(c), nz2 = noise(c);
+    nz.connect(breath);
+    // "ah" formants
+    const fsum = c.createGain();
+    const F = [[730, 6, 1], [1180, 8, 0.7], [2500, 10, 0.28]].map(([f, q, lvl]) => {
+      const bp = c.createBiquadFilter(), g = c.createGain();
+      bp.type = "bandpass"; bp.frequency.value = f; bp.Q.value = q; g.gain.value = lvl;
+      voice.connect(bp); breath.connect(bp); bp.connect(g); g.connect(fsum);
+      return bp;
+    });
+    // bitcrush-ish stair-step shaper, mixed with the dry formants
+    const drive = c.createGain(), crush = c.createWaveShaper(), wet = c.createGain(), dry = c.createGain();
+    drive.gain.value = 3; wet.gain.value = 0.45; dry.gain.value = 0.8;
+    const N = 1024, curve = new Float32Array(N);
+    for (let i = 0; i < N; i++) { const x = (i / (N - 1)) * 2 - 1; curve[i] = Math.round(Math.tanh(x * 1.5) * plan.crush) / plan.crush; }
+    crush.curve = curve;
+    fsum.connect(drive); drive.connect(crush); crush.connect(wet); fsum.connect(dry);
+    const amp = c.createGain(); amp.gain.value = 0;
+    wet.connect(amp); dry.connect(amp);
+    sub.connect(subG); subG.connect(amp);
+    // ring-mod wobble: gain swings between 1 - 2*depth and 1 at an audio-ish rate
+    const ring = c.createGain(), lfo = c.createOscillator(), depth = c.createGain();
+    ring.gain.value = 1 - plan.ringDepth; lfo.frequency.value = plan.ringRate; depth.gain.value = plan.ringDepth;
+    lfo.connect(depth); depth.connect(ring.gain);
+    amp.connect(ring);
+    const lvl = c.createGain(); lvl.gain.value = 1.1;
+    ring.connect(lvl); lvl.connect(out);
+    // jaw "clack" at the end of each ha
+    const hp = c.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 2500;
+    nz2.connect(hp); hp.connect(clack); clack.connect(out);
+
+    for (const p of plan.pulses) {
+      const t = t0 + p.t, d = p.dur;
+      const fEnd = p.dive ? p.f * 0.4 : p.f * 0.86;
+      for (const o of saws) { o.frequency.setValueAtTime(p.f * 1.08, t); o.frequency.exponentialRampToValueAtTime(fEnd, t + d); }
+      sub.frequency.setValueAtTime(p.f * 0.54, t); sub.frequency.exponentialRampToValueAtTime(fEnd / 2, t + d);
+      F[0].frequency.setValueAtTime(730 * (0.94 + Math.random() * 0.12), t);
+      F[1].frequency.setValueAtTime(1220, t); F[1].frequency.linearRampToValueAtTime(p.dive ? 800 : 1060, t + d);
+      if (p.dive) { F[0].frequency.linearRampToValueAtTime(480, t + d); depth.gain.setValueAtTime(plan.ringDepth, t); depth.gain.linearRampToValueAtTime(0.5, t + d); }
+      breath.gain.setValueAtTime(0, t); breath.gain.linearRampToValueAtTime(0.6, t + 0.012); breath.gain.linearRampToValueAtTime(0.06, t + 0.05);
+      voice.gain.setValueAtTime(0, t); voice.gain.linearRampToValueAtTime(1, t + 0.035); voice.gain.setTargetAtTime(0, t + 0.035 + d * 0.35, d * 0.3);
+      amp.gain.setValueAtTime(0, t); amp.gain.linearRampToValueAtTime(p.a, t + 0.025); amp.gain.setTargetAtTime(0, t + 0.03, d * 0.45);
+      const ct = t + d * 0.9;
+      clack.gain.setValueAtTime(0, ct); clack.gain.linearRampToValueAtTime(0.3, ct + 0.003); clack.gain.linearRampToValueAtTime(0, ct + 0.028);
+    }
+    const end = t0 + plan.end - plan.laughAt;
+    for (const s of [...saws, sub, vib, lfo, nz, nz2]) { s.start(t0 - 0.01); s.stop(end); srcs.push(s); }
+  }
+
+  let ctx = null, master = null, session = null, muted = false;
+  const MUTE_KEY = "shellyeah-wheel-muted";
+  try { muted = localStorage.getItem(MUTE_KEY) === "1"; } catch (e) {}
+  function audio() {
+    if (muted) return null;
+    try {
+      if (!ctx) {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return null;
+        ctx = new AC();
+        master = ctx.createGain(); master.gain.value = 0.8;
+        const comp = ctx.createDynamicsCompressor();
+        master.connect(comp); comp.connect(ctx.destination);
+      }
+      if (ctx.state !== "running") ctx.resume().catch(() => {});
+      return ctx;
+    } catch (e) { ctx = null; return null; }
+  }
+  function stopSound() {
+    const s = session;
+    session = null;
+    if (!s || !ctx) return;
+    try {
+      const now = ctx.currentTime;
+      s.out.gain.cancelScheduledValues(now);
+      s.out.gain.setValueAtTime(s.out.gain.value, now);
+      s.out.gain.linearRampToValueAtTime(0, now + 0.03);
+      s.srcs.forEach((n) => { try { n.stop(now + 0.05); } catch (e) {} });
+      setTimeout(() => { try { s.out.disconnect(); } catch (e) {} }, 250);
+    } catch (e) {}
+  }
+
+  // ---------- honking, counting, captions ----------
+  let honks = 0, run = null, typer = null;
+  const LINES = {
+    1: "It liked that.",
+    2: "Honk received. Grin maintained.",
+    3: "Was it smiling this much before?",
+    4: "It would like to take you for a shell of a ride.",
+    5: "Please keep your hands at ten and two. It's counting your fingers.",
+    6: "Slow and steady wins the race. It is neither.",
+    7: "Its jaw servo has never been this happy.",
+    8: "Somewhere, a pizza-parlor birthday song starts playing backwards.",
+    9: "It knows where you parked.",
+  };
+  const LATER = ["No brakes. Only teeth.", "Buckle up, little shell.", "Who's steering? Not you. Not for a while now.", "Ha. Ha. Ha. (whirr, click)", "It has memorized your turn signals.", "Fun fact: it does not have an off switch. We checked the shell."];
+  const TYPED = { 10: "I've always wanted to drive a turtle…", 20: "Hands at ten and two. Forever and ever and ever…" };
+  function creepName(n) {
+    return n === 0 ? "Dormant" : n < 3 ? "Awake" : n < 6 ? "Grinning" : n < 10 ? "Pizza-parlor" : n < 15 ? "Do not make eye contact" : "Fully animatronic";
+  }
+  function say(text, typed) {
+    clearInterval(typer); typer = null;
+    cap.classList.remove("typing");
+    if (!typed || reduce) { cap.removeAttribute("aria-busy"); cap.textContent = text; return; }
+    cap.textContent = ""; cap.classList.add("typing"); cap.setAttribute("aria-busy", "true");
+    let i = 0;
+    typer = setInterval(() => {
+      cap.textContent = text.slice(0, ++i);
+      if (i >= text.length) {
+        clearInterval(typer); typer = null;
+        cap.removeAttribute("aria-busy");
+        setTimeout(() => { if (!typer) cap.classList.remove("typing"); }, 1800);
+      }
+    }, 75);
+  }
+  function honk() {
+    honks++;
+    const plan = makePlan(honks);
+    stopSound();
+    let lat = 0;
+    const c = audio();
+    if (c) {
+      try {
+        const out = c.createGain(), srcs = [];
+        out.connect(master);
+        const t = c.currentTime + 0.03;
+        scheduleHonk(c, out, t, plan, srcs);
+        scheduleLaugh(c, out, plan, t + plan.laughAt, srcs);
+        session = { out, srcs };
+        lat = 30 + (c.outputLatency || c.baseLatency || 0) * 1000;
+      } catch (e) { session = null; }
+    }
+    run = { start: performance.now() + lat, plan };
+    countEl.textContent = honks;
+    creepEl.textContent = creepName(honks);
+    if (TYPED[honks]) say(TYPED[honks], true);
+    else say(LINES[honks] || LATER[Math.floor(Math.random() * LATER.length)], false);
+    if (TYPED[honks]) {
+      const r = horn.getBoundingClientRect();
+      document.dispatchEvent(new CustomEvent("shellburst", { detail: { x: r.left + r.width / 2, y: r.top + r.height / 2, colors: ["var(--lie)", "var(--ink)"], n: 18 } }));
+    }
+    start();
+  }
+  horn.addEventListener("click", honk);
+  horn.addEventListener("pointerdown", () => stage.classList.add("pressed"));
+  muteBtn.textContent = muted ? "Unmute" : "Mute";
+  muteBtn.setAttribute("aria-pressed", String(muted));
+  muteBtn.addEventListener("click", () => {
+    muted = !muted;
+    muteBtn.textContent = muted ? "Unmute" : "Mute";
+    muteBtn.setAttribute("aria-pressed", String(muted));
+    try { localStorage.setItem(MUTE_KEY, muted ? "1" : "0"); } catch (e) {}
+    if (muted) stopSound();
+  });
+  calmBtn.addEventListener("click", () => {
+    stopSound(); run = null; honks = 0;
+    countEl.textContent = "0"; creepEl.textContent = creepName(0);
+    say("It's sleeping now. Probably. (It isn't.)", false);
+  });
+
+  // ---------- eyes, blinks, shudder: one rAF loop, only while this tab is open ----------
+  const look = { x: 300, y: 330 }, eyeNow = [[0, 0], [0, 0]];
+  const blinkAt = [performance.now() + 1500, performance.now() + 2600];
+  let active = false, raf = null, angle = 0, twitchAt = performance.now() + 4000, twitchEnd = 0;
+  window.addEventListener("pointermove", (e) => {
+    if (!active) return;
+    const m = svg.getScreenCTM();
+    if (!m) return;
+    const p = new DOMPoint(e.clientX, e.clientY).matrixTransform(m.inverse());
+    look.x = p.x; look.y = p.y;
+  }, { passive: true });
+
+  function frame(now) {
+    let o = 0, honking = 0, laughing = 0, el = 0;
+    if (run) {
+      const p = run.plan;
+      el = (now - run.start) / 1000;
+      if (el > p.end) { run = null; session = null; stage.classList.remove("pressed"); }
+      else {
+        if (el > -0.05 && el < p.honkDur + 0.05) honking = 1;
+        const lt = el - p.laughAt;
+        if (lt > -0.05) laughing = 1;
+        for (const q of p.pulses) o = Math.max(o, env(lt - q.t, q.dur) * q.a);
+      }
+    }
+    if (!run && !reduce && now > twitchAt) { twitchEnd = now + 140; twitchAt = now + 3500 + Math.random() * 6000; }
+    if (!run && now < twitchEnd) o = 0.18;
+    stage.classList.toggle("pressed", honking > 0);
+    setJaw(o * OPEN_PX);
+    flash.setAttribute("opacity", (honking * 0.32 + o * 0.22).toFixed(3));
+    const glow = laughing ? 0.55 + 0.45 * o : 0;
+    glows.forEach((g) => g.setAttribute("opacity", glow.toFixed(3)));
+    stage.style.setProperty("--wh-glow", (laughing ? 0.4 + 0.6 * o : honking * 0.3).toFixed(3));
+
+    // shudder: wobble back and forth while laughing, buzz while honking
+    let target = 0;
+    if (!reduce) {
+      if (laughing) target = Math.sin(el * 19) * 3.2 + (Math.random() - 0.5) * 5 * o;
+      else if (honking) target = (Math.random() - 0.5) * 1.6;
+    }
+    angle += (target - angle) * (laughing || honking ? 0.6 : 0.15);
+    if (Math.abs(angle) < 0.01) angle = 0;
+    spin.setAttribute("transform", angle ? `rotate(${angle.toFixed(2)} 300 300)` : "");
+
+    // eyes: track the pointer, each at its own lag; while laughing they stare and shrink
+    for (let i = 0; i < 2; i++) {
+      const [cx, cy] = EYES[i];
+      let dx = look.x - cx, dy = look.y - cy;
+      const len = Math.hypot(dx, dy) || 1, k = Math.min(7, len * 0.06);
+      dx = (dx / len) * k; dy = (dy / len) * k;
+      if (laughing) { dx = 0; dy = 1; if (!reduce) { dx += (Math.random() - 0.5) * 3 * o; dy += (Math.random() - 0.5) * 3 * o; } }
+      const lag = reduce ? 1 : i ? 0.08 : 0.22;
+      eyeNow[i][0] += (dx - eyeNow[i][0]) * lag; eyeNow[i][1] += (dy - eyeNow[i][1]) * lag;
+      const s = laughing ? 0.7 : 1;
+      pupils[i].setAttribute("transform", `translate(${(cx + eyeNow[i][0]).toFixed(2)} ${(cy + eyeNow[i][1]).toFixed(2)}) scale(${s}) translate(${-cx} ${-cy})`);
+      // out-of-sync blinks; droopy lids at rest, wide open while laughing
+      const rest = laughing ? 0 : 11;
+      let h = rest;
+      const bt = now - blinkAt[i];
+      if (bt > 0 && bt < 170) h = rest + (42 - rest) * Math.sin((bt / 170) * Math.PI);
+      else if (bt >= 170) blinkAt[i] = now + 1400 + Math.random() * (i ? 5200 : 3600);
+      lids[i].setAttribute("height", h.toFixed(1));
+    }
+    raf = active ? requestAnimationFrame(frame) : null;
+  }
+  function start() { if (active && !raf) raf = requestAnimationFrame(frame); }
+  function setActive(on) {
+    active = on;
+    if (on) { start(); return; }
+    stopSound(); run = null;
+    stage.classList.remove("pressed");
+    if (ctx && ctx.state === "running") ctx.suspend().catch(() => {});
+  }
+  document.addEventListener("tabchange", (e) => setActive(e.detail === "wheel"));
+  document.addEventListener("visibilitychange", () => { if (document.hidden) { stopSound(); run = null; } });
+  setActive(document.body.dataset.tab === "wheel");
+
+  // test hook, only with ?wheeldebug in the URL
+  if (/[?&]wheeldebug\b/.test(location.search)) {
+    window.__wheel = {
+      state: () => ({ ctx: ctx && ctx.state, laughing: !!run, session: !!session, honks, jaw: jawNow, angle }),
+      async render(level = 1) {
+        const plan = makePlan(level), sr = 22050;
+        const oc = new OfflineAudioContext(1, Math.ceil(sr * (plan.end + 0.2)), sr);
+        const out = oc.createGain(), srcs = [];
+        out.connect(oc.destination);
+        scheduleHonk(oc, out, 0, plan, srcs);
+        scheduleLaugh(oc, out, plan, plan.laughAt, srcs);
+        const d = (await oc.startRendering()).getChannelData(0), win = Math.round(sr * 0.01), rms = [];
+        for (let i = 0; i + win <= d.length; i += win) { let s = 0; for (let j = i; j < i + win; j++) s += d[j] * d[j]; rms.push(Math.sqrt(s / win)); }
+        return { rms, laughAt: plan.laughAt, pulses: plan.pulses.map((p) => +(p.t + plan.laughAt).toFixed(3)) };
+      },
+    };
+  }
+})();
+</script>
+<!-- WHEEL:END script -->
 </body>
 </html>
