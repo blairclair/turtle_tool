@@ -270,7 +270,7 @@
     animation: ping 1.8s ease-out infinite;
   }
   @keyframes ping { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--shell) 70%, transparent); } 100% { box-shadow: 0 0 0 9px transparent; } }
-  body[data-tab="game"] .homelinks, body[data-tab="smilene"] .homelinks, body[data-tab="school"] .homelinks, body[data-tab="wheel"] .homelinks { display: none; }
+  body[data-tab="game"] .homelinks, body[data-tab="smilene"] .homelinks, body[data-tab="school"] .homelinks, body[data-tab="wheel"] .homelinks, body[data-tab="karaoke"] .homelinks, body[data-tab="chef"] .homelinks { display: none; }
   .brand svg { transition: transform 0.3s cubic-bezier(.3,1.6,.6,1); }
   .brand:hover svg { transform: translateX(4px) rotate(-6deg); }
   .btn.play-cta { background: var(--shell); color: var(--on-accent); }
@@ -546,6 +546,354 @@
     #whFace { transition: none; }
   }
   /* WHEEL:END */
+  /* KARAOKE:BEGIN */
+  /* ---------- Shell-ebrity Karaoke Night ---------- */
+  #tab-karaoke [hidden] { display: none !important; }
+  .karaoke-page { padding-block: 44px 72px; }
+  .kara-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 560px); gap: 36px; align-items: start; }
+  .kara-intro { display: grid; gap: 16px; min-width: 0; }
+  .kara-intro h2 { font-size: var(--step-3); }
+  .kara-story { max-width: 52ch; }
+  .kara-songs { border: 0; margin: 0; padding: 0; display: grid; gap: 8px; min-width: 0; }
+  .kara-songs legend { padding: 0; margin-bottom: 8px; }
+  .kara-song {
+    display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 2px 12px; align-items: center;
+    padding: 10px 14px; border: 1.5px solid var(--line); border-radius: 16px; background: var(--surface); cursor: pointer;
+    transition: border-color 0.2s, transform 0.15s;
+  }
+  .kara-song:hover { transform: translateY(-2px); }
+  .kara-song:has(input:checked) { border-color: var(--shell); box-shadow: inset 0 0 0 1px var(--shell); }
+  .kara-song input {
+    appearance: none; -webkit-appearance: none; margin: 0; width: 18px; height: 18px; border-radius: 50%;
+    border: 2px solid var(--muted); background: var(--bg); grid-row: span 2; cursor: pointer;
+  }
+  .kara-song input:checked { border-color: var(--shell); background: var(--shell); box-shadow: inset 0 0 0 3px var(--surface); }
+  .kara-song .k-t { font-weight: 600; line-height: 1.25; min-width: 0; }
+  .kara-song .k-g { grid-column: 2; font-family: var(--mono); font-size: var(--step--1); color: var(--muted); }
+  .kara-song .k-b { grid-row: 1 / span 2; grid-column: 3; font-family: var(--mono); font-size: var(--step--1); color: var(--shell); text-align: right; font-variant-numeric: tabular-nums; }
+  .kara-toggle { display: flex; gap: 10px; align-items: flex-start; cursor: pointer; }
+  .kara-toggle input { margin-top: 0.3em; width: 18px; height: 18px; accent-color: var(--shell); flex: none; }
+  .kara-main { display: grid; gap: 12px; min-width: 0; }
+  .hud.kara-hud { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .kara-hud b { font-size: 1.45rem; }
+
+  /* the stage keeps a fixed night-club palette, so it reads the same on light and dark pages */
+  .kara-stage {
+    --k-ink: #FFF4E2; --k-dim: rgba(255, 244, 226, 0.6); --k-pink: #FF5FA2; --k-cyan: #3EE6E0; --k-gold: #FFD23F;
+    --k-velvet: #8E1F35; --k-velvet-2: #B4334B; --spot: rgba(255, 210, 63, 0.3);
+    position: relative; isolation: isolate; overflow: hidden; min-height: 450px;
+    display: grid; grid-template-rows: auto auto 1fr; border-radius: 22px; border: 3px solid var(--ink);
+    background: radial-gradient(120% 75% at 50% 0%, #3A2160 0%, #1C1032 55%, #110A1E 100%);
+    color: var(--k-ink); padding: 26px 9% 0;
+  }
+  .kara-stage[data-style="disco"] { --spot: rgba(255, 95, 162, 0.32); }
+  .kara-stage[data-style="shanty"] { --spot: rgba(62, 230, 224, 0.26); }
+  .kara-stage[data-style="reggae"] { --spot: rgba(150, 230, 90, 0.28); }
+  .k-valance {
+    position: absolute; top: 0; left: 0; right: 0; height: 22px; z-index: 3;
+    background: radial-gradient(circle at 50% 0, var(--k-velvet-2) 68%, transparent 70%) 0 0 / 30px 24px repeat-x;
+  }
+  .k-curtain {
+    position: absolute; top: 0; bottom: 0; width: 7%; z-index: 3;
+    background: repeating-linear-gradient(90deg, var(--k-velvet) 0 7px, var(--k-velvet-2) 7px 12px, var(--k-velvet) 12px 16px);
+    transition: transform 0.8s cubic-bezier(.2,.8,.3,1);
+  }
+  .k-curtain.l { left: 0; border-bottom-right-radius: 60% 18%; }
+  .k-curtain.r { right: 0; border-bottom-left-radius: 60% 18%; }
+  .kara-stage.playing .k-curtain.l { transform: translateX(-35%); }
+  .kara-stage.playing .k-curtain.r { transform: translateX(35%); }
+  .k-spot {
+    position: absolute; top: 0; bottom: 0; left: 50%; width: 70%; translate: -50% 0; z-index: 0; pointer-events: none;
+    clip-path: polygon(44% 0, 56% 0, 100% 100%, 0 100%);
+    background: linear-gradient(var(--spot), transparent 92%); transform-origin: 50% 0;
+  }
+  .kara-stage.playing .k-spot { animation: k-sweep 5s ease-in-out infinite alternate; }
+  @keyframes k-sweep { from { transform: rotate(-7deg); } to { transform: rotate(7deg); } }
+  .k-sign { position: relative; z-index: 2; text-align: center; font-family: var(--display); font-size: clamp(1.15rem, 4.2vw, 1.6rem); line-height: 1.05; color: var(--k-pink); text-shadow: 0 0 6px rgba(255, 95, 162, 0.85), 0 0 18px rgba(255, 95, 162, 0.5); animation: k-flicker 7s linear infinite; }
+  .k-sign small { display: block; margin-top: 3px; font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--k-cyan); text-shadow: 0 0 8px rgba(62, 230, 224, 0.7); }
+  @keyframes k-flicker { 0%, 90%, 93%, 100% { opacity: 1; } 91% { opacity: 0.45; } 92% { opacity: 0.9; } 92.5% { opacity: 0.5; } }
+  .k-screen {
+    position: relative; z-index: 2; margin-top: 12px; padding: 10px 14px 12px; text-align: center; min-width: 0;
+    background: rgba(8, 4, 16, 0.62); border: 1px solid rgba(255, 244, 226, 0.14); border-radius: 14px;
+  }
+  .k-screen .label { color: var(--k-cyan); }
+  .k-lyric { position: relative; padding-top: 24px; min-height: calc(24px + 2 * 1.3em); font-family: var(--display); font-size: clamp(1.15rem, 4.4vw, 1.55rem); line-height: 1.3; }
+  .k-cur { margin: 0; overflow-wrap: anywhere; }
+  .kw {
+    position: relative; display: inline-block; color: transparent; -webkit-background-clip: text; background-clip: text;
+    background-image: linear-gradient(90deg, var(--k-gold) 0 var(--p, 0%), var(--k-ink) var(--p, 0%) 100%);
+  }
+  .kw.tgt::after {
+    content: ""; position: absolute; left: 50%; bottom: -5px; width: 9px; height: 9px; translate: -50% 0;
+    background: var(--k-cyan); clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+  }
+  .kw.tgt.perfect::after { background: var(--k-gold); }
+  .kw.tgt.good::after { background: #9CE36B; }
+  .kw.tgt.miss::after { background: var(--k-pink); opacity: 0.6; }
+  .k-ball { position: absolute; left: 0; top: 0; width: 30px; height: 18px; pointer-events: none; will-change: transform; --legs: running; filter: drop-shadow(0 0 4px rgba(255, 210, 63, 0.7)); }
+  .k-ball[data-off] { opacity: 0; }
+  .k-next { margin: 6px 0 0; min-height: 1.4em; font-style: italic; color: var(--k-dim); font-size: 0.98rem; }
+  .k-judge {
+    position: absolute; left: 50%; bottom: calc(100% + 6px); z-index: 4; translate: -50% 0; margin: 0; white-space: nowrap; pointer-events: none; opacity: 0;
+    font-family: var(--display); font-size: clamp(1.1rem, 4vw, 1.45rem); color: var(--k-gold); text-shadow: 0 2px 0 #110A1E, 0 0 12px rgba(255, 210, 63, 0.6);
+  }
+  .k-judge.good { color: #9CE36B; }
+  .k-judge.miss { color: var(--k-pink); }
+  .k-floor { position: relative; z-index: 4; align-self: end; display: flex; align-items: flex-end; justify-content: center; gap: clamp(4px, 2vw, 16px); padding-bottom: 34px; margin-top: 10px; }
+  .k-floor > div { position: relative; display: grid; justify-items: center; gap: 2px; }
+  .k-floor span { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.06em; color: var(--k-dim); white-space: nowrap; }
+  .k-dancer { width: clamp(52px, 16%, 84px); }
+  .k-tucker { width: clamp(92px, 30%, 150px); margin-right: 14px; }
+  .k-floor svg { display: block; width: 100%; height: auto; aspect-ratio: 120 / 70; overflow: visible; }
+  .k-floor .k-mic { position: absolute; right: -16px; bottom: 16px; width: 16px; height: auto; aspect-ratio: 16 / 64; }
+  .k-mic line { stroke: #C9C2D6; stroke-width: 2.5; stroke-linecap: round; }
+  .k-mic rect { fill: #3B3550; stroke: #C9C2D6; stroke-width: 1.5; }
+  .k-dancer.flip use { transform: scaleX(-1); transform-box: fill-box; transform-origin: center; }
+  .kara-stage.playing { --legs: running; }
+  .kara-stage.beat-a .k-dancer svg { animation: k-hop-a 0.32s ease-out; }
+  .kara-stage.beat-b .k-dancer svg { animation: k-hop-b 0.32s ease-out; }
+  .kara-stage.beat-a .k-tucker .k-turtle { animation: k-sway 0.4s ease-out; }
+  .kara-stage.beat-b .k-tucker .k-turtle { animation: k-sway-b 0.4s ease-out; }
+  @keyframes k-hop-a { 35% { transform: translateY(-10px) rotate(-8deg); } }
+  @keyframes k-hop-b { 35% { transform: translateY(-10px) rotate(8deg); } }
+  @keyframes k-sway { 40% { transform: translateY(-3px) rotate(-3deg); } }
+  @keyframes k-sway-b { 40% { transform: translateY(-3px) rotate(3deg); } }
+  .k-crowd { position: absolute; left: 0; right: 0; bottom: -4px; z-index: 2; display: flex; justify-content: space-around; pointer-events: none; }
+  .k-crowd i {
+    display: block; width: 34px; height: 38px;
+    background: radial-gradient(circle at 50% 32%, #07040D 0 10px, transparent 11px), radial-gradient(ellipse 17px 14px at 50% 100%, #07040D 0 98%, transparent 100%);
+  }
+  .k-crowd i:nth-child(odd) { translate: 0 6px; }
+  .kara-stage.hype .k-crowd i { animation: k-cheer 0.42s ease-in-out infinite alternate; animation-delay: calc(var(--i) * -0.11s); }
+  @keyframes k-cheer { to { transform: translateY(-7px); } }
+  .k-results {
+    position: absolute; inset: 0; z-index: 6; display: flex; flex-direction: column; align-items: center; gap: 8px;
+    padding: 22px; text-align: center; overflow-y: auto; background: rgba(17, 10, 30, 0.93);
+  }
+  .k-results > :first-child { margin-top: auto; }
+  .k-results > :last-child { margin-bottom: auto; }
+  .k-results .label { color: var(--k-cyan); }
+  .k-results h3 { font-size: clamp(1.6rem, 6vw, 2.3rem); color: var(--k-gold); outline: none; }
+  .k-stars { font-size: 1.5rem; letter-spacing: 0.1em; color: var(--k-gold); margin: 0; }
+  .k-quip { max-width: 34ch; color: var(--k-dim); font-style: italic; }
+  .k-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 6px 0 0; width: min(100%, 420px); }
+  .k-stats div { background: rgba(255, 244, 226, 0.07); border-radius: 10px; padding: 6px 4px; min-width: 0; }
+  .k-stats dt { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--k-dim); }
+  .k-stats dd { margin: 0; font-family: var(--display); font-size: 1.3rem; font-variant-numeric: tabular-nums; }
+  .k-bestnote { font-family: var(--mono); font-size: var(--step--1); color: var(--k-pink); min-height: 1.2em; }
+  .k-resbtns { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 4px; }
+  .k-results .btn { background: var(--k-gold); color: #1C1032; }
+  .k-results .btn.ghost { background: transparent; color: var(--k-ink); box-shadow: inset 0 0 0 1.5px var(--k-ink); }
+  .k-hype { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: center; }
+  .k-meter { height: 12px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); overflow: hidden; }
+  .k-meter span { display: block; height: 100%; width: var(--h, 30%); border-radius: inherit; background: linear-gradient(90deg, var(--sea), var(--moss), var(--shell)); transition: width 0.25s ease; }
+  .kara-lane { position: relative; height: 46px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); overflow: hidden; }
+  .k-hitzone { position: absolute; left: 26px; top: 50%; width: 32px; height: 32px; translate: -50% -50%; border: 2px dashed var(--shell); border-radius: 50%; }
+  .kara-lane.flash .k-hitzone { background: color-mix(in srgb, var(--shell) 30%, transparent); }
+  .k-gem {
+    position: absolute; left: 0; top: 50%; width: 20px; height: 22px; margin: -11px 0 0 -10px; will-change: transform;
+    background: var(--sea); clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+  }
+  .k-gem.perfect { background: var(--shell); }
+  .k-gem.good { background: var(--moss); }
+  .k-gem.miss { background: var(--lie); opacity: 0.45; }
+  .kara-tap {
+    width: 100%; border: 0; border-radius: 18px; padding: 16px 18px 14px; cursor: pointer; touch-action: manipulation;
+    font-family: var(--display); font-size: clamp(1.3rem, 5vw, 1.7rem); line-height: 1.1; color: var(--on-accent); background: var(--shell);
+    box-shadow: 0 6px 0 color-mix(in srgb, var(--shell) 55%, var(--ink)); transition: transform 0.06s, box-shadow 0.06s;
+  }
+  .kara-tap small { font-family: var(--mono); font-size: 0.75rem; opacity: 0.85; }
+  .kara-tap:active:not(:disabled), .kara-tap.down { transform: translateY(4px); box-shadow: 0 2px 0 color-mix(in srgb, var(--shell) 55%, var(--ink)); }
+  .kara-tap:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none; }
+  .kara-controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .kara-controls .btn { padding: 10px 18px; }
+  .kara-controls .btn.ghost[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+  .k-vol { display: flex; align-items: center; gap: 8px; flex: 1 1 140px; min-width: 0; }
+  .k-vol input { flex: 1; min-width: 0; accent-color: var(--shell); }
+  .k-status { min-height: 1.3em; }
+  .kara-main.casual .kara-lane, .kara-main.casual .kara-tap { display: none; }
+  @media (max-width: 860px) { .kara-layout { grid-template-columns: 1fr; } }
+  @media (max-width: 560px) {
+    .hud.kara-hud { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .kara-stage { min-height: 420px; padding-inline: 8%; }
+    .k-results { padding: 16px 12px; gap: 6px; }
+    .k-quip { font-size: 0.95rem; }
+    .k-stats dt { font-size: 0.55rem; letter-spacing: 0; overflow-wrap: anywhere; }
+    .k-stats dd { font-size: 1.1rem; }
+    .k-results .btn { padding: 9px 14px; font-size: 0.8rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .k-sign, .kara-stage.playing .k-spot, .kara-stage .k-dancer svg, .kara-stage .k-tucker .k-turtle, .kara-stage.hype .k-crowd i, .k-ball { animation: none !important; }
+    .k-curtain, .kara-song, .kara-tap, .k-meter span { transition: none; }
+    .kara-song:hover { transform: none; }
+  }
+  /* KARAOKE:END */
+  /* CHEF:BEGIN */
+  /* ---------- Le Cordon Shell-eu (Chef School) ---------- */
+  #tab-chef [hidden] { display: none !important; }
+  .chef-page { padding-block: 44px 72px; }
+  .ck-head { display: grid; gap: 12px; margin-bottom: 26px; max-width: 66ch; }
+  .ck-head h2 { font-size: var(--step-3); }
+  .ck-head h2 .accent { color: var(--shell); }
+  .ck-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 300px); gap: 28px; align-items: start; }
+  .ck-main { min-width: 0; display: grid; gap: 14px; }
+  .ck-side { display: grid; gap: 18px; min-width: 0; }
+  .ck-kitchen {
+    --tile: color-mix(in srgb, var(--line) 55%, transparent);
+    position: relative; min-width: 0; min-height: 400px; overflow: hidden;
+    border: 3px solid var(--ink); border-radius: 22px; padding: 14px; display: grid; gap: 12px; align-content: start;
+    background-color: var(--surface);
+    background-image: linear-gradient(45deg, var(--tile) 25%, transparent 25%, transparent 75%, var(--tile) 75%),
+                      linear-gradient(45deg, var(--tile) 25%, transparent 25%, transparent 75%, var(--tile) 75%);
+    background-size: 36px 36px; background-position: 0 0, 18px 18px;
+  }
+  .ck-rail { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; font-family: var(--mono); font-size: var(--step--1); }
+  .ck-ticket {
+    background: var(--bg); color: var(--ink); border: 1.5px dashed var(--muted); border-radius: 4px; padding: 3px 10px;
+    transform: rotate(-1.2deg); white-space: nowrap; max-width: 100%; overflow: hidden; text-overflow: ellipsis;
+  }
+  .ck-ticket b { color: var(--shell); font-weight: 500; }
+  .ck-progress { color: var(--muted); font-variant-numeric: tabular-nums; }
+  .ck-strikes { display: inline-flex; gap: 4px; align-items: center; }
+  .ck-strike {
+    width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--line); background: var(--bg);
+    display: grid; place-items: center; font-size: 0.72rem; line-height: 1; color: transparent;
+  }
+  .ck-strike.on { background: var(--lie); border-color: var(--lie); color: var(--on-accent); }
+  .ck-rail .btn.small { margin-left: auto; padding: 6px 12px; font-size: 0.74rem; }
+  .ck-pass { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: end; gap: 10px; }
+  .ck-tucker { width: 88px; height: 66px; display: block; }
+  .ck-tucker.go { --legs: running; }
+  .ck-smilene { width: 54px; height: 64px; display: block; }
+  .ck-hat { fill: var(--surface); stroke: var(--ink); stroke-width: 2; }
+  .ck-bubble {
+    position: relative; min-width: 0; background: var(--bg); border: 2px solid var(--ink); border-radius: 16px;
+    padding: 6px 12px 7px; margin-bottom: 10px;
+  }
+  .ck-bubble::after {
+    content: ""; position: absolute; right: -9px; bottom: 12px; width: 14px; height: 14px; background: var(--bg);
+    border-right: 2px solid var(--ink); border-bottom: 2px solid var(--ink); transform: rotate(-45deg);
+  }
+  .ck-bubble .label { font-size: 0.66rem; display: block; }
+  .ck-say { font-style: italic; line-height: 1.3; min-height: 2.6em; overflow-wrap: anywhere; }
+  .ck-next { font-family: var(--mono); font-size: var(--step--1); color: var(--muted); min-height: 1.4em; }
+  .ck-next b { color: var(--ink); font-weight: 500; }
+  .ck-belt {
+    --b1: #3A4139; --b2: #4C5549; /* rubber belt: fixed scene palette, like the Dash canvas */
+    position: relative; height: 96px; border-radius: 14px; touch-action: none;
+    border-block: 6px solid var(--ink);
+    background: repeating-linear-gradient(90deg, var(--b1) 0 18px, var(--b2) 18px 36px);
+  }
+  .ck-belt::after {
+    content: ""; position: absolute; top: 0; bottom: 0; right: 0; width: 10px; border-radius: 0 10px 10px 0;
+    background: repeating-linear-gradient(180deg, var(--lie) 0 8px, var(--shell) 8px 16px);
+  }
+  .ck-item {
+    position: absolute; left: 4px; top: 50%; width: 64px; height: 74px; margin-top: -37px;
+    display: grid; grid-template-rows: 1fr auto; justify-items: center; align-items: center; padding: 4px 2px 5px;
+    background: var(--surface); color: var(--ink); border: 2px solid var(--line); border-radius: 12px;
+    box-shadow: 0 5px 0 -1px color-mix(in srgb, var(--ink) 55%, transparent); user-select: none; -webkit-user-select: none;
+    will-change: transform;
+  }
+  .ck-emoji { font-size: 2.1rem; line-height: 1; }
+  .ck-name { font-family: var(--mono); font-size: 0.56rem; line-height: 1.1; text-align: center; color: var(--muted); max-width: 100%; overflow-wrap: anywhere; }
+  .ck-item.next { border-color: var(--shell); box-shadow: 0 0 0 3px color-mix(in srgb, var(--shell) 45%, transparent), 0 5px 0 -1px color-mix(in srgb, var(--ink) 55%, transparent); cursor: grab; }
+  .ck-item.next::before {
+    content: "NEXT"; position: absolute; top: -9px; left: 50%; transform: translateX(-50%);
+    font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.08em; padding: 1px 6px; border-radius: 999px;
+    background: var(--shell); color: var(--on-accent);
+  }
+  .ck-item.hot { border-color: var(--lie); }
+  .ck-item.hot .ck-emoji { animation: ck-wobble 0.35s ease-in-out infinite; }
+  .ck-item.is-dragging { opacity: 0.3; }
+  .ck-item.ck-ghost { position: fixed; z-index: 60; pointer-events: none; margin: 0; top: 0; left: 0; }
+  .ck-item.ck-fly { position: fixed; z-index: 60; pointer-events: none; margin: 0; top: 0; left: 0; }
+  @keyframes ck-wobble { 0%, 100% { transform: rotate(-7deg); } 50% { transform: rotate(7deg); } }
+  .ck-bins { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+  .ck-bin {
+    --c: var(--moss);
+    position: relative; min-width: 0; display: grid; justify-items: center; gap: 2px; padding: 8px 3px 8px;
+    border: 2px solid var(--ink); border-top: 7px solid var(--c); border-radius: 6px 6px 18px 18px;
+    background: color-mix(in srgb, var(--c) 16%, var(--surface)); color: var(--ink);
+    font-family: var(--mono); font-size: 0.7rem; line-height: 1.15; cursor: pointer; touch-action: manipulation;
+    transition: transform 0.12s ease, background 0.2s;
+  }
+  .ck-bin:hover { transform: translateY(-2px); }
+  .ck-bin:active { transform: scale(0.95); }
+  .ck-bin[data-bin="fruit"] { --c: var(--lie); }
+  .ck-bin[data-bin="sea"] { --c: var(--sea); }
+  .ck-bin[data-bin="sweet"] { --c: var(--shell); }
+  .ck-bin[data-bin="junk"] { --c: var(--muted); }
+  .ck-bin .ico { font-size: 1.7rem; line-height: 1.1; }
+  .ck-bin .nm { text-align: center; overflow-wrap: anywhere; }
+  .ck-bin kbd {
+    font-family: var(--mono); font-size: 0.62rem; border: 1px solid var(--muted); border-radius: 4px; padding: 0 5px; color: var(--muted);
+  }
+  .ck-kitchen, .ck-ceremony { scroll-margin-top: 80px; }
+  .ck-bins.kb .ck-bin.sel { outline: 3px dashed var(--c); outline-offset: 2px; }
+  .ck-bin.ok { background: color-mix(in srgb, var(--moss) 45%, var(--surface)); }
+  .ck-bin.bad { background: color-mix(in srgb, var(--lie) 45%, var(--surface)); }
+  .ck-bin.drop { box-shadow: 0 0 0 3px var(--c); }
+  .ck-kitchen .toast { top: 44%; }
+  .ck-ov-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+  .ck-kitchen .overlay .label { color: var(--shell); }
+  .ck-side .hud b { font-size: 1.5rem; }
+  .ck-recipe {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 6px 6px 18px 18px; padding: 16px 18px; display: grid; gap: 10px;
+    border-top: 6px solid var(--shell);
+  }
+  .ck-recipe h3 { font-family: var(--mono); font-size: var(--step--1); font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
+  .ck-recipe ol { margin: 0; padding-left: 1.2em; display: grid; gap: 7px; color: var(--muted); font-size: 0.98rem; }
+  .ck-recipe b { color: var(--ink); font-weight: 600; }
+  .ck-recipe kbd { font-family: var(--mono); font-size: 0.78rem; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; color: var(--ink); background: var(--bg); }
+  /* the ceremony */
+  .ck-ceremony {
+    border: 3px solid var(--ink); border-radius: 22px; padding: clamp(18px, 4vw, 36px); display: grid; gap: 14px; justify-items: center; text-align: center;
+    background: radial-gradient(circle at 50% 24%, color-mix(in srgb, var(--shell) 26%, var(--surface)), var(--surface) 62%);
+  }
+  .ck-ceremony:focus { outline: none; }
+  .ck-ceremony h3 { font-size: clamp(1.9rem, 6.5vw, 3.1rem); color: var(--shell); }
+  .ck-podium { width: 100%; max-width: 480px; height: auto; display: block; }
+  .ck-podium .ck-tuck { --legs: running; }
+  .ck-gold-a { stop-color: color-mix(in srgb, var(--shell) 30%, #FFF4C2); }
+  .ck-gold-b { stop-color: color-mix(in srgb, var(--shell) 55%, #F2C14E); }
+  .ck-gold-c { stop-color: color-mix(in srgb, var(--shell) 70%, #6B4300); }
+  .ck-ray { fill: var(--shell); opacity: 0.22; }
+  .ck-rays { animation: ck-spin 26s linear infinite; }
+  .ck-bob { animation: ck-bob 3.2s ease-in-out infinite; }
+  .ck-spark { fill: color-mix(in srgb, var(--shell) 22%, #FFFDF4); stroke: var(--shell); stroke-width: 1; transform-box: fill-box; transform-origin: center; animation: ck-twinkle 1.8s ease-in-out infinite; animation-delay: var(--sd, 0s); }
+  .ck-step { font-family: var(--display); }
+  @keyframes ck-spin { to { transform: rotate(360deg); } }
+  @keyframes ck-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+  @keyframes ck-twinkle { 0%, 100% { transform: scale(0.3); opacity: 0.2; } 50% { transform: scale(1.1); opacity: 1; } }
+  .ck-speech { margin: 0; max-width: 58ch; padding-block: 14px; border-block: 3px solid var(--shell); display: grid; gap: 8px; }
+  .ck-speech p { font-size: var(--step-1); font-style: italic; line-height: 1.4; }
+  .ck-speech cite { font-family: var(--mono); font-size: var(--step--1); font-style: normal; color: var(--muted); }
+  .ck-final { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 22px; font-family: var(--mono); font-size: var(--step--1); color: var(--muted); }
+  .ck-final b { color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; }
+  .ck-grade { font-family: var(--display); font-size: var(--step-1); color: var(--sea); }
+  @media (max-width: 860px) { .ck-layout { grid-template-columns: 1fr; } }
+  @media (max-width: 560px) {
+    .ck-kitchen, .ck-ceremony { scroll-margin-top: 140px; }
+  }
+  @media (max-width: 480px) {
+    .ck-kitchen { padding: 10px; gap: 10px; border-radius: 18px; }
+    .ck-bins { gap: 5px; }
+    .ck-bin { font-size: 0.58rem; padding: 7px 2px; border-radius: 5px 5px 14px 14px; }
+    .ck-bin .ico { font-size: 1.45rem; }
+    .ck-item { width: 56px; height: 66px; margin-top: -33px; }
+    .ck-emoji { font-size: 1.8rem; }
+    .ck-name { font-size: 0.5rem; }
+    .ck-tucker { width: 70px; height: 52px; }
+    .ck-smilene { width: 44px; height: 52px; }
+    .ck-belt { height: 86px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ck-rays, .ck-bob, .ck-spark, .ck-item.hot .ck-emoji { animation: none !important; }
+    .ck-spark { transform: none; opacity: 1; }
+    .ck-bin { transition: none; }
+  }
+  /* CHEF:END */
   @media (max-width: 760px) {
     .pond, .namer { grid-template-columns: 1fr; }
     .honor { grid-template-columns: 1fr; }
@@ -594,6 +942,10 @@
       <!-- WHEEL:BEGIN tab -->
       <button class="tab" role="tab" type="button" id="tabbtn-wheel" data-tab="wheel" aria-controls="tab-wheel" aria-selected="false">Honk?</button>
       <!-- WHEEL:END tab -->
+      <!-- KARAOKE:BEGIN tab -->
+      <button class="tab" role="tab" type="button" id="tabbtn-karaoke" data-tab="karaoke" aria-controls="tab-karaoke" aria-selected="false">Karaoke</button>
+      <!-- KARAOKE:END tab -->
+      <!-- CHEF:BEGIN tab --><button class="tab" role="tab" type="button" id="tabbtn-chef" data-tab="chef" aria-controls="tab-chef" aria-selected="false">Chef School</button><!-- CHEF:END tab -->
       <button class="tab play" role="tab" type="button" id="tabbtn-game" data-tab="game" aria-controls="tab-game" aria-selected="false">Playground Dash</button>
       <button class="tab play" role="tab" type="button" id="tabbtn-school" data-tab="school" aria-controls="tab-school" aria-selected="false">Turtle School</button>
     </div>
@@ -1013,6 +1365,259 @@
   </div>
 </section>
 <!-- WHEEL:END panel -->
+<!-- KARAOKE:BEGIN panel -->
+<section class="tabpanel karaoke-page" id="tab-karaoke" role="tabpanel" aria-labelledby="tabbtn-karaoke" hidden>
+  <div class="wrap kara-layout">
+    <div class="kara-intro">
+      <p class="label">Live tonight at The Slow Lounge</p>
+      <h2>Shell-ebrity Karaoke Night</h2>
+      <p class="kara-story">Tucker has the mic. The backup turtles have their dance moves (both of them). The crowd has lettuce. Pick a song, follow the bouncing turtle, and tap on the glowing words to earn Shell-ebrity points. There's no microphone, so we're trusting you to actually sing.</p>
+      <fieldset class="kara-songs" id="kSongs">
+        <legend class="label">Tonight's setlist</legend>
+      </fieldset>
+      <label class="kara-toggle"><input type="checkbox" id="kSingAlong"><span><b>Sing-along mode.</b> Lyrics only. No scoring, no pressure, no judgment from the frogs.</span></label>
+      <ul class="how">
+        <li><b>Follow the bouncing turtle</b> as it hops from word to word.</li>
+        <li><b>Tap</b> the big button, or press <b>Space</b>, the moment it lands on a word marked ⬢.</li>
+        <li><b>Shell-tastic</b> is spot on, <b>Turtle-y in time</b> is close, and <b>too slow</b> is, frankly, very on-brand.</li>
+      </ul>
+    </div>
+    <div class="kara-main" id="kMain">
+      <div class="hud kara-hud">
+        <div><span class="label">Points</span><b id="kScore">0</b></div>
+        <div><span class="label">Combo</span><b id="kCombo">0</b></div>
+        <div><span class="label">Best</span><b id="kBest">0</b></div>
+        <div><span class="label">Hits</span><b id="kHits">0/0</b></div>
+      </div>
+      <div class="kara-stage" id="kStage" data-style="disco">
+        <div class="k-spot" aria-hidden="true"></div>
+        <div class="k-valance" aria-hidden="true"></div>
+        <div class="k-curtain l" aria-hidden="true"></div>
+        <div class="k-curtain r" aria-hidden="true"></div>
+        <p class="k-sign" aria-hidden="true">The Slow Lounge<small>Shell-ebrity karaoke night</small></p>
+        <div class="k-screen" role="group" aria-label="Lyrics">
+          <p class="label k-section" id="kSection">Up next</p>
+          <div class="k-lyric">
+            <svg class="k-ball" id="kBall" viewBox="0 0 120 70" aria-hidden="true" data-off><use href="#turtle"/></svg>
+            <p class="k-cur" id="kCur"></p>
+          </div>
+          <p class="k-next" id="kNext"></p>
+        </div>
+        <div class="k-floor" aria-hidden="true">
+          <p class="k-judge" id="kJudge"></p>
+          <div class="k-dancer"><svg viewBox="0 0 120 70"><use href="#turtle"/></svg><span>AriShella</span></div>
+          <div class="k-dancer"><svg viewBox="0 0 120 70"><use href="#turtle"/></svg><span>Smilene</span></div>
+          <div class="k-tucker">
+            <svg class="k-turtle" viewBox="0 0 120 70"><use href="#turtle"/></svg>
+            <svg class="k-mic" viewBox="0 0 16 64"><line x1="8" y1="12" x2="8" y2="62"/><line x1="2" y1="62" x2="14" y2="62"/><rect x="3" y="0" width="10" height="15" rx="5"/></svg>
+            <span>Tucker</span>
+          </div>
+          <div class="k-dancer flip"><svg viewBox="0 0 120 70"><use href="#turtle"/></svg><span>Pip</span></div>
+        </div>
+        <div class="k-crowd" aria-hidden="true">
+          <i style="--i:0"></i><i style="--i:1"></i><i style="--i:2"></i><i style="--i:3"></i><i style="--i:4"></i><i style="--i:5"></i>
+          <i style="--i:6"></i><i style="--i:7"></i><i style="--i:8"></i><i style="--i:9"></i>
+        </div>
+        <div class="k-results" id="kResults" hidden>
+          <p class="label" id="kResSong">Results</p>
+          <p class="k-stars" id="kStars" aria-hidden="true"></p>
+          <h3 id="kRank" tabindex="-1">Shell-ebrity Superstar</h3>
+          <p class="k-quip" id="kQuip"></p>
+          <dl class="k-stats" id="kStats">
+            <div><dt>Points</dt><dd id="kResScore">0</dd></div>
+            <div><dt>Shell-tastic</dt><dd id="kResP">0</dd></div>
+            <div><dt>In time</dt><dd id="kResG">0</dd></div>
+            <div><dt>Too slow</dt><dd id="kResM">0</dd></div>
+          </dl>
+          <p class="k-bestnote" id="kBestNote"></p>
+          <div class="k-resbtns">
+            <button class="btn" id="kAgain" type="button">Sing it again</button>
+            <button class="btn ghost" id="kClose" type="button">Back to the setlist</button>
+          </div>
+        </div>
+      </div>
+      <div class="k-hype"><span class="label">Crowd hype</span><div class="k-meter" id="kHype" role="meter" aria-label="Crowd hype" aria-valuemin="0" aria-valuemax="100" aria-valuenow="30"><span></span></div></div>
+      <div class="kara-lane" id="kLane" aria-hidden="true"><span class="k-hitzone"></span></div>
+      <button class="kara-tap" id="kTap" type="button" disabled>Tap the beat <small>(or Space)</small></button>
+      <div class="kara-controls">
+        <button class="btn" id="kPlay" type="button">Play</button>
+        <button class="btn ghost" id="kRestart" type="button">Restart</button>
+        <button class="btn ghost" id="kMute" type="button" aria-pressed="false">Mute</button>
+        <label class="k-vol"><span class="label">Volume</span><input type="range" id="kVol" min="0" max="100" value="80"></label>
+      </div>
+      <p class="label k-status" id="kStatus" aria-live="polite"></p>
+    </div>
+  </div>
+</section>
+<!-- KARAOKE:END panel -->
+<!-- CHEF:BEGIN panel -->
+<section class="tabpanel chef-page" id="tab-chef" role="tabpanel" aria-labelledby="tabbtn-chef" hidden>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="ck-chef" viewBox="0 0 124 92">
+        <use href="#turtle" x="0" y="20" width="120" height="70"/>
+        <rect class="ck-hat" x="95" y="41" width="22" height="9" rx="2"/>
+        <circle class="ck-hat" cx="98" cy="36" r="7"/>
+        <circle class="ck-hat" cx="114" cy="36" r="7"/>
+        <circle class="ck-hat" cx="106" cy="30" r="9"/>
+        <path d="M95 41 H117" fill="none" stroke="var(--surface)" stroke-width="3"/>
+      </symbol>
+      <symbol id="ck-smilene-head" viewBox="0 0 60 72">
+        <rect class="ck-hat" x="15" y="24" width="30" height="10" rx="2"/>
+        <circle class="ck-hat" cx="19" cy="18" r="8"/>
+        <circle class="ck-hat" cx="41" cy="18" r="8"/>
+        <circle class="ck-hat" cx="30" cy="11" r="10"/>
+        <path d="M15 24 H45" fill="none" stroke="var(--surface)" stroke-width="3"/>
+        <circle class="t-skin" cx="30" cy="50" r="19"/>
+        <circle class="ill-blush" cx="43" cy="58" r="4"/>
+        <circle class="ill-blush" cx="17" cy="58" r="4"/>
+        <circle class="ill-lens" cx="23" cy="46" r="6" style="stroke-width:2"/>
+        <circle class="ill-lens" cx="37" cy="46" r="6" style="stroke-width:2"/>
+        <path class="ill-line" d="M29 46 H31" style="stroke-width:2"/>
+        <circle class="t-eye" cx="23" cy="47" r="1.6"/>
+        <circle class="t-eye" cx="37" cy="47" r="1.6"/>
+        <path class="ill-line" d="M22 58 Q30 65 38 58" style="stroke-width:2"/>
+      </symbol>
+    </defs>
+  </svg>
+  <div class="wrap">
+    <header class="ck-head">
+      <p class="label">Minigame · Culinary division</p>
+      <h2>Le Cordon <span class="accent">Shell-eu</span></h2>
+      <p>Tucker has hung up his recess sneakers and enrolled at Le Cordon Shell-eu, the slowest and most prestigious cooking school in the pond. Head Chef Smilene runs the kitchen. Before any student touches a stove, they must pass the Great Pantry Sort: three rounds, one conveyor belt, and a worrying number of socks. Sort every ingredient into the right bin and the Golden Spoon of Glory is Tucker's.</p>
+    </header>
+    <div class="ck-layout">
+      <div class="ck-main">
+        <div class="ck-kitchen" id="ckKitchen">
+          <div class="ck-rail">
+            <span class="ck-ticket" id="ckRoundName">Round <b>1</b> · Salad Days</span>
+            <span class="ck-progress" id="ckProgress">0 / 16 sorted</span>
+            <span class="ck-strikes" id="ckStrikes" role="img" aria-label="0 of 3 strikes"><span class="ck-strike">✕</span><span class="ck-strike">✕</span><span class="ck-strike">✕</span></span>
+            <button class="btn ghost small" id="ckPause" type="button">Pause</button>
+          </div>
+          <div class="ck-pass">
+            <svg class="ck-tucker" id="ckTucker" aria-hidden="true"><use href="#ck-chef"/></svg>
+            <div class="ck-bubble">
+              <span class="label">Chef Smilene</span>
+              <p class="ck-say" id="ckSay" aria-live="polite">Welcome to my kitchen, Tucker. Apron on, flippers washed.</p>
+            </div>
+            <svg class="ck-smilene" aria-hidden="true"><use href="#ck-smilene-head"/></svg>
+          </div>
+          <p class="ck-next" id="ckNext">Next up: <b>nothing yet</b></p>
+          <div class="ck-belt" id="ckBelt" aria-hidden="true"></div>
+          <div class="ck-bins" id="ckBins" role="group" aria-label="Ingredient bins">
+            <button class="ck-bin" type="button" data-bin="veg"><span class="ico" aria-hidden="true">🥕</span><span class="nm">Veggies</span><kbd>1</kbd></button>
+            <button class="ck-bin" type="button" data-bin="fruit"><span class="ico" aria-hidden="true">🍎</span><span class="nm">Fruits</span><kbd>2</kbd></button>
+            <button class="ck-bin" type="button" data-bin="sea"><span class="ico" aria-hidden="true">🦐</span><span class="nm">Sea snacks</span><kbd>3</kbd></button>
+            <button class="ck-bin" type="button" data-bin="sweet"><span class="ico" aria-hidden="true">🍰</span><span class="nm">Desserts</span><kbd>4</kbd></button>
+            <button class="ck-bin" type="button" data-bin="junk"><span class="ico" aria-hidden="true">🧦</span><span class="nm">Not food</span><kbd>5</kbd></button>
+          </div>
+          <div class="overlay" id="ckOverlay">
+            <p class="label" id="ckOvKicker">Le Cordon Shell-eu · Orientation</p>
+            <h3 id="ckOvTitle">Welcome to chef school</h3>
+            <p id="ckOvText">Sort each ingredient into the right bin before it rolls off the end of the belt. Three rounds stand between Tucker and the Golden Spoon of Glory.</p>
+            <div class="ck-ov-actions">
+              <button class="btn" id="ckGo" type="button">Tie on the apron</button>
+              <button class="btn ghost" id="ckAlt" type="button" hidden>Start over</button>
+            </div>
+          </div>
+          <div class="toast" id="ckToast" aria-live="polite"></div>
+        </div>
+
+        <div class="ck-ceremony" id="ckCeremony" tabindex="-1" hidden>
+          <p class="label">Le Cordon Shell-eu · Graduation day</p>
+          <h3>The Golden Spoon of Glory</h3>
+          <svg class="ck-podium" id="ckPodium" viewBox="0 0 360 250" role="img" aria-label="Tucker in a chef's hat stands on the winner's podium under a gleaming golden spoon. The Hare is in second place and a frog is in third.">
+            <defs>
+              <linearGradient id="ckGold" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" class="ck-gold-a"/>
+                <stop offset="0.5" class="ck-gold-b"/>
+                <stop offset="1" class="ck-gold-c"/>
+              </linearGradient>
+              <linearGradient id="ckGoldIn" x1="1" y1="0" x2="0" y2="1">
+                <stop offset="0" class="ck-gold-a"/>
+                <stop offset="1" class="ck-gold-c"/>
+              </linearGradient>
+              <radialGradient id="ckGlow">
+                <stop offset="0" class="ck-gold-a" stop-opacity="0.9"/>
+                <stop offset="1" class="ck-gold-b" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+            <g transform="translate(180 62)">
+              <g class="ck-rays">
+                <path class="ck-ray" d="M0 0 L-9 -150 L9 -150Z"/>
+                <path class="ck-ray" d="M0 0 L-9 -150 L9 -150Z" transform="rotate(30)"/>
+                <path class="ck-ray" d="M0 0 L-9 -150 L9 -150Z" transform="rotate(60)"/>
+                <path class="ck-ray" d="M0 0 L-9 -150 L9 -150Z" transform="rotate(90)"/>
+                <path class="ck-ray" d="M0 0 L-9 -150 L9 -150Z" transform="rotate(120)"/>
+                <path class="ck-ray" d="M0 0 L-9 -150 L9 -150Z" transform="rotate(150)"/>
+                <path class="ck-ray" d="M0 0 L-9 -150 L9 -150Z" transform="rotate(180)"/>
+                <path class="ck-ray" d="M0 0 L-9 -150 L9 -150Z" transform="rotate(210)"/>
+                <path class="ck-ray" d="M0 0 L-9 -150 L9 -150Z" transform="rotate(240)"/>
+                <path class="ck-ray" d="M0 0 L-9 -150 L9 -150Z" transform="rotate(270)"/>
+                <path class="ck-ray" d="M0 0 L-9 -150 L9 -150Z" transform="rotate(300)"/>
+                <path class="ck-ray" d="M0 0 L-9 -150 L9 -150Z" transform="rotate(330)"/>
+              </g>
+              <circle r="54" fill="url(#ckGlow)"/>
+            </g>
+            <g class="ck-bob">
+              <g transform="translate(182 56) rotate(-26) scale(0.74)">
+                <path d="M-5 -10 Q-3 22 -9 54 Q0 68 9 54 Q3 22 5 -10Z" fill="url(#ckGold)" stroke="var(--ink)" stroke-width="2.4"/>
+                <ellipse cx="0" cy="-38" rx="21" ry="28" fill="url(#ckGold)" stroke="var(--ink)" stroke-width="2.4"/>
+                <ellipse cx="1" cy="-36" rx="14" ry="20" fill="url(#ckGoldIn)"/>
+                <ellipse cx="-8" cy="-46" rx="4" ry="10" fill="#FFFDF4" opacity="0.75"/>
+                <path d="M-1 18 Q0 34 -2 46" fill="none" stroke="#FFFDF4" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+              </g>
+            </g>
+            <g transform="translate(132 24)"><path class="ck-spark" style="--sd:0s" d="M0 -9 L2 -2 L9 0 L2 2 L0 9 L-2 2 L-9 0 L-2 -2Z"/></g>
+            <g transform="translate(228 40)"><path class="ck-spark" style="--sd:-0.6s" d="M0 -9 L2 -2 L9 0 L2 2 L0 9 L-2 2 L-9 0 L-2 -2Z"/></g>
+            <g transform="translate(206 104)"><path class="ck-spark" style="--sd:-1.2s" d="M0 -7 L1.6 -1.6 L7 0 L1.6 1.6 L0 7 L-1.6 1.6 L-7 0 L-1.6 -1.6Z"/></g>
+            <g transform="translate(148 92)"><path class="ck-spark" style="--sd:-0.9s" d="M0 -6 L1.4 -1.4 L6 0 L1.4 1.4 L0 6 L-1.4 1.4 L-6 0 L-1.4 -1.4Z"/></g>
+            <rect class="ill-ground" x="0" y="238" width="360" height="12"/>
+            <rect x="40" y="196" width="92" height="44" rx="4" fill="var(--sea)" stroke="var(--ink)" stroke-width="2.5"/>
+            <rect x="228" y="208" width="92" height="32" rx="4" fill="var(--moss)" stroke="var(--ink)" stroke-width="2.5"/>
+            <rect x="130" y="166" width="100" height="74" rx="4" fill="var(--shell)" stroke="var(--ink)" stroke-width="2.5"/>
+            <text class="ck-step" x="180" y="218" text-anchor="middle" font-size="36" fill="var(--on-accent)">1</text>
+            <text class="ck-step" x="86" y="230" text-anchor="middle" font-size="22" fill="var(--on-accent)">2</text>
+            <text class="ck-step" x="274" y="234" text-anchor="middle" font-size="18" fill="var(--on-accent)">3</text>
+            <text x="86" y="192" text-anchor="middle" font-size="34">🐇</text>
+            <text x="274" y="204" text-anchor="middle" font-size="30">🐸</text>
+            <use class="ck-tuck" href="#ck-chef" x="126" y="96" width="104" height="77"/>
+          </svg>
+          <p class="ck-grade" id="ckGrade">Grand Chef de Shell-uisine</p>
+          <blockquote class="ck-speech">
+            <p id="ckSpeech"></p>
+            <cite>Head Chef Smilene, judge, mentor, and wearer of the tallest hat in the pond</cite>
+          </blockquote>
+          <p class="ck-final" id="ckFinal"></p>
+          <div class="ck-ov-actions">
+            <button class="btn" id="ckAgain" type="button">Cook it again</button>
+          </div>
+        </div>
+      </div>
+
+      <aside class="ck-side" aria-label="Kitchen scoreboard and rules">
+        <div class="hud" aria-live="off">
+          <div><span class="label">Score</span><b id="ckScore">0</b></div>
+          <div><span class="label">Best</span><b id="ckBest">0</b></div>
+          <div><span class="label">Combo</span><b id="ckCombo">x1</b></div>
+          <div><span class="label">Round</span><b id="ckRoundNum">1/3</b></div>
+        </div>
+        <div class="ck-recipe">
+          <h3>Recipe for victory</h3>
+          <ol>
+            <li><b>Sort the glowing NEXT ingredient</b> into its bin before it rolls off the end of the belt.</li>
+            <li><b>Tap a bin</b>, or <b>drag</b> the ingredient onto one.</li>
+            <li><b>Keys:</b> <kbd>1</kbd>–<kbd>5</kbd> pick a bin. Or <kbd>←</kbd> <kbd>→</kbd> to choose and <kbd>Enter</kbd> to drop. <kbd>P</kbd> pauses.</li>
+            <li><b>Combos:</b> every 5 in a row raises your multiplier, up to x4. Quick sorts score extra.</li>
+            <li><b>Three strikes</b> (wrong bin or a dropped ingredient) and you redo the round.</li>
+          </ol>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+<!-- CHEF:END panel -->
 <section class="tabpanel game-page" id="tab-game" role="tabpanel" aria-labelledby="tabbtn-game" hidden>
   <div class="wrap game-layout">
     <div class="game-intro">
@@ -1315,7 +1920,7 @@
   const $ = (id) => document.getElementById(id);
 
   // ---------- tabs ----------
-  const panels = { home: $("tab-home"), game: $("tab-game"), smilene: $("tab-smilene"), school: $("tab-school"), wheel: $("tab-wheel") };
+  const panels = { home: $("tab-home"), game: $("tab-game"), smilene: $("tab-smilene"), school: $("tab-school"), wheel: $("tab-wheel"), karaoke: $("tab-karaoke"), chef: $("tab-chef") };
   const tabBtns = document.querySelectorAll('[role="tab"]');
   let current = "home";
   function setHash(h) { try { history.replaceState(null, "", h); } catch (e) {} }
@@ -2778,5 +3383,1253 @@
 })();
 </script>
 <!-- WHEEL:END script -->
+<!-- KARAOKE:BEGIN script -->
+<script>
+(() => {
+  // =====================================================================
+  // Shell-ebrity Karaoke Night: original songs, synthesized live with Web Audio
+  // =====================================================================
+  const $ = (id) => document.getElementById(id);
+  const panel = $("tab-karaoke");
+  if (!panel) return;
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // ---------- songs (all lyrics and melodies are original) ----------
+  // A lyric line is "word/beats/step" tokens. step = scale step from the tonic (0 = tonic, 7 = octave up).
+  // A leading * marks a tap target. "-" is a rest. Lines start on a bar line.
+  const MAJOR = [0, 2, 4, 5, 7, 9, 11], MINOR = [0, 2, 3, 5, 7, 8, 10];
+  const SONGS = [
+    {
+      id: "weekend", title: "Shell Yeah, It's the Weekend", genre: "Disco bop", style: "disco",
+      bpm: 116, tonic: 64, scale: MAJOR, lineBars: 2, intro: ["1", "4"], outro: ["1", "1"],
+      verse1: { chords: ["1 6", "4 5", "1 6", "4 5"], lines: [
+        "*Five/1/4 long/1/4 days/1/5 at/.5/4 the/.5/3 *bottom/1/2 of/.5/1 the/.5/2 pond,/2/0",
+        "*Counting/1/4 every/1/4 lily/1/5 pad,/1/4 *one/1/3 by/.5/2 one./1.5/1 -/1",
+        "*Now/1/4 the/.5/4 moon/1/5 is/.5/4 up/1/4 and/.5/3 the/.5/2 *frogs/1/2 are/.5/1 on,/1.5/0",
+        "*Slide/1/7 off/.5/5 the/.5/4 log,/1/3 it's/.5/4 *time/1/5 for/.5/6 fun!/2/4 -/1",
+      ] },
+      chorus: { chords: ["1 4", "6 5", "1 4", "5 1"], lines: [
+        "-/.5 *Shell/1/7 yeah!/1.5/7 It's/.5/5 the/.5/4 *weekend!/3/5 -/1",
+        "*Shake/1/4 that/.5/4 tail/1.5/5 and/.5/4 *shine/1/7 that/.5/6 shell!/2/4 -/1",
+        "*Every/1/4 turtle/1/5 on/.5/4 the/.5/3 *dance/1/4 floor,/2/0 -/2",
+        "*Movin'/1/4 slow/1/4 but/.5/5 movin'/1/6 *well!/3/7 -/1.5",
+      ] },
+      verse2: { chords: ["1 6", "4 5", "1 6", "4 5"], lines: [
+        "*Tucker's/1/4 on/.5/4 the/.5/4 mic/1/5 and/.5/4 he's/.5/3 *dressed/1/2 to/.5/1 the/.5/2 nines,/2/0",
+        "*AriShella's/2/4 got/.5/5 the/.5/4 *lettuce/1/3 in/1/2 a/.5/2 line,/1.5/1 -/1",
+        "*Smilene/1/4 says,/.5/4 \"Be/1/5 kind/.5/4 on/1/4 the/.5/3 *dance/1/2 floor!\"/1.5/0 -/1",
+        "*Hatchlings/1.5/7 crawling/1/5 back/1/4 for/.5/5 *more!/2/4 -/2",
+      ] },
+    },
+    {
+      id: "slowheart", title: "My Heart Beats Slow for You", genre: "Turtle power ballad", style: "ballad",
+      bpm: 66, tonic: 65, scale: MAJOR, lineBars: 1, intro: ["1", "4"], outro: ["4", "1"],
+      verse1: { chords: ["1", "6", "4", "5"], lines: [
+        "I've/.5/2 *waited/1/4 by/.5/4 the/.5/3 *riverbank/1.5/2",
+        "for/.5/4 *ninety-seven/1.5/5 *springs./2/2",
+        "My/.5/3 *heart/.5/5 beats/.5/4 *slow/1/3 and/.5/2 true,/1/3",
+        "and/.5/4 it/.5/4 *beats/1/5 for/.5/6 *you./1.5/4",
+      ] },
+      chorus: { chords: ["4 5", "1 6", "4 5", "1"], lines: [
+        "My/.5/3 heart/.5/4 beats/.5/5 *slow/1/6 for/.5/5 *you,/1/4",
+        "*slow/1/7 as/.5/6 the/.5/5 *river/1/4 bends./1/2",
+        "Love/.5/3 takes/.5/4 its/.5/5 *time,/1/6 it's/.5/5 *true,/1/4",
+        "and/.5/2 it's/.5/2 *all/1/4 for/.5/1 *you./1.5/0",
+      ] },
+      verse2: { chords: ["1", "6", "4", "5"], lines: [
+        "The/.5/2 *hare/1/4 ran/.5/4 off/.5/3 so/.5/2 *fast,/1/2",
+        "but/.5/4 I'm/.5/4 *still/1/5 here/.5/4 at/.5/3 *dawn./1/2",
+        "I'll/.5/3 *bring/1/5 you/.5/4 *lettuce/1/3 too,/1/1",
+        "*romaine,/1.5/4 just/.5/5 for/.5/6 *you./1.5/4",
+      ] },
+    },
+    {
+      id: "sunnyrock", title: "Haul Away for the Sunny Rock", genre: "Sea shanty sing-along", style: "shanty",
+      bpm: 108, tonic: 62, scale: MINOR, lineBars: 2, intro: ["1", "5^"], outro: ["5^", "1"],
+      verse1: { chords: ["1 7", "1 5^", "1 7", "3 5^"], lines: [
+        "Oh,/.5/0 we/.5/0 *set/1/2 off/.5/2 to/.5/3 *sea/1/4 in/.5/3 the/.5/2 springtime,/2/1 -/1",
+        "*Six/1/0 slow/1/2 turtles/1/4 and/.5/4 a/.5/3 *captain/1.5/4 named/.5/3 Lou./1.5/1 -/.5",
+        "He/.5/0 said,/.5/2 *\"Lads,/1/4 we'll/.5/4 be/.5/3 *there/1/2 by/.5/3 the/.5/2 weekend!\"/2/1 -/1",
+        "But/.5/4 he/.5/4 *didn't/1/5 say/.5/4 which/.5/3 *one,/1/2 it's/.5/4 true./2.5/1 -/1",
+      ] },
+      chorus: { chords: ["1 4", "3 5^", "1 3", "7 1"], lines: [
+        "So/.5/4 *haul/1/7 away,/1/6 *haul/1/5 away,/1/4 slowly!/2/3 -/1.5",
+        "*Paddle/1.5/2 left/.5/3 and/.5/4 then/.5/4 *paddle/1.5/6 right!/2/4 -/1.5",
+        "We'll/.5/4 get/.5/4 to/.5/4 the/.5/5 *sunny/1/7 rock/1/6 *eventually,/3/4 -/1",
+        "*Maybe/1/3 Tuesday,/1.5/2 maybe/1/1 *tonight!/2.5/0 -/2",
+      ] },
+      verse2: { chords: ["1 7", "1 5^", "1 7", "3 5^"], lines: [
+        "Now/.5/0 the/.5/0 *wind's/1/2 at/.5/2 our/.5/3 *back/1/4 and/.5/3 the/.5/2 waves/1/1 are/.5/1 high,/1.5/1",
+        "And/.5/0 we've/.5/0 *moved/1/2 about/1/4 *four/1/4 feet/1/4 today./2/1 -/1",
+        "Oh,/.5/0 the/.5/2 *gulls/1/4 flew/.5/4 by/.5/3 and/.5/2 they/.5/2 *laughed/1/3 and/.5/2 laughed,/1.5/1 -/1",
+        "But/.5/4 a/.5/4 *turtle/1/5 won't/.5/4 mind/.5/3 *what/1/2 they/.5/4 say!/2.5/1 -/1",
+      ] },
+    },
+    {
+      id: "lettuce", title: "Lettuce Dance", genre: "Leafy reggae", style: "reggae",
+      bpm: 80, tonic: 67, scale: MAJOR, lineBars: 1, intro: ["1", "5"], outro: ["5", "1"],
+      verse1: { chords: ["1", "4", "1", "5"], lines: [
+        "Little/.5/4 *leaf/1/4 on/.5/5 the/.5/4 garden/.5/2 *wall,/1/2",
+        "*Crispy,/1/3 green/.5/4 and/.5/5 standing/1/4 *tall,/1/3",
+        "*Every/1/2 turtle/1/4 feels/.5/4 the/.5/5 *call:/1/4",
+        "time/.5/4 to/.5/4 do/.5/5 the/.5/6 *lettuce/1/5 *crawl!/1/4",
+      ] },
+      chorus: { chords: ["4", "1", "4", "5 1"], lines: [
+        "*Lettuce/1/7 dance,/1/5 *lettuce/1/7 sway,/1/5",
+        "*lettuce/1/7 munch/.5/6 the/.5/5 day/1/4 *away./1/2",
+        "*Slow/1/3 your/.5/3 feet/.5/4 and/.5/5 *nod/.5/4 your/.5/3 head,/.5/3",
+        "*lettuce/1/4 dance,/.5/4 then/.5/3 off/.5/2 to/.5/1 *bed!/1/0",
+      ] },
+      verse2: { chords: ["1", "4", "1", "5"], lines: [
+        "*Kale/1/4 is/.5/4 cool/.5/5 and/.5/4 *cress/.5/2 is/.5/2 fine,/.5/0",
+        "*cabbage/1/3 waiting/1/4 in/.5/5 the/.5/4 *line,/1/3",
+        "but/.5/2 when/.5/2 the/.5/2 *lettuce/1/4 starts/.5/4 to/.5/5 *shine,/.5/4",
+        "*turtles/1/4 do/.5/5 it/.5/6 every/1/5 *time!/1/4",
+      ] },
+    },
+  ];
+
+  // ---------- arrangement styles ----------
+  // drum rows are 16 sixteenth-note steps per bar. bass/comp entries are [step, ...] within a bar.
+  const STYLES = {
+    disco: {
+      kick: "x...x...x...x...", snare: "....x.......x...", hat: "x...x...x...x...", ohat: "..x...x...x...x.", vk: 0.8, vs: 0.32,
+      bass: [[0, 0, 2], [2, 12, 2], [4, 0, 2], [6, 12, 2], [8, 0, 2], [10, 12, 2], [12, 0, 2], [14, 12, 2]],
+      bassO: { wave: "sawtooth", cut: 700, q: 3, gain: 0.26, a: 0.004, r: 0.05 },
+      comp: [[2, 1], [6, 1], [10, 1], [14, 1]], compO: { wave: "square", cut: 2400, gain: 0.04, a: 0.003, r: 0.06 },
+      leadO: { wave: "triangle", cut: 3000, gain: 0.11, a: 0.02, r: 0.08, vib: true },
+    },
+    ballad: {
+      kick: "x.........x.....", snare: "........x.......", hat: "x...x...x...x...", ohat: "", vk: 0.6, vs: 0.2,
+      bass: [[0, 0, 8], [8, 7, 6], [14, 12, 2]],
+      bassO: { wave: "triangle", cut: 900, gain: 0.32, a: 0.01, r: 0.15 },
+      comp: "pad", compO: { wave: "sawtooth", cut: 1100, gain: 0.022, a: 0.35, r: 0.5, detune: 7 },
+      arp: [[0, 0], [4, 1], [8, 2], [12, 1]], arpO: { wave: "sine", cut: 4000, gain: 0.05, a: 0.005, decay: 0.25, sustain: 0.2, r: 0.3 },
+      leadO: { wave: "triangle", cut: 2500, gain: 0.12, a: 0.05, r: 0.15, vib: true },
+    },
+    shanty: {
+      kick: "x...x...x...x...", snare: "....x.......x...", hat: "..x...x...x...x.", ohat: "", vk: 0.65, vs: 0.3,
+      bass: [[0, 0, 4], [8, 7, 4]],
+      bassO: { wave: "triangle", cut: 1000, gain: 0.34, a: 0.005, r: 0.08 },
+      comp: [[4, 3], [12, 3]], compO: { wave: "square", cut: 1500, gain: 0.032, a: 0.01, r: 0.08, detune: 9 },
+      leadO: { wave: "sine", cut: 5000, gain: 0.13, a: 0.02, r: 0.08, vib: true },
+    },
+    reggae: {
+      kick: "........x.......", snare: "........x.......", hat: "x.x.x.x.x.x.x.x.", ohat: "", vk: 0.85, vs: 0.24,
+      bass: [[0, 0, 3], [3, 0, 1], [6, 7, 2], [10, 12, 2], [12, 7, 4]],
+      bassO: { wave: "sine", cut: 800, gain: 0.42, a: 0.01, r: 0.08 },
+      comp: [[4, 1], [12, 1]], compO: { wave: "square", cut: 2600, gain: 0.04, a: 0.003, r: 0.05 },
+      leadO: { wave: "triangle", cut: 3000, gain: 0.11, a: 0.02, r: 0.08, vib: true },
+    },
+  };
+
+  // ---------- compile a song into timed events, lines and tap targets ----------
+  const stepMidi = (song, s) => song.tonic + 12 * Math.floor(s / 7) + song.scale[((s % 7) + 7) % 7];
+  const inRange = (m, lo) => lo + (((m - lo) % 12) + 12) % 12;
+  function chordOf(song, tok) {
+    const d = parseInt(tok, 10) - 1;
+    const r = stepMidi(song, d);
+    const third = tok.endsWith("^") ? r + 4 : stepMidi(song, d + 2);
+    const notes = [r, third, stepMidi(song, d + 4)].map((m) => inRange(m, 55)).sort((a, b) => a - b);
+    return { notes, bass: inRange(r, 36) };
+  }
+  function parseLine(str) {
+    let b = 0;
+    return str.trim().split(/\s+/).map((tok) => {
+      const [raw, d, s] = tok.split("/");
+      const tgt = raw.startsWith("*");
+      const text = tgt ? raw.slice(1) : raw;
+      const w = { text, b, d: parseFloat(d), step: parseInt(s, 10), tgt, rest: text === "-" };
+      b += w.d;
+      return w;
+    });
+  }
+  const cache = new Map();
+  function compile(i) {
+    if (cache.has(i)) return cache.get(i);
+    const song = SONGS[i], st = STYLES[song.style];
+    const L = song.lineBars * 4;
+    const chords = [], lines = [], ev = [], crashes = new Set([0]);
+    let beat = 0;
+    song.intro.forEach((tok) => { chords.push({ b: beat, d: 4, tok }); beat += 4; });
+    const order = [["Verse 1", song.verse1], ["Chorus", song.chorus], ["Verse 2", song.verse2], ["Chorus", song.chorus]];
+    for (const [name, sec] of order) {
+      if (name === "Chorus") crashes.add(beat);
+      sec.lines.forEach((str, li) => {
+        const toks = sec.chords[li].split(" ");
+        toks.forEach((tok, k) => chords.push({ b: beat + (k * L) / toks.length, d: L / toks.length, tok }));
+        const words = parseLine(str);
+        words.forEach((w) => { w.b += beat; });
+        lines.push({ b: beat, beats: L, section: name, words: words.filter((w) => !w.rest), raw: words });
+        beat += L;
+      });
+    }
+    const outroStart = beat;
+    song.outro.forEach((tok) => { chords.push({ b: beat, d: 4, tok }); beat += 4; });
+    const total = beat, nBars = total / 4;
+
+    // drums
+    for (let bar = 0; bar < nBars; bar++) {
+      const b0 = bar * 4;
+      if (crashes.has(b0)) ev.push({ b: b0, k: "crash" });
+      if (bar === nBars - 1) { ev.push({ b: b0, k: "kick", v: st.vk }, { b: b0, k: "crash" }); continue; }
+      for (let s = 0; s < 16; s++) {
+        const b = b0 + s / 4;
+        if (st.kick[s] === "x") ev.push({ b, k: "kick", v: st.vk });
+        if (st.snare[s] === "x") ev.push({ b, k: "snare", v: st.vs });
+        if (st.hat[s] === "x") ev.push({ b, k: "hat", v: s % 4 ? 0.06 : 0.09 });
+        if (st.ohat[s] === "x") ev.push({ b, k: "ohat" });
+      }
+    }
+    // bass + chords
+    for (const c of chords) {
+      const ch = chordOf(song, c.tok);
+      const last = c.b >= total - 4;
+      const span = c.d * 4; // in sixteenths
+      if (last) {
+        ev.push({ b: c.b, k: "bass", m: ch.bass, d: 3.5, o: st.bassO });
+        ev.push({ b: c.b, k: "chord", ms: ch.notes, d: 3.5, o: STYLES.ballad.compO });
+        continue;
+      }
+      for (let s0 = 0; s0 < span; s0 += 16) {
+        for (const [s, iv, len] of st.bass) if (s0 + s < span) ev.push({ b: c.b + (s0 + s) / 4, k: "bass", m: ch.bass + iv, d: Math.min(len, span - s0 - s) / 4 * 0.9, o: st.bassO });
+        if (st.comp === "pad") ev.push({ b: c.b + s0 / 4, k: "chord", ms: ch.notes, d: Math.min(16, span - s0) / 4, o: st.compO });
+        else for (const [s, len] of st.comp) if (s0 + s < span) ev.push({ b: c.b + (s0 + s) / 4, k: "chord", ms: ch.notes, d: len / 4, o: st.compO });
+        if (st.arp) for (const [s, n] of st.arp) if (s0 + s < span) ev.push({ b: c.b + (s0 + s) / 4, k: "lead", m: ch.notes[n] + 12, d: 1, o: st.arpO });
+      }
+    }
+    // melody guide
+    const targets = [];
+    lines.forEach((ln, li) => ln.words.forEach((w, wi) => {
+      w.m = stepMidi(song, w.step);
+      ev.push({ b: w.b, k: "lead", m: w.m, d: w.d * 0.92, o: st.leadO });
+      if (w.tgt) targets.push({ b: w.b, li, wi });
+    }));
+    ev.sort((a, b) => a.b - b.b);
+    const out = { song, lines, events: ev, targets, total, outroStart, chorusBeat: lines.find((l) => l.section === "Chorus").b };
+    cache.set(i, out);
+    return out;
+  }
+
+  // ---------- synth (works with AudioContext and OfflineAudioContext) ----------
+  const mtof = (m) => 440 * Math.pow(2, (m - 69) / 12);
+  const noiseBufs = new WeakMap();
+  function noiseBuf(ac) {
+    let b = noiseBufs.get(ac);
+    if (!b) {
+      b = ac.createBuffer(1, ac.sampleRate * 2, ac.sampleRate);
+      const d = b.getChannelData(0);
+      for (let k = 0; k < d.length; k++) d[k] = Math.random() * 2 - 1;
+      noiseBufs.set(ac, b);
+    }
+    return b;
+  }
+  function buildMaster(ac, vol) {
+    const gain = ac.createGain(), comp = ac.createDynamicsCompressor(), trim = ac.createGain();
+    gain.gain.value = vol;
+    comp.threshold.value = -14; comp.knee.value = 8; comp.ratio.value = 8; comp.attack.value = 0.003; comp.release.value = 0.2;
+    trim.gain.value = 0.8;
+    gain.connect(comp).connect(trim).connect(ac.destination);
+    return gain;
+  }
+  function makeSynth(ac, out) {
+    function noiseHit(t, type, freq, q, v, dec) {
+      const s = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain();
+      s.buffer = noiseBuf(ac); f.type = type; f.frequency.value = freq; f.Q.value = q;
+      g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(0.0008, t + dec);
+      s.connect(f).connect(g).connect(out);
+      s.start(t, Math.random() * 1.5, dec + 0.05);
+    }
+    function tone(t, midi, dur, o) {
+      const f = mtof(midi), g = ac.createGain(), flt = ac.createBiquadFilter();
+      flt.type = "lowpass"; flt.frequency.value = o.cut || 2000; flt.Q.value = o.q || 0.7;
+      const a = o.a || 0.005, r = o.r || 0.08, end = t + Math.max(dur, a + 0.02);
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(o.gain, t + a);
+      if (o.decay) g.gain.setTargetAtTime(o.gain * o.sustain, t + a, o.decay);
+      g.gain.setTargetAtTime(0, end, r / 3);
+      flt.connect(g).connect(out);
+      const stopAt = end + r * 2 + 0.05;
+      const oscs = (o.detune ? [-o.detune, o.detune] : [0]).map((dt) => {
+        const osc = ac.createOscillator();
+        osc.type = o.wave; osc.frequency.value = f; osc.detune.value = dt;
+        osc.connect(flt); osc.start(t); osc.stop(stopAt);
+        return osc;
+      });
+      if (o.vib && dur > 0.3) {
+        const lfo = ac.createOscillator(), lg = ac.createGain();
+        lfo.frequency.value = 5.2; lg.gain.setValueAtTime(0, t); lg.gain.linearRampToValueAtTime(f * 0.006, t + 0.3);
+        lfo.connect(lg); oscs.forEach((x) => lg.connect(x.frequency));
+        lfo.start(t); lfo.stop(stopAt);
+      }
+    }
+    return {
+      tone,
+      kick(t, v = 0.8) {
+        const o = ac.createOscillator(), g = ac.createGain();
+        o.type = "sine";
+        o.frequency.setValueAtTime(150, t); o.frequency.exponentialRampToValueAtTime(42, t + 0.13);
+        g.gain.setValueAtTime(0.0008, t); g.gain.exponentialRampToValueAtTime(v, t + 0.004); g.gain.exponentialRampToValueAtTime(0.0008, t + 0.34);
+        o.connect(g).connect(out); o.start(t); o.stop(t + 0.36);
+      },
+      snare(t, v = 0.3) {
+        noiseHit(t, "bandpass", 1900, 0.8, v, 0.17);
+        const o = ac.createOscillator(), g = ac.createGain();
+        o.type = "triangle"; o.frequency.setValueAtTime(200, t); o.frequency.exponentialRampToValueAtTime(140, t + 0.08);
+        g.gain.setValueAtTime(v * 0.5, t); g.gain.exponentialRampToValueAtTime(0.0008, t + 0.09);
+        o.connect(g).connect(out); o.start(t); o.stop(t + 0.1);
+      },
+      hat(t, open, v) { noiseHit(t, "highpass", 7600, 0.7, open ? 0.06 : v, open ? 0.22 : 0.045); },
+      crash(t) { noiseHit(t, "highpass", 5200, 0.5, 0.1, 1.3); },
+      applause(t, dur, amount) {
+        const n = Math.round(dur * (25 + 55 * amount));
+        for (let k = 0; k < n; k++) {
+          const at = t + Math.pow(Math.random(), 1.3) * dur;
+          const fade = 1 - (at - t) / dur;
+          noiseHit(at, "bandpass", 900 + Math.random() * 1800, 1.4, (0.05 + Math.random() * 0.1) * (0.4 + 0.6 * amount) * fade + 0.004, 0.03 + Math.random() * 0.05);
+        }
+        noiseHit(t, "bandpass", 1400, 0.4, 0.035 * amount + 0.01, dur);
+      },
+      blip(t, kind) {
+        const o = ac.createOscillator(), g = ac.createGain();
+        o.type = kind === "miss" ? "triangle" : "sine";
+        o.frequency.value = kind === "perfect" ? 1568 : kind === "good" ? 1175 : 196;
+        g.gain.setValueAtTime(kind === "miss" ? 0.07 : 0.05, t); g.gain.exponentialRampToValueAtTime(0.0008, t + 0.12);
+        o.connect(g).connect(out); o.start(t); o.stop(t + 0.13);
+      },
+    };
+  }
+  function playEvent(syn, e, t, spb) {
+    switch (e.k) {
+      case "kick": syn.kick(t, e.v); break;
+      case "snare": syn.snare(t, e.v); break;
+      case "hat": syn.hat(t, false, e.v); break;
+      case "ohat": syn.hat(t, true); break;
+      case "crash": syn.crash(t); break;
+      case "bass": case "lead": syn.tone(t, e.m, e.d * spb, e.o); break;
+      case "chord": for (const m of e.ms) syn.tone(t, m, e.d * spb, e.o); break;
+    }
+  }
+
+  // ---------- persistence ----------
+  const KEY = "shellyeah-karaoke";
+  let saved = { best: {}, vol: 80, muted: false };
+  try { saved = Object.assign(saved, JSON.parse(localStorage.getItem(KEY) || "{}")); } catch (e) {}
+  if (!saved.best || typeof saved.best !== "object") saved.best = {};
+  const persist = () => { try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) {} };
+
+  // ---------- DOM ----------
+  const stage = $("kStage"), main = $("kMain"), curEl = $("kCur"), nextEl = $("kNext"), sectionEl = $("kSection");
+  const ball = $("kBall"), judgeEl = $("kJudge"), lane = $("kLane"), tapBtn = $("kTap"), playBtn = $("kPlay");
+  const muteBtn = $("kMute"), volEl = $("kVol"), singEl = $("kSingAlong"), statusEl = $("kStatus"), results = $("kResults");
+  const fmtTime = (s) => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, "0")}`;
+  const songsBox = $("kSongs");
+  SONGS.forEach((s, i) => {
+    const c = compile(i);
+    const lab = document.createElement("label");
+    lab.className = "kara-song";
+    lab.innerHTML = `<input type="radio" name="kSong" value="${i}"${i === 0 ? " checked" : ""}><span class="k-t"></span><span class="k-g"></span><span class="k-b"></span>`;
+    lab.querySelector(".k-t").textContent = s.title;
+    lab.querySelector(".k-g").textContent = `${s.genre} · ${s.bpm} bpm · ${fmtTime(c.total * 60 / s.bpm)}`;
+    songsBox.append(lab);
+  });
+  volEl.value = String(Math.max(0, Math.min(100, Number(saved.vol) || 0)));
+  muteBtn.setAttribute("aria-pressed", String(!!saved.muted));
+
+  // ---------- state ----------
+  const WIN_PERFECT = 0.085, WIN_GOOD = 0.17, LOOKAHEAD = 0.15;
+  const JUDGE = { perfect: "Shell-tastic!", good: "Turtle-y in time!", miss: "Slow and… too slow", stray: "Shell-f control!" };
+  const RANKS = [
+    [0.9, "Shell-ebrity Superstar", "The crowd is throwing lettuce. Around here, that's a standing ovation.", 5],
+    [0.75, "Slow Lounge Headliner", "Your name is going up on the sign. In very slow neon.", 4],
+    [0.55, "Lily Pad Lounge Singer", "Smooth, steady, and only slightly fashionably late.", 3],
+    [0.35, "Shower Shell Soloist", "Sounds amazing in the tank. Keep practicing.", 2],
+    [0.15, "Pond Open-Mic Hopeful", "Brave! Tucker gave you a polite flipper-clap.", 1],
+    [0, "Garage Band Tadpole", "Everyone starts somewhere. Usually in a puddle.", 0],
+  ];
+  const debug = { rate: 1, autoTap: false };
+  let ac = null, masterGain = null, run = null, state = "idle", sel = 0, timer = null, raf = null;
+  let curWords = [], shownLine = -2, lastBeat = -99;
+
+  const vol = () => (saved.muted ? 0 : Number(volEl.value) / 100);
+  function ensureCtx() {
+    if (ac) return ac;
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    try { ac = new AC(); } catch (e) { return null; }
+    masterGain = buildMaster(ac, vol());
+    return ac;
+  }
+  const heard = () => ac.currentTime - (Number.isFinite(ac.outputLatency) ? ac.outputLatency : 0);
+
+  // ---------- ready screen ----------
+  function showReady() {
+    const s = SONGS[sel], c = compile(sel);
+    stage.dataset.style = s.style;
+    sectionEl.textContent = "Up next";
+    curEl.textContent = s.title;
+    nextEl.textContent = `${s.genre}. Press Play when you're ready.`;
+    ball.setAttribute("data-off", "");
+    curWords = []; shownLine = -2;
+    const best = saved.best[s.id] || 0;
+    $("kBest").textContent = best;
+    $("kScore").textContent = 0; $("kCombo").textContent = 0; $("kHits").textContent = `0/${c.targets.length}`;
+    setHype(30);
+    clearLane();
+  }
+  function refreshBests() {
+    songsBox.querySelectorAll(".kara-song").forEach((lab, i) => {
+      const b = saved.best[SONGS[i].id];
+      lab.querySelector(".k-b").textContent = b ? `best ${b}` : "";
+    });
+  }
+
+  // ---------- transport ----------
+  function startRun() {
+    if (!ensureCtx()) { statusEl.textContent = "This browser can't sing along (no Web Audio). Sorry!"; return; }
+    ac.resume();
+    stopRun();
+    const c = compile(sel), song = SONGS[sel];
+    const bus = ac.createGain();
+    bus.connect(masterGain);
+    const spb = 60 / (song.bpm * debug.rate);
+    const t0 = ac.currentTime + 0.25;
+    run = {
+      c, song, bus, syn: makeSynth(ac, bus), spb, t0, next: 0, li: 0, ti: 0, casual: singEl.checked,
+      targets: c.targets.map((x) => ({ ...x, t: t0 + x.b * spb, res: null })),
+      p: 0, g: 0, m: 0, stray: 0, combo: 0, maxCombo: 0, points: 0, hype: 30, endAt: t0 + c.total * spb + 0.4,
+    };
+    results.hidden = true;
+    state = "playing";
+    shownLine = -2; lastBeat = -99;
+    statusEl.textContent = `Now playing: ${song.title}`;
+    startTimers();
+    updateUI();
+  }
+  function stopRun() {
+    stopTimers();
+    if (!run) return;
+    const bus = run.bus;
+    try { bus.gain.setTargetAtTime(0, ac.currentTime, 0.02); } catch (e) {}
+    setTimeout(() => { try { bus.disconnect(); } catch (e) {} }, 250);
+    run = null;
+  }
+  function pause(msg) {
+    if (state !== "playing") return;
+    state = "paused";
+    stopTimers();
+    if (ac) ac.suspend();
+    statusEl.textContent = msg || "Paused. Tucker is sipping some water.";
+    updateUI();
+  }
+  function resume() {
+    if (state !== "paused" || !run) return;
+    ac.resume();
+    state = "playing";
+    statusEl.textContent = `Now playing: ${run.song.title}`;
+    startTimers();
+    updateUI();
+  }
+  function startTimers() {
+    stopTimers();
+    tick();
+    timer = setInterval(tick, 25);
+    raf = requestAnimationFrame(frame);
+  }
+  function stopTimers() {
+    if (timer) clearInterval(timer);
+    if (raf) cancelAnimationFrame(raf);
+    timer = raf = null;
+  }
+  function leave() {
+    if (state === "playing") pause("Paused while you were away. Press Resume to keep singing.");
+    else if (ac && ac.state === "running") ac.suspend();
+  }
+
+  // lookahead scheduler: events are placed on the audio clock, a little ahead of time
+  function tick() {
+    if (!run || state !== "playing") return;
+    const now = ac.currentTime, horizon = now + LOOKAHEAD, ev = run.c.events;
+    while (run.next < ev.length) {
+      const e = ev[run.next], t = run.t0 + e.b * run.spb;
+      if (t > horizon) break;
+      if (t >= now - 0.03) playEvent(run.syn, e, t, run.spb);
+      run.next++;
+    }
+    const h = heard();
+    if (!run.casual) {
+      if (debug.autoTap) {
+        const x = run.targets[run.ti];
+        if (x && !x.res && h >= x.t) tap();
+      }
+      judgeMisses(h);
+    }
+    if (now >= run.endAt) finish();
+  }
+
+  // ---------- scoring ----------
+  function judgeMisses(h) {
+    const T = run.targets;
+    while (run.ti < T.length && (T[run.ti].res || h > T[run.ti].t + WIN_GOOD)) {
+      if (!T[run.ti].res) judge(T[run.ti], "miss");
+      run.ti++;
+    }
+  }
+  function judge(x, res) {
+    x.res = res;
+    if (res === "perfect") { run.p++; run.points += 100; run.combo++; run.hype += 7; }
+    else if (res === "good") { run.g++; run.points += 60; run.combo++; run.hype += 4; }
+    else { run.m++; run.combo = 0; run.hype -= 6; }
+    run.maxCombo = Math.max(run.maxCombo, run.combo);
+    run.syn.blip(ac.currentTime, res);
+    showJudge(res);
+    const cw = x.li === shownLine && curWords.find((w) => w.wi === x.wi);
+    if (cw) cw.el.classList.add(res);
+    if (res !== "miss" && run.combo > 0 && run.combo % 10 === 0) {
+      const r = tapBtn.getBoundingClientRect();
+      document.dispatchEvent(new CustomEvent("shellburst", { detail: { x: r.left + r.width / 2, y: r.top, colors: ["var(--shell)", "var(--sea)"], n: 14 } }));
+    }
+    hud();
+  }
+  function tap() {
+    if (state !== "playing" || !run || run.casual) return;
+    const h = heard(), T = run.targets;
+    let best = null, bd = Infinity;
+    for (let k = run.ti; k < T.length; k++) {
+      const x = T[k];
+      if (x.t - h > WIN_GOOD) break;
+      if (x.res) continue;
+      const d = Math.abs(x.t - h);
+      if (d < bd) { bd = d; best = x; }
+    }
+    lane.classList.add("flash");
+    setTimeout(() => lane.classList.remove("flash"), 90);
+    if (best && bd <= WIN_GOOD) { judge(best, bd <= WIN_PERFECT ? "perfect" : "good"); judgeMisses(h); return; }
+    run.stray++; run.points = Math.max(0, run.points - 25); run.combo = 0; run.hype -= 3;
+    showJudge("stray");
+    hud();
+  }
+  function showJudge(res) {
+    judgeEl.textContent = JUDGE[res];
+    judgeEl.className = "k-judge " + (res === "stray" ? "miss" : res);
+    judgeEl.getAnimations().forEach((a) => a.cancel());
+    judgeEl.animate(reduce
+      ? [{ opacity: 1 }, { opacity: 1, offset: 0.7 }, { opacity: 0 }]
+      : [{ opacity: 0, transform: "translateY(6px) scale(0.8)" }, { opacity: 1, transform: "translateY(0) scale(1.08)", offset: 0.15 }, { opacity: 1, transform: "translateY(-4px) scale(1)", offset: 0.7 }, { opacity: 0, transform: "translateY(-10px) scale(1)" }],
+      { duration: 650, easing: "ease-out" });
+  }
+  function setHype(v) {
+    const n = Math.max(0, Math.min(100, v));
+    const m = $("kHype");
+    m.style.setProperty("--h", n.toFixed(0) + "%");
+    const r = String(Math.round(n / 5) * 5);
+    if (m.getAttribute("aria-valuenow") !== r) m.setAttribute("aria-valuenow", r);
+    stage.classList.toggle("hype", n >= 70 && state === "playing");
+    return n;
+  }
+  function hud() {
+    if (!run) return;
+    run.hype = setHype(run.hype);
+    $("kScore").textContent = run.casual ? "—" : run.points;
+    $("kCombo").textContent = run.casual ? "—" : run.combo;
+    $("kHits").textContent = `${run.p + run.g}/${run.targets.length}`;
+  }
+
+  // ---------- visuals, read from the audio clock ----------
+  function renderLines(idx) {
+    const L = run.c.lines, cur = L[idx], nxt = L[idx + 1];
+    shownLine = idx;
+    curEl.textContent = "";
+    curWords = [];
+    if (cur) {
+      cur.words.forEach((w, wi) => {
+        const el = document.createElement("span");
+        el.className = "kw" + (w.tgt && !run.casual ? " tgt" : "");
+        el.textContent = w.text;
+        const tg = w.tgt && run.targets.find((x) => x.li === idx && x.wi === wi);
+        if (tg && tg.res) el.classList.add(tg.res);
+        curEl.append(el, " ");
+        curWords.push({ w, wi, el, p: -1 });
+      });
+      sectionEl.textContent = cur.section;
+    } else {
+      curEl.textContent = "♪ Take a bow, Tucker ♪";
+      sectionEl.textContent = "Outro";
+    }
+    nextEl.textContent = nxt ? nxt.words.map((w) => w.text).join(" ") : "";
+    measure();
+  }
+  function measure() {
+    for (const cw of curWords) { cw.x = cw.el.offsetLeft + cw.el.offsetWidth / 2; cw.y = cw.el.offsetTop; }
+  }
+  function frame() {
+    raf = null;
+    if (!run || state !== "playing") return;
+    const b = (heard() - run.t0) / run.spb;
+    const L = run.c.lines;
+    while (run.li < L.length && b >= L[run.li].b + L[run.li].beats) run.li++;
+    if (run.li !== shownLine) renderLines(run.li);
+    const cur = L[run.li];
+    if (cur && run.li === 0) {
+      const left = Math.ceil(cur.b - b);
+      const label = b >= cur.b ? cur.section : left <= 4 && b >= 0 ? `Get ready… ${left}` : "Intro";
+      if (sectionEl.textContent !== label) sectionEl.textContent = label;
+    }
+    // word wipe
+    let k = -1;
+    for (let j = 0; j < curWords.length; j++) {
+      const cw = curWords[j], p = Math.max(0, Math.min(1, (b - cw.w.b) / cw.w.d));
+      if (b >= cw.w.b) k = j;
+      const pr = Math.round(p * 100);
+      if (pr !== cw.p) { cw.p = pr; cw.el.style.setProperty("--p", pr + "%"); cw.el.classList.toggle("on", p > 0 && p < 1); }
+    }
+    // the bouncing turtle hops from word to word, landing on each one as it starts
+    if (curWords.length) {
+      ball.removeAttribute("data-off");
+      let x, y;
+      const a = curWords[Math.max(0, k)], nb = curWords[k + 1];
+      if (k < 0 || !nb || reduce) { x = a.x; y = a.y; }
+      else {
+        const q = Math.max(0, Math.min(1, (b - a.w.b) / (nb.w.b - a.w.b)));
+        x = a.x + (nb.x - a.x) * q;
+        y = a.y + (nb.y - a.y) * q - Math.sin(q * Math.PI) * 14;
+      }
+      ball.style.transform = `translate(${(x - 15).toFixed(1)}px, ${(y - 20).toFixed(1)}px)`;
+    } else ball.setAttribute("data-off", "");
+    // backup dancers bop on every beat
+    const ib = Math.floor(b);
+    if (ib !== lastBeat && b >= 0 && b < run.c.total) {
+      lastBeat = ib;
+      stage.classList.toggle("beat-a", ib % 2 === 0);
+      stage.classList.toggle("beat-b", ib % 2 === 1);
+    }
+    // crowd hype drifts back toward "politely interested"
+    if (run.casual) run.hype = 35 + 55 * Math.min(1, Math.max(0, b / run.c.total));
+    else run.hype += (30 - run.hype) * 0.004;
+    run.hype = setHype(run.hype);
+    if (!run.casual) drawLane();
+    raf = requestAnimationFrame(frame);
+  }
+
+  // tap lane: upcoming targets slide toward the hit ring
+  const gems = [];
+  function clearLane() { gems.forEach((g) => { g.hidden = true; }); }
+  function drawLane() {
+    const h = heard(), W = lane.clientWidth, hitX = 26, span = 2.4;
+    let n = 0;
+    for (let k = Math.max(0, run.ti - 4); k < run.targets.length; k++) {
+      const x = run.targets[k], dt = x.t - h;
+      if (dt > span) break;
+      if (dt < -0.35 || (x.res && x.res !== "miss" && dt < -0.15)) continue;
+      let g = gems[n];
+      if (!g) { g = document.createElement("span"); lane.append(g); gems.push(g); }
+      g.hidden = false;
+      g.className = "k-gem" + (x.res ? " " + x.res : "");
+      g.style.transform = `translateX(${(hitX + (dt / span) * (W - hitX - 14)).toFixed(1)}px)`;
+      n++;
+    }
+    for (let j = n; j < gems.length; j++) gems[j].hidden = true;
+  }
+
+  // ---------- the big finish ----------
+  function finish() {
+    if (!run || state !== "playing") return;
+    state = "done";
+    stopTimers();
+    stage.classList.remove("beat-a", "beat-b", "hype");
+    const N = run.targets.length, pct = run.casual ? 1 : Math.min(1, run.points / (N * 100));
+    const song = run.song;
+    let rank;
+    if (run.casual) rank = [1, "Sing-along Shell-ebrity", "No scores tonight, just vibes. The whole pond sang every word.", -1];
+    else rank = RANKS.find((r) => pct >= r[0]);
+    $("kResSong").textContent = `${run.casual ? "Encore" : "Results"} · ${song.title}`;
+    $("kRank").textContent = rank[1];
+    $("kQuip").textContent = rank[2];
+    $("kStars").textContent = rank[3] < 0 ? "♪ ♪ ♪" : "★".repeat(rank[3]) + "☆".repeat(5 - rank[3]);
+    $("kStats").hidden = run.casual;
+    $("kResScore").textContent = run.points;
+    $("kResP").textContent = run.p; $("kResG").textContent = run.g; $("kResM").textContent = run.m;
+    let note = "";
+    if (!run.casual) {
+      const prev = saved.best[song.id] || 0;
+      if (run.points > prev) { saved.best[song.id] = run.points; persist(); note = prev ? `New personal best! (old best: ${prev})` : "First score on the board!"; }
+      else note = `Best so far: ${prev}`;
+      $("kBest").textContent = saved.best[song.id] || 0;
+      refreshBests();
+    }
+    $("kBestNote").textContent = note;
+    results.hidden = false;
+    run.syn.applause(ac.currentTime + 0.05, 1.6 + 2.4 * pct, pct);
+    if (pct >= 0.35) {
+      const r = stage.getBoundingClientRect();
+      const colors = ["var(--shell)", "var(--sea)", "var(--moss)", "#FF5FA2", "#FFD23F"];
+      document.dispatchEvent(new CustomEvent("shellburst", { detail: { x: r.left + r.width / 2, y: r.top + r.height * 0.35, colors, n: 30 } }));
+      setTimeout(() => document.dispatchEvent(new CustomEvent("shellburst", { detail: { x: r.left + r.width * 0.25, y: r.top + r.height * 0.5, colors, n: 18 } })), 250);
+      setTimeout(() => document.dispatchEvent(new CustomEvent("shellburst", { detail: { x: r.left + r.width * 0.75, y: r.top + r.height * 0.5, colors, n: 18 } })), 450);
+    }
+    statusEl.textContent = run.casual ? `Encore! ${song.title} is done.` : `Song over: ${run.points} points. You're a ${rank[1]}.`;
+    if (panel.contains(document.activeElement) || document.activeElement === document.body) $("kRank").focus({ preventScroll: true });
+    clearLane();
+    updateUI();
+  }
+
+  function updateUI() {
+    playBtn.textContent = state === "playing" ? "Pause" : state === "paused" ? "Resume" : state === "done" ? "Play again" : "Play";
+    tapBtn.disabled = !(state === "playing" && run && !run.casual);
+    stage.classList.toggle("playing", state === "playing");
+    main.classList.toggle("casual", singEl.checked || !!(run && run.casual));
+    if (state !== "playing") stage.classList.remove("hype");
+  }
+
+  // ---------- controls ----------
+  playBtn.addEventListener("click", () => {
+    if (state === "playing") pause();
+    else if (state === "paused") resume();
+    else startRun();
+  });
+  $("kRestart").addEventListener("click", startRun);
+  $("kAgain").addEventListener("click", () => { startRun(); playBtn.focus({ preventScroll: true }); });
+  $("kClose").addEventListener("click", () => {
+    stopRun(); state = "idle"; results.hidden = true; showReady(); updateUI();
+    statusEl.textContent = "";
+    if (ac && ac.state === "running") setTimeout(() => { if (state !== "playing") ac.suspend(); }, 400);
+    songsBox.querySelector("input:checked").focus({ preventScroll: true });
+  });
+  songsBox.addEventListener("change", (e) => {
+    if (e.target.name !== "kSong") return;
+    sel = Number(e.target.value);
+    stopRun(); state = "idle"; results.hidden = true;
+    if (ac && ac.state === "running") ac.suspend();
+    statusEl.textContent = `Selected: ${SONGS[sel].title}`;
+    showReady(); updateUI();
+  });
+  singEl.addEventListener("change", () => {
+    if (run && singEl.checked) run.casual = true; // once you go sing-along, this run stays unscored
+    if (run && shownLine >= 0) renderLines(shownLine);
+    hud(); updateUI();
+  });
+  function applyVol() {
+    if (masterGain) masterGain.gain.setTargetAtTime(vol(), ac.currentTime, 0.02);
+    muteBtn.setAttribute("aria-pressed", String(!!saved.muted));
+    muteBtn.textContent = saved.muted ? "Unmute" : "Mute";
+  }
+  muteBtn.addEventListener("click", () => { saved.muted = !saved.muted; persist(); applyVol(); });
+  volEl.addEventListener("input", () => { saved.vol = Number(volEl.value); if (saved.muted && saved.vol > 0) saved.muted = false; persist(); applyVol(); });
+  tapBtn.addEventListener("pointerdown", (e) => { e.preventDefault(); tap(); });
+  tapBtn.addEventListener("click", (e) => { if (e.detail === 0) tap(); }); // keyboard Enter
+  let spaceHeld = false;
+  window.addEventListener("keydown", (e) => {
+    if (panel.hidden || (e.key !== " " && e.code !== "Space")) return;
+    if (e.target.closest && e.target.closest("textarea, select, input:not([type=radio]):not([type=range])")) return;
+    if (state !== "playing" || !run || run.casual) return;
+    e.preventDefault();
+    spaceHeld = true;
+    if (!e.repeat) { tap(); tapBtn.classList.add("down"); }
+  });
+  window.addEventListener("keyup", (e) => {
+    if (e.key !== " " && e.code !== "Space") return;
+    tapBtn.classList.remove("down");
+    if (spaceHeld) { spaceHeld = false; e.preventDefault(); }
+  });
+  window.addEventListener("resize", () => { if (curWords.length) measure(); });
+  document.addEventListener("tabchange", (e) => { if (e.detail !== "karaoke") leave(); else if (curWords.length) requestAnimationFrame(measure); });
+  document.addEventListener("visibilitychange", () => { if (document.hidden) leave(); });
+
+  refreshBests();
+  applyVol();
+  showReady();
+  updateUI();
+
+  // ---------- small, harmless test hooks ----------
+  window.__karaoke = {
+    setRate(r) { debug.rate = Math.max(0.5, Math.min(8, Number(r) || 1)); },
+    setAutoTap(on) { debug.autoTap = !!on; },
+    info() {
+      const active = curWords.find((cw) => cw.p > 0 && cw.p < 100) || null;
+      return {
+        state, ctxState: ac ? ac.state : null, timer: !!timer, line: shownLine, word: active ? active.w.text : null,
+        beat: run && ac ? (heard() - run.t0) / run.spb : null, targets: run ? run.targets.length : 0,
+        points: run ? run.points : 0, p: run ? run.p : 0, g: run ? run.g : 0, m: run ? run.m : 0,
+        rank: results.hidden ? null : $("kRank").textContent, stageClass: stage.className,
+      };
+    },
+    songs: () => SONGS.map((s, i) => {
+      const c = compile(i);
+      return { title: s.title, seconds: c.total * 60 / s.bpm, targets: c.targets.length, lineBeats: c.lines.map((l) => [l.beats, l.raw.reduce((a, w) => a + w.d, 0)]) };
+    }),
+    async renderOffline(i = 0, secs = 4, fromBeat = null) {
+      const sr = 44100, oc = new OfflineAudioContext(2, Math.ceil(sr * secs), sr);
+      const c = compile(i), spb = 60 / SONGS[i].bpm, start = fromBeat == null ? c.chorusBeat : fromBeat;
+      const syn = makeSynth(oc, buildMaster(oc, 1));
+      for (const e of c.events) {
+        const t = (e.b - start) * spb + 0.02;
+        if (t < 0) continue;
+        if (t > secs) break;
+        playEvent(syn, e, t, spb);
+      }
+      const buf = await oc.startRendering();
+      let peak = 0, sum = 0;
+      for (let ch = 0; ch < buf.numberOfChannels; ch++) {
+        const d = buf.getChannelData(ch);
+        for (let k = 0; k < d.length; k++) { const v = Math.abs(d[k]); if (v > peak) peak = v; sum += v * v; }
+      }
+      return { peak, rms: Math.sqrt(sum / (buf.length * buf.numberOfChannels)) };
+    },
+  };
+})();
+</script>
+<!-- KARAOKE:END script -->
+<!-- CHEF:BEGIN script -->
+<script>
+(() => {
+  // =====================================================================
+  // Le Cordon Shell-eu: Tucker's chef-school sorting game
+  // All gameplay time advances only inside requestAnimationFrame (clamped dt),
+  // and the loop stops whenever the Chef tab or the browser tab is not visible.
+  // =====================================================================
+  const $ = (id) => document.getElementById(id);
+  const panel = $("tab-chef");
+  if (!panel) return;
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const BINS = [
+    { id: "veg", name: "Veggies", one: "a vegetable" },
+    { id: "fruit", name: "Fruits", one: "a fruit" },
+    { id: "sea", name: "Sea snacks", one: "a sea snack" },
+    { id: "sweet", name: "Desserts", one: "a dessert" },
+    { id: "junk", name: "Not food", one: "not food" },
+  ];
+  const PANTRY = {
+    veg: [["🥕", "carrot"], ["🥦", "broccoli"], ["🥬", "lettuce"], ["🧅", "onion"], ["🥔", "potato"], ["🧄", "garlic"], ["🌽", "corn"], ["🍠", "sweet potato"]],
+    fruit: [["🍎", "apple"], ["🍌", "banana"], ["🍓", "strawberry"], ["🍇", "grapes"], ["🍉", "watermelon"], ["🍍", "pineapple"], ["🍒", "cherries"], ["🍑", "peach"], ["🥝", "kiwi"], ["🍋", "lemon"], ["🍐", "pear"]],
+    sea: [["🦐", "shrimp"], ["🦀", "crab"], ["🦑", "squid"], ["🐟", "fish"], ["🦞", "lobster"], ["🦪", "oyster"], ["🍣", "sushi"], ["🍤", "fried shrimp"]],
+    sweet: [["🍰", "cake"], ["🧁", "cupcake"], ["🍩", "donut"], ["🍪", "cookie"], ["🍦", "ice cream"], ["🍫", "chocolate"], ["🍮", "pudding"], ["🥧", "pie"], ["🍭", "lollipop"]],
+    junk: [["🧦", "sock"], ["🦆", "rubber duck"], ["⏰", "hare's alarm clock"], ["🧽", "sponge"], ["🎾", "tennis ball"], ["🧸", "teddy bear"], ["👟", "sneaker"], ["🔑", "key"], ["📎", "paper clip"], ["🧶", "ball of yarn"]],
+  };
+  const MASS = new Set(["broccoli", "lettuce", "garlic", "corn", "grapes", "cherries", "sushi", "chocolate", "pudding", "ice cream", "fried shrimp"]);
+  const phrase = (n) => (n === "hare's alarm clock" ? "the hare's alarm clock" : MASS.has(n) ? n : (/^[aeiou]/.test(n) ? "an " : "a ") + n);
+  const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+  const pick = (a) => a[Math.floor(Math.random() * a.length)];
+
+  const ALL = ["veg", "fruit", "sea", "sweet", "junk"];
+  const ROUNDS = [
+    { name: "Salad Days", n: 16, travel: 9, gap: 2.5, cats: ["veg", "fruit", "junk"],
+      intro: "Veggies, fruits, and a few things that are definitely not food. The belt starts slow while you learn the bins.",
+      hello: "Round one. Slow and steady, Tucker. Lettuce begin." },
+    { name: "Soup-er Challenge", n: 20, travel: 7, gap: 2.0, cats: ALL,
+      intro: "Sea snacks and desserts join the pantry, and the belt speeds up. Keep that combo simmering.",
+      hello: "Round two. Things are heating up in here. Mind the shrimp." },
+    { name: "The Grand Shell-inale", n: 26, travel: 5.6, gap: 1.6, cats: ALL,
+      intro: "Full pantry, full speed, and I am watching very closely. Win this and the Golden Spoon of Glory is yours.",
+      hello: "The Grand Shell-inale. No pressure, dear. Well, a little pressure. It's a kitchen." },
+  ];
+  const STRIKES = 3;
+  const PRAISE = {
+    veg: ["Lettuce rejoice!", "Kale yeah!", "You've got the beet!", "Un-be-leaf-able!", "Romaine calm, that was perfect.", "Peas and thank you!"],
+    fruit: ["Berry good!", "You're one in a melon!", "Orange you clever!", "Apple-solutely right!", "That's grape work!", "Shell-icious!"],
+    sea: ["Oh my cod!", "Fin-tastic!", "Shrimply the best!", "Whale done!", "Sea-riously good!", "Oyster-standing!"],
+    sweet: ["Sweet moves!", "You take the cake!", "Donut stop now!", "Treat yo shell-f!", "Batter than ever!", "That's the way the cookie crumbles!"],
+    junk: ["Good catch. Never cook the {n}.", "Inedible, incredible!", "Correct. {N} is not on the menu.", "Into the not-food bin. Shell done!", "Nobody wants {p} soufflé."],
+  };
+  const COMBO = ["Combo x2! Sizzling!", "Combo x3! You're on fire (safely)!", "Combo x4! Michelin shell-star energy!"];
+
+  // ---------- elements ----------
+  const kitchen = $("ckKitchen"), belt = $("ckBelt"), binsEl = $("ckBins"), overlay = $("ckOverlay");
+  const binBtns = [...binsEl.querySelectorAll(".ck-bin")];
+  const sayEl = $("ckSay"), nextEl = $("ckNext"), toastEl = $("ckToast"), tucker = $("ckTucker");
+  const goBtn = $("ckGo"), altBtn = $("ckAlt"), ceremony = $("ckCeremony");
+
+  // ---------- state ----------
+  let state = "ready", ri = 0, items = [], spawned = 0, spawnT = 0, strikes = 0, done = 0, roundSorted = 0;
+  let score = 0, roundStartScore = 0, combo = 0, bestCombo = 0, best = 0, runSorted = 0, runStrikes = 0;
+  let beltOff = 0, beltW = 0, sel = 0, bag = [], goAction = null, altAction = null, drag = null;
+  try { best = parseInt(localStorage.getItem("shellyeah-chef-best") || "0", 10) || 0; } catch (e) {}
+
+  const mult = () => Math.min(4, 1 + Math.floor(combo / 5));
+
+  // ---------- HUD ----------
+  function hud() {
+    const R = ROUNDS[ri];
+    $("ckScore").textContent = score;
+    $("ckBest").textContent = best;
+    $("ckCombo").textContent = `x${mult()}${combo ? " · " + combo : ""}`;
+    $("ckRoundNum").textContent = `${ri + 1}/${ROUNDS.length}`;
+    $("ckRoundName").innerHTML = `Round <b>${ri + 1}</b> · `;
+    $("ckRoundName").append(R.name);
+    $("ckProgress").textContent = `${done} / ${R.n} sorted`;
+    const marks = $("ckStrikes");
+    [...marks.children].forEach((m, k) => m.classList.toggle("on", k < strikes));
+    marks.setAttribute("aria-label", `${strikes} of ${STRIKES} strikes`);
+  }
+  function say(msg) { sayEl.textContent = msg; }
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.getAnimations().forEach((a) => a.cancel());
+    const tx = "translateX(-50%)";
+    toastEl.animate(reduce ? [
+      { opacity: 0, transform: tx }, { opacity: 1, transform: tx, offset: 0.1 }, { opacity: 1, transform: tx, offset: 0.8 }, { opacity: 0, transform: tx },
+    ] : [
+      { opacity: 0, transform: `${tx} translateY(-8px) scale(0.9)` },
+      { opacity: 1, transform: `${tx} scale(1)`, offset: 0.12 },
+      { opacity: 1, transform: `${tx} scale(1)`, offset: 0.8 },
+      { opacity: 0, transform: `${tx} translateY(-6px)` },
+    ], { duration: 1500, easing: "ease-out" });
+  }
+  function showOverlay(kicker, title, text, go, onGo, alt, onAlt) {
+    $("ckOvKicker").textContent = kicker; $("ckOvTitle").textContent = title; $("ckOvText").textContent = text;
+    goBtn.textContent = go; goAction = onGo;
+    altBtn.hidden = !alt; if (alt) altBtn.textContent = alt; altAction = onAlt || null;
+    overlay.hidden = false;
+    if (current === "chef" && kitchen.contains(document.activeElement) && document.activeElement !== goBtn) goBtn.focus({ preventScroll: true });
+  }
+  goBtn.addEventListener("click", () => { const f = goAction; if (f) f(); });
+  altBtn.addEventListener("click", () => { const f = altAction; if (f) f(); });
+
+  // ---------- belt ----------
+  function measure() { beltW = belt.clientWidth; }
+  if ("ResizeObserver" in window) new ResizeObserver(measure).observe(belt);
+  window.addEventListener("resize", measure);
+
+  function nextIngredient(cats) {
+    if (!bag.length) {
+      for (const c of cats) for (const [e, n] of PANTRY[c]) bag.push({ e, n, cat: c });
+      for (let k = bag.length - 1; k > 0; k--) { const j = Math.floor(Math.random() * (k + 1)); [bag[k], bag[j]] = [bag[j], bag[k]]; }
+    }
+    return bag.pop();
+  }
+  function spawn() {
+    const R = ROUNDS[ri];
+    const ing = nextIngredient(R.cats);
+    const el = document.createElement("div");
+    el.className = "ck-item";
+    el.dataset.cat = ing.cat;
+    el.innerHTML = '<span class="ck-emoji"></span><span class="ck-name"></span>';
+    el.firstChild.textContent = ing.e;
+    el.lastChild.textContent = ing.n;
+    belt.append(el);
+    items.push({ ...ing, x: 0, el });
+    spawned++;
+  }
+  function clearBelt() {
+    endDrag();
+    for (const it of items) it.el.remove();
+    items = [];
+  }
+
+  // ---------- rounds ----------
+  function introRound(i) {
+    ri = i; hud();
+    state = "intro";
+    const R = ROUNDS[i];
+    showOverlay(`Round ${i + 1} of ${ROUNDS.length}`, R.name, `${R.intro} ${R.n} ingredients, ${STRIKES} strikes allowed.`, "Fire up the belt", () => startRound(i));
+  }
+  function startRound(i) {
+    ri = i;
+    clearBelt();
+    spawned = 0; done = 0; roundSorted = 0; strikes = 0; combo = 0; spawnT = 0.6; bag = [];
+    roundStartScore = score;
+    state = "playing";
+    overlay.hidden = true;
+    say(ROUNDS[i].hello);
+    toast(`Round ${i + 1}: ${ROUNDS[i].name}`);
+    measure(); hud(); render();
+    startLoop();
+  }
+  function failRound() {
+    state = "failed";
+    clearBelt();
+    combo = 0;
+    say("Three strikes. Deep breath, Tucker. Even I burned my first soup.");
+    showOverlay("Kitchen nightmare", "Back to the chopping board!",
+      `Three strikes in ${ROUNDS[ri].name}. Chef Smilene hands you a fresh apron and says, "Again, dear. Slower is fine. Correcter is better."`,
+      "Retry round", () => { score = roundStartScore; startRound(ri); },
+      "Start over", () => { resetRun(); introRound(0); });
+    hud();
+  }
+  function clearRound() {
+    runSorted += roundSorted; runStrikes += strikes;
+    if (ri === ROUNDS.length - 1) return win();
+    state = "cleared";
+    const gained = score - roundStartScore, next = ROUNDS[ri + 1];
+    say(pick(["Shell-ebrate! That round was cooked to perfection.", "Magnificent. I may need to sit down. I'm a turtle, so I'm already down.", "That's what I call a well-sorted pantry."]));
+    const r = kitchen.getBoundingClientRect();
+    document.dispatchEvent(new CustomEvent("shellburst", { detail: { x: r.left + r.width / 2, y: r.top + r.height * 0.4, colors: ["var(--shell)", "var(--moss)"], n: 18 } }));
+    showOverlay(`Round ${ri + 1} cleared · +${gained} points`, `Next: ${next.name}`,
+      `${next.intro} ${next.n} ingredients, ${STRIKES} strikes allowed.`,
+      `Start round ${ri + 2}`, () => startRound(ri + 1));
+    hud();
+  }
+  function resetRun() {
+    clearBelt();
+    score = 0; combo = 0; bestCombo = 0; runSorted = 0; runStrikes = 0; strikes = 0; done = 0; ri = 0;
+    hud();
+  }
+
+  // ---------- sorting ----------
+  function flash(btn, cls) {
+    btn.classList.remove("ok", "bad");
+    void btn.offsetWidth;
+    btn.classList.add(cls);
+    setTimeout(() => btn.classList.remove(cls), 320); // cosmetic only
+  }
+  function hop(good) {
+    if (reduce) return;
+    tucker.classList.add("go");
+    tucker.animate(good ? [
+      { transform: "none" }, { transform: "translateY(-12px) rotate(-6deg)" }, { transform: "none" },
+    ] : [
+      { transform: "none" }, { transform: "translateX(-6px)" }, { transform: "translateX(5px)" }, { transform: "translateX(-3px)" }, { transform: "none" },
+    ], { duration: good ? 360 : 380, easing: "ease-out" }).onfinish = () => tucker.classList.remove("go");
+  }
+  function flyTo(it, btn) {
+    const el = it.el;
+    if (reduce) { el.remove(); return; }
+    const a = el.getBoundingClientRect(), b = btn.getBoundingClientRect();
+    el.classList.remove("next", "hot");
+    el.classList.add("ck-fly");
+    document.body.append(el);
+    const dx = b.left + b.width / 2 - (a.left + a.width / 2), dy = b.top + b.height / 2 - (a.top + a.height / 2);
+    el.style.transform = `translate(${a.left}px, ${a.top}px)`;
+    el.animate([
+      { transform: `translate(${a.left}px, ${a.top}px) scale(1)`, opacity: 1 },
+      { transform: `translate(${a.left + dx * 0.5}px, ${a.top + dy * 0.5 - 40}px) scale(0.8) rotate(-12deg)`, opacity: 1, offset: 0.5 },
+      { transform: `translate(${a.left + dx}px, ${a.top + dy}px) scale(0.3) rotate(10deg)`, opacity: 0.2 },
+    ], { duration: 300, easing: "ease-in" }).onfinish = () => el.remove();
+  }
+  function sortInto(bi, fromDrag) {
+    if (state !== "playing" || !items.length) return;
+    const it = items.shift();
+    if (drag && drag.it === it) endDrag();
+    const bin = BINS[bi], btn = binBtns[bi];
+    done++;
+    if (bin.id === it.cat) {
+      combo++; roundSorted++;
+      bestCombo = Math.max(bestCombo, combo);
+      const pts = Math.round((100 + Math.max(0, 1 - it.x) * 50) * mult());
+      score += pts;
+      say(pick(PRAISE[it.cat]).replace("{n}", it.n).replace("{N}", cap(it.n)).replace("{p}", it.n) + `  +${pts}`);
+      flash(btn, "ok"); hop(true);
+      if (combo % 5 === 0 && combo <= 15) {
+        toast(COMBO[combo / 5 - 1]);
+        const r = btn.getBoundingClientRect();
+        document.dispatchEvent(new CustomEvent("shellburst", { detail: { x: r.left + r.width / 2, y: r.top, colors: ["var(--shell)", "var(--moss)"], n: 18 } }));
+      }
+    } else {
+      strikes++; combo = 0;
+      let msg;
+      if (it.cat === "junk") msg = `That's not ${bin.one}, that's ${phrase(it.n)}!`;
+      else if (bin.id === "junk") msg = `That's food, chef! ${cap(it.n)} goes in ${BINS.find((b) => b.id === it.cat).name}.`;
+      else msg = `Wrong bin! ${cap(it.n)}? That's ${BINS.find((b) => b.id === it.cat).one}.`;
+      say(msg);
+      flash(btn, "bad"); hop(false);
+      toast(`Strike ${strikes}!`);
+    }
+    if (fromDrag) it.el.remove(); else flyTo(it, btn);
+    hud();
+    checkEnd();
+  }
+  function dropFront() {
+    const it = items.shift();
+    if (drag && drag.it === it) endDrag();
+    done++; strikes++; combo = 0;
+    say(`The ${it.n} rolled right off the belt! Butter luck next time.`);
+    toast(`Dropped! Strike ${strikes}`);
+    hop(false);
+    const el = it.el;
+    el.classList.remove("next", "hot");
+    if (reduce) el.remove();
+    else {
+      const base = el.style.transform;
+      el.animate([
+        { transform: base, opacity: 1 },
+        { transform: `${base} translate(26px, 70px) rotate(70deg)`, opacity: 0 },
+      ], { duration: 420, easing: "ease-in" }).onfinish = () => el.remove();
+    }
+    hud();
+    checkEnd();
+  }
+  function checkEnd() {
+    if (state !== "playing") return;
+    if (strikes >= STRIKES) failRound();
+    else if (spawned >= ROUNDS[ri].n && !items.length) clearRound();
+  }
+
+  // ---------- the Golden Spoon ceremony ----------
+  function win() {
+    state = "won";
+    clearBelt();
+    const newBest = score > best;
+    if (newBest) { best = score; try { localStorage.setItem("shellyeah-chef-best", String(best)); } catch (e) {} }
+    hud();
+    $("ckGrade").textContent = runStrikes === 0 ? "Flawless: three Michelin shell-stars" : runStrikes < 4 ? "Grand Chef de Shell-uisine" : "Chef de Shell-uisine, with honors";
+    $("ckSpeech").textContent =
+      `"Tucker, in all my years of slow cooking, I have never seen a turtle sort ${runSorted} ingredients with such shell-f-confidence. ` +
+      `You put the socks where socks belong, the lettuce where lettuce belongs, and the hare's alarm clock firmly in the not-food bin. ` +
+      `Your best combo was ${bestCombo} in a row. For culinary excellence at an honest turtle pace, I award you the Golden Spoon of Glory. ` +
+      `Now go wash your flippers, dear. You've earned a nap."`;
+    $("ckFinal").innerHTML = "";
+    for (const [k, v] of [["Final score", score], ["Best", best], ["Best combo", bestCombo], ["Strikes", runStrikes]]) {
+      const s = document.createElement("span"); s.textContent = k + ": ";
+      const b = document.createElement("b"); b.textContent = v; s.append(b);
+      $("ckFinal").append(s);
+    }
+    if (newBest) { const s = document.createElement("span"); s.textContent = "New personal best!"; $("ckFinal").append(s); }
+    kitchen.hidden = true;
+    ceremony.hidden = false;
+    ceremony.focus({ preventScroll: true });
+    ceremony.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+    const pod = $("ckPodium");
+    const fire = () => {
+      if (ceremony.hidden || current !== "chef") return;
+      const r = pod.getBoundingClientRect();
+      document.dispatchEvent(new CustomEvent("shellburst", { detail: { x: r.left + r.width * 0.5, y: r.top + r.height * 0.25, colors: ["var(--shell)", "var(--moss)"], n: 18 } }));
+    };
+    [350, 900, 1500].forEach((ms) => setTimeout(fire, ms)); // cosmetic confetti only
+  }
+  $("ckAgain").addEventListener("click", () => {
+    ceremony.hidden = true;
+    kitchen.hidden = false;
+    resetRun();
+    say("Back for seconds? I love a student with an appetite.");
+    introRound(0);
+    goBtn.focus({ preventScroll: true });
+  });
+
+  // ---------- pause ----------
+  function pause() {
+    if (state !== "playing") return;
+    endDrag();
+    state = "paused";
+    showOverlay("Paused", "Tucker is taste-testing", "The belt has stopped. The lettuce will wait. Lettuce is very patient.", "Back to the kitchen", resume);
+  }
+  function resume() {
+    state = "playing";
+    overlay.hidden = true;
+    toast("Yes, chef!");
+    startLoop();
+  }
+  $("ckPause").addEventListener("click", () => { if (state === "playing") pause(); });
+
+  // ---------- loop ----------
+  function render() {
+    if (panel.hidden || kitchen.hidden) return; // nothing to lay out; avoids measuring a hidden belt as 0px
+    const iw = items.length ? items[0].el.offsetWidth : 64;
+    const track = Math.max(0, beltW - iw - 14);
+    items.forEach((it, k) => {
+      it.el.style.transform = `translateX(${(it.x * track).toFixed(1)}px)`;
+      it.el.classList.toggle("next", k === 0);
+      it.el.classList.toggle("hot", k === 0 && it.x > 0.72);
+    });
+    if (!reduce) belt.style.backgroundPosition = `${beltOff.toFixed(1)}px 0`;
+    const n = items[0];
+    nextEl.innerHTML = "Next up: <b></b>";
+    nextEl.lastChild.textContent = n ? `${n.e} ${n.n}` : state === "playing" ? "incoming…" : "nothing yet";
+  }
+  function update(dt) {
+    const R = ROUNDS[ri];
+    beltOff += dt * (beltW / R.travel);
+    if (spawned < R.n) {
+      spawnT -= dt;
+      if (!items.length) spawnT = Math.min(spawnT, R.gap * 0.45);
+      if (spawnT <= 0) { spawn(); spawnT = R.gap; }
+    }
+    for (const it of items) it.x += dt / R.travel;
+    while (state === "playing" && items.length && items[0].x >= 1) dropFront();
+  }
+  let current = document.body.dataset.tab || "home", raf = null, last = 0;
+  function frame(now) {
+    const dt = Math.min(0.05, Math.max(0, (now - last) / 1000));
+    last = now;
+    if (state === "playing") update(dt);
+    render();
+    raf = state === "playing" && current === "chef" && !document.hidden ? requestAnimationFrame(frame) : null;
+  }
+  function startLoop() {
+    if (raf || current !== "chef" || document.hidden) return;
+    last = performance.now();
+    raf = requestAnimationFrame(frame);
+  }
+  document.addEventListener("tabchange", (e) => {
+    current = e.detail;
+    if (current === "chef") { measure(); render(); startLoop(); } else pause();
+  });
+  document.addEventListener("visibilitychange", () => { if (document.hidden) pause(); });
+
+  // ---------- input: tap ----------
+  binBtns.forEach((b, k) => b.addEventListener("click", () => { select(k); sortInto(k); }));
+  function select(k, focus) {
+    sel = (k + BINS.length) % BINS.length;
+    binBtns.forEach((b, j) => b.classList.toggle("sel", j === sel));
+    if (focus) binBtns[sel].focus({ preventScroll: true });
+  }
+
+  // ---------- input: keyboard ----------
+  window.addEventListener("keydown", (e) => {
+    if (current !== "chef" || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.target.closest && e.target.closest("input, textarea, select")) return;
+    if (state !== "playing") return;
+    const n = "12345".indexOf(e.key);
+    if (e.key.length === 1 && n >= 0) { e.preventDefault(); select(n); sortInto(n); return; }
+    if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+      e.preventDefault();
+      binsEl.classList.add("kb");
+      select(sel + (e.key === "ArrowLeft" ? -1 : 1), binsEl.contains(document.activeElement));
+      return;
+    }
+    if (e.key === "Enter" || e.key === " ") {
+      if (e.target.closest && e.target.closest("button, a")) return; // the focused button handles it natively
+      e.preventDefault(); sortInto(sel); return;
+    }
+    if (e.key === "p" || e.key === "P" || e.key === "Escape") { e.preventDefault(); pause(); }
+  });
+
+  // ---------- input: drag the NEXT ingredient onto a bin ----------
+  function binAt(x, y) {
+    return binBtns.findIndex((b) => { const r = b.getBoundingClientRect(); return x >= r.left && x <= r.right && y >= r.top - 12 && y <= r.bottom; });
+  }
+  function endDrag() {
+    if (!drag) return;
+    drag.ghost.remove();
+    drag.it.el.classList.remove("is-dragging");
+    binBtns.forEach((b) => b.classList.remove("drop"));
+    drag = null;
+  }
+  belt.addEventListener("pointerdown", (e) => {
+    const el = e.target.closest(".ck-item");
+    if (!el || state !== "playing" || !items.length || items[0].el !== el) return;
+    e.preventDefault();
+    const r = el.getBoundingClientRect();
+    const ghost = el.cloneNode(true);
+    ghost.classList.add("ck-ghost");
+    ghost.classList.remove("hot");
+    document.body.append(ghost);
+    drag = { it: items[0], ghost, dx: e.clientX - r.left, dy: e.clientY - r.top };
+    el.classList.add("is-dragging");
+    ghost.style.transform = `translate(${r.left}px, ${r.top}px) scale(1.08)`;
+    try { belt.setPointerCapture(e.pointerId); } catch (err) {}
+  });
+  belt.addEventListener("pointermove", (e) => {
+    if (!drag) return;
+    drag.ghost.style.transform = `translate(${e.clientX - drag.dx}px, ${e.clientY - drag.dy}px) scale(1.08)`;
+    const k = binAt(e.clientX, e.clientY);
+    binBtns.forEach((b, j) => b.classList.toggle("drop", j === k));
+  });
+  belt.addEventListener("pointerup", (e) => {
+    if (!drag) return;
+    const it = drag.it, k = binAt(e.clientX, e.clientY);
+    endDrag();
+    if (k >= 0 && items[0] === it) { select(k); sortInto(k, true); }
+  });
+  belt.addEventListener("pointercancel", endDrag);
+
+  // ---------- boot ----------
+  select(0);
+  hud();
+  measure();
+  render();
+  goAction = () => introRound(0);
+})();
+</script>
+<!-- CHEF:END script -->
 </body>
 </html>
